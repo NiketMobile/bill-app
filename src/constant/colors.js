@@ -5,5 +5,8 @@ export const colors = {
     gray: "#EEEEEE",
     red: "#FF0000",
     themeColor: "#2B47D3",
-    tab_disabled:"#A7ACC5"
+    theme_v1: "#A7ACC5",
+    tab_disabled: "#A7ACC5",
+    text: "#050A20",
+    text_v1: "#141C46",
 }

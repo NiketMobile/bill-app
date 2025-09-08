@@ -8,6 +8,7 @@ import Profile from '../screens/tabScreens/profile';
 import { CustomTab } from './customTab';
 import Login from '../screens/authScreens/login';
 import Splash from '../screens/stackScreens/splash';
+import Register from "../screens/authScreens/register";
 
 
 
@@ -33,11 +34,12 @@ function AuthStack() {
 
     return (
         <Stack.Navigator
-            // initialRouteName="Login"
+            initialRouteName="Register"
             screenOptions={({ route }) => ({
                 headerShown: false,
             })} >
             <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
         </Stack.Navigator>
     )
 }
