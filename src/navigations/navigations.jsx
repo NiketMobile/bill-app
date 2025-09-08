@@ -7,7 +7,7 @@ import Liked from '../screens/tabScreens/liked';
 import Profile from '../screens/tabScreens/profile';
 import { CustomTab } from './customTab';
 import Login from '../screens/authScreens/login';
-
+import Splash from '../screens/stackScreens/splash';
 
 
 
@@ -79,7 +79,7 @@ export default function RootNavigation() {
         <Stack.Navigator screenOptions={{ headerShown: false }}
             initialRouteName='AuthStack'
         >
-            
+            <Stack.Screen name="Splash" component={Splash} />
             <Stack.Screen
                 name="AuthStack"
                 component={AuthStack}

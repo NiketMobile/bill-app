@@ -17,7 +17,7 @@ const FocusAwareStatusBar = ({ barStyle, hidden }) => {
     ) : null;
 };
 
-const Wrapper = ({ children, bgColor = '#fff', hideStatusBar = false, barStyle = 'dark-content' }) => {
+const Wrapper = ({ children, bgColor = '#fff', hideStatusBar = false, barStyle = 'dark-content', isFullView = false }) => {
     const insets = useSafeAreaInsets();
     const isAndroid = Platform.OS === 'android';
 
@@ -27,7 +27,7 @@ const Wrapper = ({ children, bgColor = '#fff', hideStatusBar = false, barStyle =
                 styles.container,
                 {
                     backgroundColor: bgColor,
-                    paddingTop: hideStatusBar ? 0 : insets.top, // top safe area
+                    paddingTop: hideStatusBar ? 0 : isFullView ? 0 : insets.top, // top safe area
                     paddingBottom: isAndroid ? insets.bottom : 0, // handles iOS + Android safe bottom
                     paddingLeft: insets.left,
                     paddingRight: insets.right,

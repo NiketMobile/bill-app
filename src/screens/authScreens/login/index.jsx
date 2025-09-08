@@ -1,15 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Wrapper from '../../../components/wrapper'
 import { colors } from '../../../constant/colors'
+import { images } from '../../../constant/images'
 
 
 const Login = () => {
   return (
-    <Wrapper bgColor={colors.white} barStyle='dark-content'>
-      <View style={{ flex: 1 }}>
+    <Wrapper barStyle='dark-content' isFullView={true}>
+      <ImageBackground source={images.registerScreenBg} imageStyle={{
+        width: '100%',
+        height: '100%',
+        objectFit: "fill"
+      }} style={{ flex: 1, }}>
 
-      </View>
+      </ImageBackground>
     </Wrapper>
   )
 }
