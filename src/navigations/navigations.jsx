@@ -76,7 +76,10 @@ export default function RootNavigation() {
     // }
 
     return (
-        <Stack.Navigator initialRouteName='TabsStack' screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}
+            initialRouteName='AuthStack'
+        >
+            
             <Stack.Screen
                 name="AuthStack"
                 component={AuthStack}
