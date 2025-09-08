@@ -11,4 +11,7 @@ export const images = {
     apple: require('../assets/images/apple.png'),
     eye_off: require('../assets/images/eye-off.png'),
     eye: require('../assets/images/eye.png'),
+    right: require('../assets/images/right.png'),
+    back_icon: require('../assets/images/Back.png'),
+    calender: require('../assets/images/calender.png'),
 };

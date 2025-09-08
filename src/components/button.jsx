@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         height: scale(45)
     },
     disabledButton: {
-        backgroundColor: colors.gray,
+        backgroundColor: colors.tab_disabled,
     },
     title: {
         color: colors.white,

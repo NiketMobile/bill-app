@@ -28,6 +28,10 @@ const Register = () => {
         navigation.navigate("Login")
     }
 
+    const handlewPress = () => {
+        navigation.navigate("Login")
+    }
+
 
     return (
         <Wrapper barStyle="dark-content" isFullView={true}>
@@ -64,7 +68,7 @@ const Register = () => {
                         {/* Register button */}
                         <Button
                             title="Register"
-                            onPress={() => console.log("Clicked!")}
+                            onPress={handlewPress}
                             loading={false}
                             disabled={false}
                         />

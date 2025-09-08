@@ -9,6 +9,8 @@ import { CustomTab } from './customTab';
 import Login from '../screens/authScreens/login';
 import Splash from '../screens/stackScreens/splash';
 import Register from "../screens/authScreens/register";
+import OnboardingA from "../screens/onBoardingScreens/OnboardingA"
+import OnboardingB from "../screens/onBoardingScreens/OnboardingB"
 
 
 
@@ -34,12 +36,14 @@ function AuthStack() {
 
     return (
         <Stack.Navigator
-            initialRouteName="Register"
+            initialRouteName="Login"
             screenOptions={({ route }) => ({
                 headerShown: false,
             })} >
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="OnboardingA" component={OnboardingA} />
+            <Stack.Screen name="OnboardingB" component={OnboardingB} />
         </Stack.Navigator>
     )
 }
@@ -79,17 +83,11 @@ export default function RootNavigation() {
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}
-            initialRouteName='AuthStack'
+            initialRouteName='Splash'
         >
             <Stack.Screen name="Splash" component={Splash} />
-            <Stack.Screen
-                name="AuthStack"
-                component={AuthStack}
-            />
-            <Stack.Screen
-                name="TabsStack"
-                component={TabsStack}
-            />
+            <Stack.Screen name="AuthStack" component={AuthStack} />
+            <Stack.Screen name="TabsStack" component={TabsStack} />
         </Stack.Navigator>
     );
 }

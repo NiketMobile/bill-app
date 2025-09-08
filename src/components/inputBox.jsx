@@ -18,6 +18,7 @@ const InputBox = ({
     error = '',
     leftIcon = null,
     rightElement = null,
+    onRightElementPress = () => { },
     containerStyle = {},
     inputStyle = {},
     onBlur = () => { },
@@ -77,7 +78,7 @@ const InputBox = ({
 
                 {/* right custom element (e.g. clear button) */}
                 {rightElement ? (
-                    <View style={styles.rightElementWrapper}>{rightElement}</View>
+                    <TouchableOpacity onPress={onRightElementPress} disabled={!onRightElementPress} style={styles.rightElementWrapper}>{rightElement}</TouchableOpacity>
                 ) : null}
 
                 {/* password toggle */}

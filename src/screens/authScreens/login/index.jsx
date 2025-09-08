@@ -27,7 +27,9 @@ const Login = () => {
     navigation.navigate("Register")
   }
 
-
+  const handlewPress = () => {
+    navigation.navigate("OnboardingA")
+  }
 
 
   return (
@@ -64,8 +66,8 @@ const Login = () => {
 
             {/* Register button */}
             <Button
-              title="Register"
-              onPress={() => console.log("Clicked!")}
+              title="Login"
+              onPress={handlewPress}
               loading={false}
               disabled={false}
             />
