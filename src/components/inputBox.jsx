@@ -107,8 +107,7 @@ export default InputBox;
 const styles = StyleSheet.create({
     wrapper: {
         width: '100%',
-        marginBottom: scale(14),
-        // borderColor: colors.theme_v1,
+        marginBottom: scale(10),
     },
     inputContainer: {
         flexDirection: 'row',
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
         borderRadius: scale(4),
         paddingHorizontal: 12,
         minHeight: Platform.OS === 'ios' ? scale(44) : scale(46),
-        borderColor: colors.theme_v1,
+        borderColor: colors.theme_v2,
     },
     leftIcon: {
         width: scale(22),

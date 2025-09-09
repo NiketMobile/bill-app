@@ -11,6 +11,7 @@ import Splash from '../screens/stackScreens/splash';
 import Register from "../screens/authScreens/register";
 import OnboardingA from "../screens/onBoardingScreens/OnboardingA"
 import OnboardingB from "../screens/onBoardingScreens/OnboardingB"
+import OnboardingC from "../screens/onBoardingScreens/OnboardingC"
 
 
 
@@ -44,6 +45,7 @@ function AuthStack() {
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="OnboardingA" component={OnboardingA} />
             <Stack.Screen name="OnboardingB" component={OnboardingB} />
+            <Stack.Screen name="OnboardingC" component={OnboardingC} />
         </Stack.Navigator>
     )
 }

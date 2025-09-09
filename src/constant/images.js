@@ -14,4 +14,5 @@ export const images = {
     right: require('../assets/images/right.png'),
     back_icon: require('../assets/images/Back.png'),
     calender: require('../assets/images/calender.png'),
+    down: require('../assets/images/down.png'),
 };

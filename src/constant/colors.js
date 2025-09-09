@@ -6,6 +6,7 @@ export const colors = {
     red: "#FF0000",
     themeColor: "#2B47D3",
     theme_v1: "#A7ACC5",
+    theme_v2: "#A7ACC54D",
     tab_disabled: "#A7ACC5",
     text: "#050A20",
     text_v1: "#141C46",

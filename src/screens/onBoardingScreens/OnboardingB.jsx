@@ -74,7 +74,7 @@ const OnboardingB = () => {
                         // !name.trim() && { backgroundColor: colors.tab_disabled }, // disable look if empty
                     ]}
                     onPress={() => {
-                        navigation?.navigate('OnboardingB', { name });
+                        navigation?.navigate('OnboardingC', { name });
                         // if (name.trim()) {
                         //     navigation?.navigate('OnboardingB', { name });
                         // }

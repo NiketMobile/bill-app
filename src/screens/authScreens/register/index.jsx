@@ -41,71 +41,63 @@ const Register = () => {
                 style={{ flex: 1 }}
             >
                 <KeyboardAwareScrollView
-                    style={{ flexGrow: 1 }}
+                    style={{ flex: 1 }}
                     contentContainerStyle={styles.scrollContainer}
                 >
                     <View style={styles.innerContainer}>
-                        {/* Title */}
-                        <Text style={styles.title}>Register now</Text>
-                        <Text style={styles.subTitle}>
-                            Stay informed on policies that impact you!
-                        </Text>
-
-                        {/* Input Fields */}
-                        <InputBox
-                            value={email}
-                            onChangeText={setEmail}
-                            placeholder="Email"
-                            keyboardType="email-address"
-                        />
-                        <InputBox
-                            value={password}
-                            onChangeText={setPassword}
-                            placeholder="Password"
-                            isPassword={true}
-                        />
-
-                        {/* Register button */}
-                        <Button
-                            title="Register"
-                            onPress={handlewPress}
-                            loading={false}
-                            disabled={false}
-                        />
-
-                        {/* OR divider */}
-                        <View style={styles.orContainer}>
-                            <View style={styles.line} />
-                            <Text style={styles.orText}>or</Text>
-                            <View style={styles.line} />
-                        </View>
-
-                        {/* Social login */}
-                        <Text style={styles.socialTitle}>Resister with</Text>
-                        <View style={styles.socialRow}>
-                            <TouchableOpacity style={[styles.socialBtn,]}>
-                                <Image source={images.facebook} style={styles.icons} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.socialBtn]}>
-                                <Image source={images.apple} style={styles.icons} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.socialBtn]}>
-                                <Image source={images.google} style={styles.icons} />
-                            </TouchableOpacity>
-                        </View>
-
-                        {/* Bottom link */}
-                        <View style={styles.bottomRow}>
-                            <Text style={styles.bottomText}>
-                                You already have an account?{' '}
+                        <View style={styles.formContainer}>
+                            <Text style={styles.title}>Register now</Text>
+                            <Text style={styles.subTitle}>
+                                Stay informed on policies that impact you!
                             </Text>
+                            <InputBox
+                                value={email}
+                                onChangeText={setEmail}
+                                placeholder="Email"
+                                keyboardType="email-address"
+                            />
+                            <InputBox
+                                value={password}
+                                onChangeText={setPassword}
+                                placeholder="Password"
+                                isPassword={true}
+                            />
+                            <Button
+                                title="Register"
+                                onPress={handlewPress}
+                                loading={false}
+                                disabled={false}
+                            />
+                            <View style={styles.orContainer}>
+                                <View style={styles.line} />
+                                <Text style={styles.orText}>or</Text>
+                                <View style={styles.line} />
+                            </View>
 
+                            <View style={styles.socialContainer}>
+                                <Text style={styles.socialTitle}>Register with</Text>
+                                <View style={styles.socialRow}>
+                                    <TouchableOpacity style={styles.socialBtn}>
+                                        <Image source={images.facebook} style={styles.icons} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.socialBtn}>
+                                        <Image source={images.apple} style={styles.icons} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.socialBtn}>
+                                        <Image source={images.google} style={styles.icons} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={styles.bottomRow}>
+                            <Text style={styles.bottomText}>You already have an account? </Text>
                             <TouchableOpacity onPress={toLogin}>
                                 <Text style={styles.linkText}>Login now.</Text>
                             </TouchableOpacity>
                         </View>
-
                     </View>
+
                 </KeyboardAwareScrollView>
             </ImageBackground>
         </Wrapper>
@@ -124,10 +116,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         paddingHorizontal: scale(15),
         justifyContent: 'center',
-    },
-    innerContainer: {
-        width: '100%',
-        alignItems: 'center',
+        justifyContent: "center",
+        paddingTop: scale(55)
     },
     title: {
         fontSize: scale(29),
@@ -145,12 +135,12 @@ const styles = StyleSheet.create({
         color: colors.text_v1,
         fontFamily: fonts.light,
         fontSize: scale(14),
+        fontWeight: "300"
     },
     orContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: scale(45),
-        marginBottom: scale(5),
+        paddingTop: scale(45),
         width: '100%',
     },
     line: {
@@ -183,12 +173,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: scale(5),
     },
-    bottomRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10,
-        justifyContent: 'center',
-    },
     bottomText: {
         fontSize: scale(14),
         fontWeight: '300',
@@ -196,8 +180,8 @@ const styles = StyleSheet.create({
         fontFamily: fonts.light,
     },
     linkText: {
+        fontFamily: fonts.light,
         color: colors.themeColor,
-        fontFamily: fonts.medium,
         fontSize: scale(14),
         fontWeight: '300',
         borderBottomWidth: 1,
@@ -208,5 +192,29 @@ const styles = StyleSheet.create({
         width: scale(45),
         height: scale(45),
         resizeMode: "contain"
-    }
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    formContainer: {
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    socialContainer: {
+        width: "100%",
+        alignItems: "center",
+        marginTop: scale(20),
+        marginBottom: scale(23),
+    },
+    bottomRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        justifyContent: "flex-end",
+        paddingTop: scale(40)
+
+    },
 });
