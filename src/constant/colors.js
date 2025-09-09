@@ -10,4 +10,6 @@ export const colors = {
     tab_disabled: "#A7ACC5",
     text: "#050A20",
     text_v1: "#141C46",
+    seleted_v1:"#E2EFFF",
+    seleted_text_v1:"#0A7AFF",
 }
