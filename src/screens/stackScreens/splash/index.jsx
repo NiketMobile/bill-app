@@ -12,9 +12,9 @@ const Splash = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.replace('AuthStack', { screen: 'Login' });
-    }, 1000);
+    }, 1400);
 
-    return () => clearTimeout(timer); 
+    return () => clearTimeout(timer);
   }, [navigation]);
 
 

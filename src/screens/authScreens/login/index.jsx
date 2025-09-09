@@ -148,7 +148,8 @@ const styles = StyleSheet.create({
   orContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 15,
+    marginTop: scale(45),
+    marginBottom: scale(5),
     width: '100%',
   },
   line: {

@@ -22,6 +22,8 @@ const CustomCalendar = ({ visible, onClose, onSelected }) => {
             isVisible={visible}
             onBackdropPress={onClose}
             style={styles.modal}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
         >
             <View style={styles.modalContent}>
                 <Text style={styles.title}>Select Date of Birth</Text>
