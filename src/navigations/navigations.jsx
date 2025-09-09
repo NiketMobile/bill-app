@@ -12,6 +12,8 @@ import Register from "../screens/authScreens/register";
 import OnboardingA from "../screens/onBoardingScreens/OnboardingA"
 import OnboardingB from "../screens/onBoardingScreens/OnboardingB"
 import OnboardingC from "../screens/onBoardingScreens/OnboardingC"
+import OnboardingD from "../screens/onBoardingScreens/OnboardingD"
+import OnboardingE from "../screens/onBoardingScreens/OnboardingE"
 
 
 
@@ -37,7 +39,7 @@ function AuthStack() {
 
     return (
         <Stack.Navigator
-            initialRouteName="Login"
+            initialRouteName="OnboardingD"
             screenOptions={({ route }) => ({
                 headerShown: false,
             })} >
@@ -46,6 +48,8 @@ function AuthStack() {
             <Stack.Screen name="OnboardingA" component={OnboardingA} />
             <Stack.Screen name="OnboardingB" component={OnboardingB} />
             <Stack.Screen name="OnboardingC" component={OnboardingC} />
+            <Stack.Screen name="OnboardingD" component={OnboardingD} />
+            <Stack.Screen name="OnboardingE" component={OnboardingE} />
         </Stack.Navigator>
     )
 }

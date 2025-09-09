@@ -36,7 +36,7 @@ const OnboardingB = () => {
 
 
     return (
-        <Wrapper barStyle="dark-content">
+        <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
             <View style={styles.container}>
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
@@ -98,7 +98,7 @@ export default OnboardingB
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
+        backgroundColor: colors.bg_v1,
         paddingHorizontal: scale(15),
     },
     scrollContainer: {

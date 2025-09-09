@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -8,38 +8,66 @@ import { images } from '../../constant/images'
 import { scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
-import { Calendar } from 'react-native-calendars';
-import CustomCalendar from '../../components/customCalendar'
+import StatesBottomSheet from '../../components/statesBottomSheet'
 
 
 
-
-const { height } = Dimensions.get('window');
 
 const OnboardingC = () => {
     const navigation = useNavigation()
+    const sheetRef = useRef(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
     const [name, setName] = useState('');
-
-
+    const [streetAddress, setStreetAddress] = useState("")
+    const [apartment, setApartment] = useState("")
+    const [city, setCity] = useState("")
+    const [zipCode, setZipCode] = useState("")
 
     const goBack = () => {
         navigation.goBack()
     }
 
     const handlewNext = () => {
-        navigation?.navigate('OnboardingC', { name });
+        navigation?.navigate('OnboardingD', { name });
+    }
+
+    // callbacks
+    const handleSheetChange = useCallback((index) => {
+        console.log("handleSheetChange", index);
+    }, []);
+
+    const handleSnapPress = useCallback((index) => {
+        sheetRef.current?.snapToIndex(index);
+    }, []);
+
+    const handleClosePress = useCallback(() => {
+        sheetRef.current?.close();
+    }, []);
+
+    const handleCountrySelect = useCallback((country) => {
+        setSelectedCountry(country?.name);
+        console.log('country', JSON.stringify(country, null, 2))
+        handleClosePress();
+    }, []);
+
+    const handleOpenModal = useCallback(() => {
+        sheetRef.current?.snapToIndex(2);
+    }, []);
+
+    const handlewSlectState = () => {
+        handleOpenModal()
     }
 
 
 
+
     return (
-        <Wrapper barStyle="dark-content">
+        <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
             <View style={styles.container}>
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
                     contentContainerStyle={styles.scrollContainer}
-                    extraHeight={200}
-                    extraScrollHeight={200}
+                    extraScrollHeight={40}
                     enableOnAndroid={true}
                 >
                     <View style={{ marginTop: scale(5) }}>
@@ -50,32 +78,55 @@ const OnboardingC = () => {
                         <Text style={styles.desc}>We’ll show you legislation that affects your state and community</Text>
                         <View style={{ flex: 1 }}>
                             <InputBox
-                                value={name}
-                                onChangeText={setName}
+                                value={streetAddress}
+                                onChangeText={(t) => setStreetAddress(t)}
                                 placeholder="Street Address"
-                            />
-                            <InputBox
-                                value={name}
-                                onChangeText={setName}
-                                placeholder="Apartment/Suite (Optional)"
-                            />
-                            <InputBox
-                                value={name}
-                                onChangeText={setName}
-                                placeholder="City"
-                            />
-                            <InputBox
-                                value={name}
-                                onChangeText={setName}
-                                placeholder="States"
-                                onRightElementPress={() => setShowCalendar(true)}
                                 rightElement={
-                                    <Image source={images.down} style={styles.icons} />}
+                                    streetAddress?.length > 0 ? (
+                                        <Image source={images.edit} style={styles.editIcons} />
+                                    ) : null
+                                }
                             />
                             <InputBox
-                                value={name}
-                                onChangeText={setName}
+                                value={apartment}
+                                onChangeText={(t) => setApartment(t)}
+                                placeholder="Apartment/Suite (Optional)"
+                                rightElement={
+                                    apartment?.length > 0 ? (
+                                        <Image source={images.edit} style={styles.editIcons} />
+                                    ) : null
+                                }
+                            />
+                            <InputBox
+                                value={city}
+                                onChangeText={(t) => setCity(t)}
+                                placeholder="City"
+                                rightElement={
+                                    city?.length > 0 ? (
+                                        <Image source={images.edit} style={styles.editIcons} />
+                                    ) : null
+                                }
+                            />
+                            <InputBox
+                                value={selectedCountry}
+                                onChangeText={(t) => { setSelectedCountry(t) }}
+                                placeholder="States"
+                                onRightElementPress={handlewSlectState}
+                                rightElement={
+                                    selectedCountry?.length > 0 ? (
+                                        <Image source={images.edit} style={styles.editIcons} />
+                                    ) : <Image source={images.down} style={styles.icons} />
+                                }
+                            />
+                            <InputBox
+                                value={zipCode}
+                                onChangeText={(t) => setZipCode(t)}
                                 placeholder="ZIP Code "
+                                rightElement={
+                                    zipCode?.length > 0 ? (
+                                        <Image source={images.edit} style={styles.editIcons} />
+                                    ) : null
+                                }
                             />
                         </View>
                     </View>
@@ -83,6 +134,11 @@ const OnboardingC = () => {
                 <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
+                <StatesBottomSheet
+                    ref={sheetRef}
+                    onCountrySelect={handleCountrySelect}
+                    snapPoints={["50%", "75%"]}
+                />
             </View>
         </Wrapper>
     )
@@ -93,7 +149,7 @@ export default OnboardingC
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
+        backgroundColor: colors.bg_v1,
         paddingHorizontal: scale(15),
     },
     scrollContainer: {
@@ -110,7 +166,7 @@ const styles = StyleSheet.create({
         fontSize: scale(15),
         fontFamily: fonts.light,
         fontWeight: "300",
-        color: colors.black,
+        color: colors.text_v1,
         paddingTop: scale(10),
         paddingBottom: scale(15),
     },
@@ -133,6 +189,11 @@ const styles = StyleSheet.create({
     icons: {
         width: scale(23),
         height: scale(23),
+        resizeMode: "contain"
+    },
+    editIcons: {
+        width: scale(25),
+        height: scale(25),
         resizeMode: "contain"
     },
     rightIcon: {

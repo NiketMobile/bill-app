@@ -13,11 +13,11 @@ import { useNavigation } from '@react-navigation/native'
 const { height } = Dimensions.get('window');
 
 const OnboardingA = () => {
-      const navigation = useNavigation()
+    const navigation = useNavigation()
     const [name, setName] = useState('');
 
     return (
-        <Wrapper barStyle="dark-content">
+        <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
             <View style={styles.container}>
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
@@ -39,12 +39,12 @@ const OnboardingA = () => {
                         // !name.trim() && { backgroundColor: colors.tab_disabled }, // disable look if empty
                     ]}
                     onPress={() => {
-                         navigation?.navigate('OnboardingB');
+                        navigation?.navigate('OnboardingB');
                         // if (name.trim()) {
                         //     navigation?.navigate('OnboardingB', { name });
                         // }
                     }}
-                    // disabled={!name.trim()}
+                // disabled={!name.trim()}
                 >
                     <Image source={images.right} style={{
                         width: 18,
@@ -62,7 +62,7 @@ export default OnboardingA
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
+        backgroundColor: colors.bg_v1,
         paddingHorizontal: scale(15),
     },
     scrollContainer: {

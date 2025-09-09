@@ -294,7 +294,7 @@ const Register = () => {
                     <Image source={images.facebook} style={styles.icons} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.socialBtn}>
-                    <Image source={images.apple} style={styles.icons} />
+                    <Image source={images.apple} style={styles.appleIcon} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.socialBtn}>
                     <Image source={images.google} style={styles.icons} />
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   socialRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: scale(17),
   },
   socialBtn: {
     justifyContent: 'center',
@@ -405,8 +405,13 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   icons: {
-    width: scale(45),
-    height: scale(45),
+    width: scale(33),
+    height: scale(33),
+    resizeMode: "contain"
+  },
+  appleIcon: {
+    width: scale(37),
+    height: scale(37),
     resizeMode: "contain"
   },
   innerContainer: {

@@ -10,6 +10,10 @@ export const colors = {
     tab_disabled: "#A7ACC5",
     text: "#050A20",
     text_v1: "#141C46",
-    seleted_v1:"#E2EFFF",
-    seleted_text_v1:"#0A7AFF",
+    seleted_v1: "#E2EFFF",
+    seleted_text_v1: "#0A7AFF",
+    input_v1: "#F5F6FA",
+    border_v1: "#B5B5B5",
+    thumb: "#8A8A8A",
+    bg_v1: "#F5F6FA",
 }

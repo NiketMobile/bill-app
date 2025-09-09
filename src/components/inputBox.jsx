@@ -20,11 +20,12 @@ const InputBox = ({
     rightElement = null,
     onRightElementPress = () => { },
     containerStyle = {},
+    mainContainerStyle = {},
     inputStyle = {},
     onBlur = () => { },
     onFocus = () => { },
     editable = true,
-    placeholderTextColor = colors.theme_v1,
+    placeholderTextColor = colors.theme_v1
 }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [secure, setSecure] = useState(Boolean(isPassword));
@@ -40,7 +41,7 @@ const InputBox = ({
     };
 
     return (
-        <View style={[styles.wrapper, containerStyle]}>
+        <View style={[styles.wrapper, mainContainerStyle]}>
             <View
                 style={[
                     styles.inputContainer,
@@ -52,6 +53,7 @@ const InputBox = ({
                         //         : colors.border,
                         backgroundColor: editable ? colors.white : colors.inputDisabledBg,
                     },
+                    containerStyle
                 ]}
             >
                 {leftIcon ? (
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
         width: scale(22),
         height: scale(22),
         marginRight: 8,
-        tintColor: colors.text,
+        // tintColor: colors.text,
     },
     input: {
         flex: 1,
