@@ -17,9 +17,9 @@ const InputOtpComp = ({
     return (
         <OtpInput
             numberOfDigits={numberOfDigits}
-            focusColor="green"
+            focusColor={colors.black}
             autoFocus={autoFocus}
-            hideStick={true}
+            hideStick={false}
             placeholder=""
             blurOnFilled={true}
             disabled={disabled}
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "space-evenly",
         alignItems: "center",
-        marginVertical: 20,
+        // marginVertical: 20,
     },
     pinCodeContainer: {
         borderWidth: 1,
@@ -70,15 +70,17 @@ const styles = StyleSheet.create({
     },
     activePinCodeContainer: {
         borderColor: colors.seleted_text_v1,
+        borderWidth: 1,
+        borderRadius: scale(4),
     },
     pinCodeText: {
-        fontSize: scale(15),
-        color: colors.text,
-        fontFamily: fonts.regular,
-        fontWeight: "600"
+        fontSize: scale(20),
+        color: colors.themeColor,
+        fontFamily: fonts.bold,
+        fontWeight: "700"
     },
     focusStick: {
-        backgroundColor: "green",
+        backgroundColor: colors.black,
     },
     placeholderText: {
         color: "#aaa",

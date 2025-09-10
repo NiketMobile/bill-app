@@ -15,6 +15,15 @@ import OnboardingC from "../screens/onBoardingScreens/OnboardingC"
 import OnboardingD from "../screens/onBoardingScreens/OnboardingD"
 import OnboardingE from "../screens/onBoardingScreens/OnboardingE"
 import OnboardingF from "../screens/onBoardingScreens/OnboardingF"
+import OnboardingG from "../screens/onBoardingScreens/OnboardingG"
+import OnboardingH from "../screens/onBoardingScreens/OnboardingH"
+import OnboardingI from "../screens/onBoardingScreens/OnboardingI"
+import OnboardingJ from "../screens/onBoardingScreens/OnboardingJ"
+import OnboardingK from "../screens/onBoardingScreens/OnboardingK"
+import OnboardingL from "../screens/onBoardingScreens/OnboardingL"
+import OnboardingM from "../screens/onBoardingScreens/OnboardingM"
+import OnboardingN from "../screens/onBoardingScreens/OnboardingN"
+import OnboardingO from "../screens/onBoardingScreens/OnboardingO"
 
 
 
@@ -40,7 +49,7 @@ function AuthStack() {
 
     return (
         <Stack.Navigator
-            initialRouteName="OnboardingF"
+            initialRouteName="OnboardingO"
             screenOptions={({ route }) => ({
                 headerShown: false,
             })} >
@@ -52,6 +61,15 @@ function AuthStack() {
             <Stack.Screen name="OnboardingD" component={OnboardingD} />
             <Stack.Screen name="OnboardingE" component={OnboardingE} />
             <Stack.Screen name="OnboardingF" component={OnboardingF} />
+            <Stack.Screen name="OnboardingG" component={OnboardingG} />
+            <Stack.Screen name="OnboardingH" component={OnboardingH} />
+            <Stack.Screen name="OnboardingI" component={OnboardingI} />
+            <Stack.Screen name="OnboardingJ" component={OnboardingJ} />
+            <Stack.Screen name="OnboardingK" component={OnboardingK} />
+            <Stack.Screen name="OnboardingL" component={OnboardingL} />
+            <Stack.Screen name="OnboardingM" component={OnboardingM} />
+            <Stack.Screen name="OnboardingN" component={OnboardingN} />
+            <Stack.Screen name="OnboardingO" component={OnboardingO} />
         </Stack.Navigator>
     )
 }

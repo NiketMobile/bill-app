@@ -234,7 +234,7 @@ const Splash = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.Image
+      {/* <Animated.Image
         source={imagesData[0]}
         style={[styles.image, animatedStyle1]}
         resizeMode="cover"
@@ -248,12 +248,12 @@ const Splash = () => {
         source={imagesData[2]}
         style={[styles.image, animatedStyle3]}
         resizeMode="cover"
-      />
+      /> */}
 
       {/* Logo at top-center */}
       <View style={styles.logoContainer}>
         <Image
-          source={images.logo_v2}
+          source={images.logo_v1}
           style={{
             width: scale(270),
             height: scale(170),

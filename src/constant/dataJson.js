@@ -51,3 +51,80 @@ export const STATES = [
     { id: 49, code: 'WI', name: 'Wisconsin' },
     { id: 50, code: 'WY', name: 'Wyoming' },
 ];
+
+
+export const selectRaceList = [
+    { id: 1, title: "American Indian" },
+    { id: 2, title: "Asian" },
+    { id: 3, title: "Black or African American" },
+    { id: 4, title: "Native Hawaiian or Other Pacific Islander" },
+    { id: 5, title: "White" },
+    { id: 6, title: "Hispanic or Latino" },
+    { id: 7, title: "Two or more" },
+    { id: 8, title: "Prefer not to answer" },
+    { id: 9, title: "Other" },
+];
+
+export const selectGender = [
+    { id: 1, title: "Male" },
+    { id: 2, title: "Female" },
+    { id: 3, title: "Non-Binary" },
+    { id: 4, title: "Prefer to self-describe" },
+    { id: 5, title: "Prefer not to answer" }
+];
+
+export const selectSexualOrientation = [
+    { id: 1, title: "Heterosexual" },
+    { id: 2, title: "Homosexual" },
+    { id: 3, title: "Bisexual" },
+    { id: 4, title: "Prefer not to answer" },
+    { id: 5, title: "Other " }
+];
+
+
+export const selectDisability = [
+    { id: 1, title: "Yes" },
+    { id: 2, title: "No" },
+    { id: 3, title: "Prefer not to answer" },
+];
+
+export const selectIncomeRange = [
+    { id: 1, title: "< $25,000" },
+    { id: 2, title: "$25,000 - $50,000" },
+    { id: 3, title: "$50,000 - $100,000" },
+    { id: 4, title: "$100,000 - $200,000" },
+    { id: 5, title: "$200,000+" },
+    { id: 6, title: "Prefer not to answer" },
+];
+
+export const selectReligion = [
+    { id: 1, title: "Christian" },
+    { id: 2, title: "Muslim" },
+    { id: 3, title: "Jewish" },
+    { id: 4, title: "Hindu" },
+    { id: 5, title: "Jewish" },
+    { id: 6, title: "Atheist" },
+    { id: 7, title: "Agnostic" },
+    { id: 8, title: "Prefer not to answer" },
+    { id: 9, title: "Other " },
+];
+
+export const selectMaritalStatus = [
+    { id: 1, title: "Single" },
+    { id: 2, title: "Married" },
+    { id: 3, title: "Divorced" },
+    { id: 4, title: "Widowed" },
+    { id: 5, title: "Prefer not to answer" },
+];
+
+export const selectPoliticalAffiliation = [
+    { id: 1, title: "Democrat" },
+    { id: 2, title: "Republican" },
+    { id: 3, title: "Independent" },
+    { id: 4, title: "Libertarian" },
+    { id: 5, title: "Green Party" },
+    { id: 6, title: "Socialist" },
+    { id: 7, title: "Moderate" },
+    { id: 8, title: "Prefer not to answer" },
+    { id: 9, title: "Other" },
+];

@@ -21,5 +21,8 @@ export const images = {
     down_arrow: require('../assets/images/down_arrow.png'),
     flag: require('../assets/images/flag.png'),
     logo: require('../assets/images/logo.png'),
-    logo_v2: require('../assets/images/logo_v2.png'),
+    logo_v1: require('../assets/images/logo_v01.png'),
+    right_check: require('../assets/images/rightCheck.png'),
+    radio_check: require('../assets/images/radio-check.png'),
+    radio: require('../assets/images/radio.png'),
 };

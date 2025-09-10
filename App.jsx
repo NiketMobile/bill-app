@@ -59,9 +59,9 @@ const App = () => {
     ),
   };
 
-  // LogBox.ignoreLogs([
-  //   'VirtualizedLists should never be nested inside plain ScrollViews',
-  // ]);
+  LogBox.ignoreLogs([
+    'VirtualizedLists should never be nested inside plain ScrollViews',
+  ]);
 
   return (
     <View style={{ flex: 1 }}>

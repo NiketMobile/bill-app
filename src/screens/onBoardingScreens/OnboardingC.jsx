@@ -28,7 +28,7 @@ const OnboardingC = () => {
     }
 
     const handlewNext = () => {
-        navigation?.navigate('OnboardingD', { name });
+        navigation?.navigate('OnboardingD');
     }
 
     // callbacks

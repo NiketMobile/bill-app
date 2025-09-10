@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, Platform } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -9,20 +9,42 @@ import { scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import InputOtpComp from "../../components/InputOtpComp"
+import Loader from '../../components/loader'
+import MessageModal from '../../components/messageModal'
 
 
 
 const OnboardingF = () => {
     const navigation = useNavigation()
     const [otp, setOtp] = useState("")
+    const [isLoader, setIsLoader] = useState(false)
+    const [isVisible, setIsVisible] = useState(false)
 
     const goBack = () => {
         navigation.goBack()
     }
 
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoader(false)
+        }, 2000);
+    }, [isLoader])
+
+
     const handlewNext = () => {
-        navigation?.navigate('Login');
+        setIsVisible(true)
+        // navigation?.navigate('Login');
     }
+
+    const resendNow = () => {
+        setIsLoader(true)
+    }
+
+    const onButtonPressed = () => {
+        setIsVisible(false)
+        navigation?.navigate('OnboardingG');
+    }
+
 
 
 
@@ -34,6 +56,7 @@ const OnboardingF = () => {
                     contentContainerStyle={styles.scrollContainer}
                     extraScrollHeight={40}
                     enableOnAndroid={true}
+                    showsVerticalScrollIndicator={false}
                 >
                     <View style={{ marginTop: scale(5) }}>
                         <TouchableOpacity onPress={goBack}>
@@ -41,18 +64,33 @@ const OnboardingF = () => {
                         </TouchableOpacity>
                         <Text style={styles.title}>Enter the verification code we sent you</Text>
                         <Text style={styles.desc}> Check your messages for the 6-digit code</Text>
-
                         <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
                             <InputOtpComp
                                 onChange={(text) => setOtp(text)}
                                 onComplete={(text) => console.log("OTP Entered:", text)}
                             />
                         </View>
+                        <View style={styles.resendTextView}>
+                            <Text style={styles.textCode}>Didn’t get the code ? </Text>
+                            <TouchableOpacity onPress={resendNow}>
+                                <Text style={styles.resendText}>Resend now.</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </KeyboardAwareScrollView>
                 <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
+                {
+                    isLoader && <Loader />
+                }
+                <MessageModal
+                    isVisible={isVisible}
+                    onClose={() => setIsVisible(false)}
+                    onButtonPress={onButtonPressed}
+                    title={"Verification Successful "}
+                    message={"You have successfully verified your phone number. "}
+                />
             </View>
         </Wrapper>
     )
@@ -110,22 +148,28 @@ const styles = StyleSheet.create({
         height: scale(40),
         resizeMode: "contain"
     },
-    borderStyleBase: {
-        width: 30,
-        height: 45
-    },
-    borderStyleHighLighted: {
-        borderColor: "#03DAC6",
-    },
-
     underlineStyleBase: {
         width: 30,
         height: 45,
         borderWidth: 0,
         borderBottomWidth: 1,
     },
-
-    underlineStyleHighLighted: {
-        borderColor: "#03DAC6",
+    resendTextView: {
+        flexDirection: "row",
+        alignItems: "center",
+        alignSelf: "center",
+        paddingTop: scale(26)
     },
+    textCode: {
+        fontSize: scale(14),
+        fontFamily: fonts.light,
+        fontWeight: "300",
+        color: colors.text_v1,
+    },
+    resendText: {
+        fontSize: scale(14),
+        fontFamily: fonts.medium,
+        fontWeight: "500",
+        color: colors.themeColor,
+    }
 })

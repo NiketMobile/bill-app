@@ -35,6 +35,7 @@ const OnboardingC = () => {
                     contentContainerStyle={styles.scrollContainer}
                     extraScrollHeight={40}
                     enableOnAndroid={true}
+                    showsVerticalScrollIndicator={false}
                 >
                     <View style={{ marginTop: scale(5) }}>
                         <TouchableOpacity onPress={goBack}>
