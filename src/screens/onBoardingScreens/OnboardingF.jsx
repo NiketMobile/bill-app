@@ -5,7 +5,7 @@ import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
 import { fonts } from '../../constant/fonts'
 import { images } from '../../constant/images'
-import { scale } from '../../utils/appScale'
+import { moderateScale, moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import InputOtpComp from "../../components/InputOtpComp"
@@ -108,14 +108,14 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     title: {
-        fontSize: scale(30),
+        fontSize: moderateScale(30),
         fontFamily: fonts.medium,
         fontWeight: "500",
         color: colors.black,
         paddingTop: scale(15),
     },
     desc: {
-        fontSize: scale(14),
+        fontSize: moderateScale(14),
         fontFamily: fonts.light,
         fontWeight: "300",
         color: colors.text_v1,
@@ -161,13 +161,13 @@ const styles = StyleSheet.create({
         paddingTop: scale(26)
     },
     textCode: {
-        fontSize: scale(14),
+        fontSize: moderateVerticalScale(14),
         fontFamily: fonts.light,
         fontWeight: "300",
         color: colors.text_v1,
     },
     resendText: {
-        fontSize: scale(14),
+        fontSize: moderateVerticalScale(14),
         fontFamily: fonts.medium,
         fontWeight: "500",
         color: colors.themeColor,

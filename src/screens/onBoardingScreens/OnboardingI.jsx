@@ -5,7 +5,7 @@ import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
 import { fonts } from '../../constant/fonts'
 import { images } from '../../constant/images'
-import { scale } from '../../utils/appScale'
+import { moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import { selectGender, selectRaceList, selectSexualOrientation } from '../../constant/dataJson'
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     nameTitle: {
-        fontSize: scale(14),
+        fontSize: moderateVerticalScale(14),
         fontFamily: fonts.light,
         fontWeight: "300",
         color: colors.text_v1,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         paddingBottom: scale(3),
     },
     title: {
-        fontSize: scale(30),
+        fontSize: moderateVerticalScale(30),
         fontFamily: fonts.medium,
         fontWeight: "500",
         color: colors.black,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         resizeMode: "contain"
     },
     optionText: {
-        fontSize: scale(14),
+        fontSize: moderateVerticalScale(14),
         fontFamily: fonts.regular,
         fontWeight: "400",
     },

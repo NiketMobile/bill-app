@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ImageBackground,
     Image,
+    Platform,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Wrapper from '../../../components/wrapper';
@@ -13,12 +14,13 @@ import InputBox from '../../../components/inputBox';
 import { colors } from '../../../constant/colors';
 import { images } from '../../../constant/images';
 import { fonts } from '../../../constant/fonts';
-import { scale } from '../../../utils/appScale';
+import { moderateScale, scale } from '../../../utils/appScale';
 import Button from '../../../components/button';
 import { useNavigation } from '@react-navigation/native';
 
 
 const Register = () => {
+    const isAndroid = Platform.OS === 'android';
     const navigation = useNavigation()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -91,9 +93,13 @@ const Register = () => {
                         </View>
 
                         <View style={styles.bottomRow}>
-                            <Text style={styles.bottomText}>You already have an account? </Text>
+                            <Text style={[styles.bottomText, {
+                                fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
+                            }]}>You already have an account? </Text>
                             <TouchableOpacity onPress={toLogin}>
-                                <Text style={styles.linkText}>Login now.</Text>
+                                <Text style={[styles.linkText, {
+                                    fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
+                                }]}>Login now.</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -120,7 +126,7 @@ const styles = StyleSheet.create({
         paddingTop: scale(55)
     },
     title: {
-        fontSize: scale(29),
+        fontSize: moderateScale(29),
         fontFamily: fonts.regular,
         color: colors.text,
         textAlign: 'left',
@@ -134,7 +140,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         color: colors.text_v1,
         fontFamily: fonts.light,
-        fontSize: scale(14),
+        fontSize: moderateScale(14),
         fontWeight: "300"
     },
     orContainer: {
@@ -150,13 +156,13 @@ const styles = StyleSheet.create({
     },
     orText: {
         marginHorizontal: 10,
-        fontSize: scale(16),
+        fontSize: moderateScale(16),
         fontFamily: fonts.regular,
         fontWeight: "400",
         color: colors.black,
     },
     socialTitle: {
-        fontSize: scale(15.5),
+        fontSize: moderateScale(15.5),
         fontFamily: fonts.semiBold,
         fontWeight: "600",
         marginBottom: scale(15),
@@ -174,7 +180,7 @@ const styles = StyleSheet.create({
         marginHorizontal: scale(5),
     },
     bottomText: {
-        fontSize: scale(14),
+        fontSize: moderateScale(14),
         fontWeight: '300',
         color: colors.text,
         fontFamily: fonts.light,
@@ -182,7 +188,7 @@ const styles = StyleSheet.create({
     linkText: {
         fontFamily: fonts.light,
         color: colors.themeColor,
-        fontSize: scale(14),
+        fontSize: moderateScale(14),
         fontWeight: '300',
         borderBottomWidth: 1,
         borderBottomColor: colors.themeColor,

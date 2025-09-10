@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Modal from "react-native-modal";
 import { images } from "../constant/images";
-import { scale } from "../utils/appScale";
+import { moderateVerticalScale, scale } from "../utils/appScale";
 import { colors } from "../constant/colors";
 import { fonts } from "../constant/fonts";
 import Button from "./button";
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         marginBottom: scale(15),
     },
     titleText: {
-        fontSize: scale(22),
+        fontSize: moderateVerticalScale(22),
         fontFamily: fonts.semiBold,
         fontWeight: "600",
         textAlign: "center",
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
         color: colors.text
     },
     subtitle: {
-        fontSize: scale(14),
+        fontSize: moderateVerticalScale(14),
         fontWeight: "400",
         fontFamily: fonts.regular,
         color: colors.text_v1,

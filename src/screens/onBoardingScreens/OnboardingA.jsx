@@ -5,7 +5,7 @@ import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
 import { fonts } from '../../constant/fonts'
 import { images } from '../../constant/images'
-import { scale } from '../../utils/appScale'
+import { moderateScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     title: {
-        fontSize: scale(30),
+        fontSize: moderateScale(30),
         fontFamily: fonts.medium,
         fontWeight: "500",
         color: colors.black,

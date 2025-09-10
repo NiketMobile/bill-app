@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, Image, StyleSheet, Platform, } from 'react-native';
 import { colors } from '../constant/colors';
 import { fonts } from '../constant/fonts';
-import { scale } from '../utils/appScale';
+import { moderateScale, scale } from '../utils/appScale';
 import { images } from '../constant/images';
 
 
@@ -128,9 +128,9 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: scale(15),
+        fontSize: Platform.OS === 'ios' ? moderateScale(16) : moderateScale(14),
         color: colors.text,
-        paddingVertical: Platform.OS === 'ios' ? 10 : 8,
+        paddingVertical: Platform.OS === 'ios' ? scale(8) : scale(11),
         fontFamily: fonts.regular || undefined,
     },
     rightElementWrapper: {
@@ -142,14 +142,14 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     toggleText: {
-        fontSize: scale(11),
+        fontSize: moderateScale(11),
         fontFamily: fonts.medium || undefined,
         color: colors.primary,
     },
     errorText: {
         marginTop: 6,
         color: colors.danger,
-        fontSize: scale(12.6),
+        fontSize: moderateScale(12.6),
         fontFamily: fonts.regular || undefined,
     },
 });
