@@ -7,11 +7,11 @@ import Animated, {
   withRepeat,
   withSequence,
 } from "react-native-reanimated";
-import { scale } from "../../../utils/appScale"; // assuming you have scale util
+import { scale } from "../../../utils/appScale";
 import { useNavigation } from "@react-navigation/native";
 import { images } from "../../../constant/images";
 import Wrapper from "../../../components/wrapper";
-import { colors } from "../../../constant/colors";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -110,7 +110,6 @@ const Splash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },

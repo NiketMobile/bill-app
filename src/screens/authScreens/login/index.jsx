@@ -249,76 +249,75 @@ const Register = () => {
 
   return (
     <Wrapper barStyle="dark-content" isFullView={true}>
-      <ImageBackground
-        source={images.registerScreenBg}
-        imageStyle={styles.bgImage}
-        style={{ flex: 1 }}
-      >
-        <KeyboardAwareScrollView
+        <ImageBackground
+          source={images.registerScreenBg}
+          imageStyle={styles.bgImage}
           style={{ flex: 1 }}
-          contentContainerStyle={styles.scrollContainer}
         >
-          <View style={styles.innerContainer}>
-            <View style={styles.formContainer}>
-              <Text style={styles.title}>Login now</Text>
-              <Text style={styles.subTitle}>
-                Welcome back! Swipe through the latest bills in your state.
-              </Text>
-              <InputBox
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Email"
-                keyboardType="email-address"
-              />
-              <InputBox
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Password"
-                isPassword={true}
-              />
-              <Button
-                title="Register"
-                onPress={handlewPress}
-                loading={false}
-                disabled={false}
-              />
-              <View style={styles.orContainer}>
-                <View style={styles.line} />
-                <Text style={styles.orText}>or</Text>
-                <View style={styles.line} />
-              </View>
+          <KeyboardAwareScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.scrollContainer}
+          >
+            <View style={styles.innerContainer}>
+              <View style={styles.formContainer}>
+                <Text style={styles.title}>Login now</Text>
+                <Text style={styles.subTitle}>
+                  Welcome back! Swipe through the latest bills in your state.
+                </Text>
+                <InputBox
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="Email"
+                  keyboardType="email-address"
+                />
+                <InputBox
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Password"
+                  isPassword={true}
+                />
+                <Button
+                  title="Register"
+                  onPress={handlewPress}
+                  loading={false}
+                  disabled={false}
+                />
+                <View style={styles.orContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.orText}>or</Text>
+                  <View style={styles.line} />
+                </View>
 
-              <View style={styles.socialContainer}>
-                <Text style={styles.socialTitle}>Login with</Text>
-                <View style={styles.socialRow}>
-                  <TouchableOpacity style={styles.socialBtn}>
-                    <Image source={images.facebook} style={styles.icons} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.socialBtn}>
-                    <Image source={images.apple} style={styles.appleIcon} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.socialBtn}>
-                    <Image source={images.google} style={styles.icons} />
-                  </TouchableOpacity>
+                <View style={styles.socialContainer}>
+                  <Text style={styles.socialTitle}>Login with</Text>
+                  <View style={styles.socialRow}>
+                    <TouchableOpacity style={styles.socialBtn}>
+                      <Image source={images.facebook} style={styles.icons} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.socialBtn}>
+                      <Image source={images.apple} style={styles.appleIcon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.socialBtn}>
+                      <Image source={images.google} style={styles.icons} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-
-            <View style={styles.bottomRow}>
-              <Text style={[styles.bottomText, {
-                fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
-              }]}>
-                You don’t have an account?{' '}
-              </Text>
-              <TouchableOpacity onPress={toRegister}>
-                <Text style={[styles.linkText, {
+              <View style={styles.bottomRow}>
+                <Text style={[styles.bottomText, {
                   fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
-                }]}>Register now.</Text>
-              </TouchableOpacity>
+                }]}>
+                  You don’t have an account?{' '}
+                </Text>
+                <TouchableOpacity onPress={toRegister}>
+                  <Text style={[styles.linkText, {
+                    fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
+                  }]}>Register now.</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </KeyboardAwareScrollView>
-      </ImageBackground>
+          </KeyboardAwareScrollView>
+        </ImageBackground>
     </Wrapper>
   );
 };
