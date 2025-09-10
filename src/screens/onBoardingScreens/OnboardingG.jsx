@@ -33,17 +33,23 @@ const OnboardingG = () => {
                 style={styles.optionContainer}
                 onPress={() => setSelectedId(item.id)}
             >
-                <Text
-                    style={[
-                        styles.optionText,
-                        {
-                            color: selectedId == item.id ? colors.text : colors.theme_v1,
-                        },
-                    ]}
-                >
-                    {item.title}
-                </Text>
-                <View style={styles.radioOuter}>
+                <View style={{
+                    width: "90%"
+                }}>
+                    <Text
+                        style={[
+                            styles.optionText,
+                            {
+                                color: selectedId == item.id ? colors.text : colors.theme_v1,
+                            },
+                        ]}
+                    >
+                        {item.title}
+                    </Text>
+                </View>
+                <View style={[styles.radioOuter, {
+                    width: "10%",
+                }]}>
                     {selectedId == item.id ? (
                         <Image source={images.radio_check} style={styles.radioInner} />
                     ) : (
@@ -76,8 +82,10 @@ const OnboardingG = () => {
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
                     contentContainerStyle={styles.scrollContainer}
-                    extraScrollHeight={20}
-                    enableOnAndroid={true}
+                    extraScrollHeight={Platform.select({ ios: 40, android: 140 })}
+                    enableOnAndroid
+                    enableAutomaticScroll
+                    keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
                     <View style={{ marginTop: scale(5) }}>
@@ -167,10 +175,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: "space-between",
+        // width:"100%",
         borderWidth: 1,
         borderRadius: scale(4),
         paddingHorizontal: scale(10),
-        height: scale(46),
+        paddingVertical: scale(10),
         borderColor: colors.theme_v2,
         // marginBottom: scale(10),
         backgroundColor: colors.white

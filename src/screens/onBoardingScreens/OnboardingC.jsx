@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, Platform } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
@@ -67,8 +67,11 @@ const OnboardingC = () => {
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
                     contentContainerStyle={styles.scrollContainer}
-                    extraScrollHeight={40}
-                    enableOnAndroid={true}
+                    extraScrollHeight={Platform.select({ ios: 40, android: 140 })}
+                    enableOnAndroid
+                    enableAutomaticScroll
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
                 >
                     <View style={{ marginTop: scale(5) }}>
                         <TouchableOpacity onPress={goBack}>

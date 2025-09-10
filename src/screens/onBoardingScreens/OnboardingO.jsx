@@ -98,7 +98,8 @@ const OnboardingO = () => {
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
                     contentContainerStyle={styles.scrollContainer}
-                    extraScrollHeight={30}
+                    extraScrollHeight={Platform.OS === 'ios' ? 40 : 100}
+                    // extraHeight={30}
                     enableOnAndroid={true}
                     showsVerticalScrollIndicator={false}
                 >

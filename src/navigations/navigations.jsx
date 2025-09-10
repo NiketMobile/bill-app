@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/tabScreens/home';
 import Article from '../screens/tabScreens/article';
@@ -26,6 +26,18 @@ import OnboardingN from "../screens/onBoardingScreens/OnboardingN"
 import OnboardingO from "../screens/onBoardingScreens/OnboardingO"
 
 
+const springConfig = {
+    animation: "spring",
+    config: {
+        stiffness: 1000,
+        damping: 500,
+        mass: 3,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+    },
+};
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -49,7 +61,7 @@ function AuthStack() {
 
     return (
         <Stack.Navigator
-            initialRouteName="OnboardingO"
+            initialRouteName="Login"
             screenOptions={({ route }) => ({
                 headerShown: false,
             })} >
@@ -108,10 +120,20 @@ export default function RootNavigation() {
     // }
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}
-            initialRouteName='AuthStack'
+        <Stack.Navigator screenOptions={{
+            headerShown: false,
+            animation: 'fade',
+            gestureEnabled: true,
+            animationEnabled: true,
+            transitionSpec: {
+                open: springConfig,
+                close: springConfig,
+            },
+            cardStyleInterpolator: CardStyleInterpolators.forFadeFromRightAndroid,
+        }}
+            initialRouteName='Splash'
         >
-            {/* <Stack.Screen name="Splash" component={Splash} /> */}
+            <Stack.Screen name="Splash" component={Splash} />
             <Stack.Screen name="AuthStack" component={AuthStack} />
             <Stack.Screen name="TabsStack" component={TabsStack} />
         </Stack.Navigator>

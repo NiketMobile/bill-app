@@ -311,9 +311,7 @@ const Register = () => {
                 <Text style={styles.linkText}>Register now.</Text>
               </TouchableOpacity>
             </View>
-
           </View>
-
         </KeyboardAwareScrollView>
       </ImageBackground>
     </Wrapper>
@@ -434,8 +432,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    justifyContent: "flex-end",
-    paddingTop: scale(40)
-
+    // justifyContent: "flex-end",
+    flexWrap: "wrap",
+    width:"100%",
+    paddingTop: scale(40),
+    // backgroundColor:'pink'
   },
 });

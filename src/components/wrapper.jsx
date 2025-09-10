@@ -9,7 +9,7 @@ const FocusAwareStatusBar = ({ barStyle, hidden }) => {
         <StatusBar
             barStyle={barStyle}
             backgroundColor="transparent"
-            // translucent
+            translucent
             animated
             showHideTransition="fade"
             hidden={hidden}
@@ -27,8 +27,8 @@ const Wrapper = ({ children, bgColor = '#fff', hideStatusBar = false, barStyle =
                 styles.container,
                 {
                     backgroundColor: bgColor,
-                    paddingTop: hideStatusBar ? 0 : isFullView ? 0 : insets.top, // top safe area
-                    paddingBottom: isAndroid ? insets.bottom : 0, // handles iOS + Android safe bottom
+                    paddingTop: hideStatusBar ? 0 : isFullView ? 0 : insets.top,
+                    paddingBottom: isAndroid ? insets.bottom : 0, 
                     paddingLeft: insets.left,
                     paddingRight: insets.right,
                 },

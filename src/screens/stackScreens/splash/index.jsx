@@ -170,6 +170,8 @@ import Animated, {
 import { scale } from "../../../utils/appScale"; // assuming you have scale util
 import { useNavigation } from "@react-navigation/native";
 import { images } from "../../../constant/images";
+import Wrapper from "../../../components/wrapper";
+import { colors } from "../../../constant/colors";
 
 const { width, height } = Dimensions.get("window");
 
@@ -233,49 +235,53 @@ const Splash = () => {
   const animatedStyle3 = useAnimatedStyle(() => ({ opacity: opacity3.value }));
 
   return (
-    <View style={styles.container}>
-      {/* <Animated.Image
-        source={imagesData[0]}
-        style={[styles.image, animatedStyle1]}
-        resizeMode="cover"
-      />
-      <Animated.Image
-        source={imagesData[1]}
-        style={[styles.image, animatedStyle2]}
-        resizeMode="cover"
-      />
-      <Animated.Image
-        source={imagesData[2]}
-        style={[styles.image, animatedStyle3]}
-        resizeMode="cover"
-      /> */}
-
-      {/* Logo at top-center */}
-      <View style={styles.logoContainer}>
-        <Image
-          source={images.logo_v1}
-          style={{
-            width: scale(270),
-            height: scale(170),
-            resizeMode: "contain",
-          }}
+    <Wrapper barStyle="dark-content" isFullView={true}>
+      <View style={styles.container}>
+        <Animated.Image
+          source={imagesData[0]}
+          style={[styles.image, animatedStyle1]}
+          resizeMode="cover"
         />
+        <Animated.Image
+          source={imagesData[1]}
+          style={[styles.image, animatedStyle2]}
+          resizeMode="cover"
+        />
+        <Animated.Image
+          source={imagesData[2]}
+          style={[styles.image, animatedStyle3]}
+          resizeMode="cover"
+        />
+
+        {/* Logo at top-center */}
+        <View style={styles.logoContainer}>
+          <Image
+            source={images.logo_v1}
+            style={{
+              width: scale(270),
+              height: scale(170),
+              resizeMode: "contain",
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </Wrapper>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    // backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
     position: "absolute",
-    width,
-    height,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   logoContainer: {
     position: "absolute",
