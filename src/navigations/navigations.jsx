@@ -14,6 +14,7 @@ import OnboardingB from "../screens/onBoardingScreens/OnboardingB"
 import OnboardingC from "../screens/onBoardingScreens/OnboardingC"
 import OnboardingD from "../screens/onBoardingScreens/OnboardingD"
 import OnboardingE from "../screens/onBoardingScreens/OnboardingE"
+import OnboardingF from "../screens/onBoardingScreens/OnboardingF"
 
 
 
@@ -39,7 +40,7 @@ function AuthStack() {
 
     return (
         <Stack.Navigator
-            initialRouteName="OnboardingD"
+            initialRouteName="OnboardingF"
             screenOptions={({ route }) => ({
                 headerShown: false,
             })} >
@@ -50,6 +51,7 @@ function AuthStack() {
             <Stack.Screen name="OnboardingC" component={OnboardingC} />
             <Stack.Screen name="OnboardingD" component={OnboardingD} />
             <Stack.Screen name="OnboardingE" component={OnboardingE} />
+            <Stack.Screen name="OnboardingF" component={OnboardingF} />
         </Stack.Navigator>
     )
 }
@@ -89,9 +91,9 @@ export default function RootNavigation() {
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}
-            initialRouteName='Splash'
+            initialRouteName='AuthStack'
         >
-            <Stack.Screen name="Splash" component={Splash} />
+            {/* <Stack.Screen name="Splash" component={Splash} /> */}
             <Stack.Screen name="AuthStack" component={AuthStack} />
             <Stack.Screen name="TabsStack" component={TabsStack} />
         </Stack.Navigator>

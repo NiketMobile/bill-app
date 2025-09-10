@@ -8,22 +8,21 @@ import { images } from '../../constant/images'
 import { scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
+import InputOtpComp from "../../components/InputOtpComp"
 
 
 
-
-const OnboardingC = () => {
+const OnboardingF = () => {
     const navigation = useNavigation()
-    const [phoneNumber, setPhoneNumber] = useState("")
+    const [otp, setOtp] = useState("")
 
     const goBack = () => {
         navigation.goBack()
     }
 
     const handlewNext = () => {
-        navigation?.navigate('OnboardingF', { name });
+        navigation?.navigate('Login');
     }
-
 
 
 
@@ -40,35 +39,14 @@ const OnboardingC = () => {
                         <TouchableOpacity onPress={goBack}>
                             <Image source={images.back_icon} style={styles.backIcon} />
                         </TouchableOpacity>
-                        <Text style={styles.title}>Enter the phone number</Text>
-                        <Text style={styles.desc}>We’ll send you a quick code to confirm it’s really you.</Text>
+                        <Text style={styles.title}>Enter the verification code we sent you</Text>
+                        <Text style={styles.desc}> Check your messages for the 6-digit code</Text>
 
-                        <View style={{ flexDirection: "row", width: "100%", }}>
-                            {/* Left Button */}
-                            <TouchableOpacity
-                                style={[styles.leftbutton, {
-                                    height: Platform.OS === "ios" ? scale(44) : scale(46)
-                                }]}
-                            >
-                                <Image
-                                    source={images.flag}
-                                    style={styles.downIcon}
-                                />
-                            </TouchableOpacity>
-                            <View style={{ flex: 1 }}>
-                                <InputBox
-                                    value={phoneNumber}
-                                    onChangeText={(t) => setPhoneNumber(t?.replace(/[^0-9]/g, ''))}
-                                    placeholder=""
-                                    keyboardType='number-pad'
-                                // inputStyle={{
-                                //     minHeight: Platform.OS === "ios" ? scale(44) : scale(46),
-                                //     // borderTopLeftRadius: 0,
-                                //     // borderBottomLeftRadius: 0,
-                                //     backgroundColor: colors.white
-                                // }}
-                                />
-                            </View>
+                        <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+                            <InputOtpComp
+                                onChange={(text) => setOtp(text)}
+                                onComplete={(text) => console.log("OTP Entered:", text)}
+                            />
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
@@ -80,7 +58,7 @@ const OnboardingC = () => {
     )
 }
 
-export default OnboardingC
+export default OnboardingF
 
 const styles = StyleSheet.create({
     container: {
@@ -122,16 +100,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 4,
     },
-    icons: {
-        width: scale(23),
-        height: scale(23),
-        resizeMode: "contain"
-    },
-    editIcons: {
-        width: scale(25),
-        height: scale(25),
-        resizeMode: "contain"
-    },
     rightIcon: {
         width: scale(18),
         height: scale(18),
@@ -142,19 +110,22 @@ const styles = StyleSheet.create({
         height: scale(40),
         resizeMode: "contain"
     },
-    leftbutton: {
-        width: scale(45),
-        backgroundColor: colors.white,
-        justifyContent: "center",
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: colors.theme_v2,
-        marginRight: 10,
-        borderRadius: scale(4),
+    borderStyleBase: {
+        width: 30,
+        height: 45
     },
-    downIcon: {
-        width: "100%",
-        height: "100%",
-        resizeMode: "contain",
-    }
+    borderStyleHighLighted: {
+        borderColor: "#03DAC6",
+    },
+
+    underlineStyleBase: {
+        width: 30,
+        height: 45,
+        borderWidth: 0,
+        borderBottomWidth: 1,
+    },
+
+    underlineStyleHighLighted: {
+        borderColor: "#03DAC6",
+    },
 })

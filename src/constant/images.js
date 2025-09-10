@@ -21,4 +21,5 @@ export const images = {
     down_arrow: require('../assets/images/down_arrow.png'),
     flag: require('../assets/images/flag.png'),
     logo: require('../assets/images/logo.png'),
+    logo_v2: require('../assets/images/logo_v2.png'),
 };
