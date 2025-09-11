@@ -21,6 +21,7 @@ const imagesData = [
   require("../../../assets/images/Splash2.png"),
 ];
 
+const logo = require("../../../assets/images/logo.png");
 
 const Splash = () => {
   const navigation = useNavigation()
@@ -77,7 +78,7 @@ const Splash = () => {
     <Wrapper barStyle="dark-content" isFullView={true}>
       <View style={styles.container}>
         <Animated.Image
-          source={imagesData[2]}
+          source={imagesData[0]}
           style={[styles.image, animatedStyle1]}
           resizeMode="cover"
         />
@@ -87,14 +88,10 @@ const Splash = () => {
           resizeMode="cover"
         />
         <Animated.Image
-          source={imagesData[0]}
+          source={imagesData[2]}
           style={[styles.image, animatedStyle3]}
           resizeMode="cover"
         />
-
-        {/* Dark overlay for contrast */}
-        <View style={styles.overlay} />
-
         <View style={styles.logoContainer}>
           <Image
             source={images.logo_v1}
@@ -122,12 +119,6 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
-  },
-  overlay: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,0.1)", 
   },
   logoContainer: {
     position: "absolute",
