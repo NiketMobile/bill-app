@@ -231,9 +231,11 @@ import { fonts } from '../../../constant/fonts';
 import { moderateScale, scale } from '../../../utils/appScale';
 import Button from '../../../components/button';
 import { useNavigation } from '@react-navigation/native';
-
+import { signInWithGoogle } from '../../../services/authCalls';
+import { getHitSlop } from '../../../utils/globalFunctions';
 
 const Register = () => {
+  const isAndroid = Platform.OS === 'android';
   const navigation = useNavigation()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -245,79 +247,92 @@ const Register = () => {
   const handlewPress = () => {
     navigation.navigate("OnboardingA")
   }
-  const isAndroid = Platform.OS === 'android';
+
+  
+  const handleSignIn = async () => {
+    const result = await signInWithGoogle();
+    if (result?.success) {
+      console.log('User info:', result.data);
+      console.log('result', JSON.stringify(result, null, 2))
+      setUser(result.data);
+    } else {
+      console.warn('Sign-In Error:', result.error);
+    }
+  };
+
+
 
   return (
     <Wrapper barStyle="dark-content" isFullView={true}>
-        <ImageBackground
-          source={images.registerScreenBg}
-          imageStyle={styles.bgImage}
+      <ImageBackground
+        source={images.registerScreenBg}
+        imageStyle={styles.bgImage}
+        style={{ flex: 1 }}
+      >
+        <KeyboardAwareScrollView
           style={{ flex: 1 }}
+          contentContainerStyle={styles.scrollContainer}
         >
-          <KeyboardAwareScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={styles.scrollContainer}
-          >
-            <View style={styles.innerContainer}>
-              <View style={styles.formContainer}>
-                <Text style={styles.title}>Login now</Text>
-                <Text style={styles.subTitle}>
-                  Welcome back! Swipe through the latest bills in your state.
-                </Text>
-                <InputBox
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="Email"
-                  keyboardType="email-address"
-                />
-                <InputBox
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="Password"
-                  isPassword={true}
-                />
-                <Button
-                  title="Register"
-                  onPress={handlewPress}
-                  loading={false}
-                  disabled={false}
-                />
-                <View style={styles.orContainer}>
-                  <View style={styles.line} />
-                  <Text style={styles.orText}>or</Text>
-                  <View style={styles.line} />
-                </View>
-
-                <View style={styles.socialContainer}>
-                  <Text style={styles.socialTitle}>Login with</Text>
-                  <View style={styles.socialRow}>
-                    <TouchableOpacity style={styles.socialBtn}>
-                      <Image source={images.facebook} style={styles.icons} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.socialBtn}>
-                      <Image source={images.apple} style={styles.appleIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.socialBtn}>
-                      <Image source={images.google} style={styles.icons} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
+          <View style={styles.innerContainer}>
+            <View style={styles.formContainer}>
+              <Text style={styles.title}>Login now</Text>
+              <Text style={styles.subTitle}>
+                Welcome back! Swipe through the latest bills in your state.
+              </Text>
+              <InputBox
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Email"
+                keyboardType="email-address"
+              />
+              <InputBox
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Password"
+                isPassword={true}
+              />
+              <Button
+                title="Register"
+                onPress={handlewPress}
+                loading={false}
+                disabled={false}
+              />
+              <View style={styles.orContainer}>
+                <View style={styles.line} />
+                <Text style={styles.orText}>or</Text>
+                <View style={styles.line} />
               </View>
-              <View style={styles.bottomRow}>
-                <Text style={[styles.bottomText, {
-                  fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
-                }]}>
-                  You don’t have an account?{' '}
-                </Text>
-                <TouchableOpacity onPress={toRegister}>
-                  <Text style={[styles.linkText, {
-                    fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
-                  }]}>Register now.</Text>
-                </TouchableOpacity>
+
+              <View style={styles.socialContainer}>
+                <Text style={styles.socialTitle}>Login with</Text>
+                <View style={styles.socialRow}>
+                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} >
+                    <Image source={images.facebook} style={styles.icons} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)}>
+                    <Image source={images.apple} style={styles.appleIcon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialBtn} onPress={handleSignIn} hitSlop={getHitSlop(10)}>
+                    <Image source={images.google} style={styles.icons} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </KeyboardAwareScrollView>
-        </ImageBackground>
+            <View style={styles.bottomRow}>
+              <Text style={[styles.bottomText, {
+                fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
+              }]}>
+                You don’t have an account?{' '}
+              </Text>
+              <TouchableOpacity onPress={toRegister}>
+                <Text style={[styles.linkText, {
+                  fontSize: isAndroid ? moderateScale(12.5) : moderateScale(14)
+                }]}>Register now.</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+      </ImageBackground>
     </Wrapper>
   );
 };

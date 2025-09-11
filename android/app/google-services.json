@@ -12,15 +12,40 @@
           "package_name": "com.app.billswipe"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1019765731909-md9ltol8v2g528ugf12atj7cat4df1au.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.billswipe",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1019765731909-70qjocu0nm25cpt9l377l10ej6gagrav.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDDK0S_MgytI8TXh3n7V7XPw_3N_ouLG14"
+          "current_key": "AIzaSyA9JtCdzNW30rO5BN8S81iffKne1rl8GTI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019765731909-70qjocu0nm25cpt9l377l10ej6gagrav.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1019765731909-ppssuor2mdi6dskdv380bhqr53tbkrpu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.billswipe"
+              }
+            }
+          ]
         }
       }
     }

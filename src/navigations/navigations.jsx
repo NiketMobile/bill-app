@@ -131,9 +131,9 @@ export default function RootNavigation() {
             },
             cardStyleInterpolator: CardStyleInterpolators.forFadeFromRightAndroid,
         }}
-            initialRouteName='Splash'
+            initialRouteName='AuthStack'
         >
-            <Stack.Screen name="Splash" component={Splash} />
+            {/* <Stack.Screen name="Splash" component={Splash} /> */}
             <Stack.Screen name="AuthStack" component={AuthStack} />
             <Stack.Screen name="TabsStack" component={TabsStack} />
         </Stack.Navigator>
