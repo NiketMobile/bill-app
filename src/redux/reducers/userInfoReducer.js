@@ -5,7 +5,6 @@ const userInfoSlice = createSlice({
     initialState: {
         isToken: null,
         userData: {},
-        serverAuthCode: null
     },
     reducers: {
         placeToken: (state, action) => {
@@ -14,12 +13,9 @@ const userInfoSlice = createSlice({
         placeUserData: (state, action) => {
             state.userData = action.payload;
         },
-        placeAuthCode: (state, action) => {
-            state.serverAuthCode = action.payload;
-        },
     },
 });
 
-export const { placeToken, placeUserData, placeAuthCode } = userInfoSlice.actions;
+export const { placeToken, placeUserData } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;

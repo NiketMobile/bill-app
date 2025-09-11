@@ -232,33 +232,67 @@ import { moderateScale, scale } from '../../../utils/appScale';
 import Button from '../../../components/button';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithGoogle } from '../../../services/authCalls';
-import { getHitSlop } from '../../../utils/globalFunctions';
+import { clearAppStorage, getHitSlop } from '../../../utils/globalFunctions';
+import Loader from '../../../components/loader'
+import { useDispatch, useSelector } from 'react-redux';
+import { placeToken, placeUserData } from '../../../redux/reducers/userInfoReducer';
+import showToast from '../../../components/showMessage';
 
-const Register = () => {
+const Login = () => {
   const isAndroid = Platform.OS === 'android';
+  const dispatch = useDispatch()
+  const userInfo = useSelector((state) => state?.userInfo?.userData)
+  const token = useSelector((state) => state?.userInfo?.isToken)
   const navigation = useNavigation()
+  const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const toRegister = () => {
     navigation.navigate("Register")
   }
-
   const handlewPress = () => {
     navigation.navigate("OnboardingA")
   }
 
-  
+  console.log('token--->login', JSON.stringify(token, null, 2))
+  console.log('userInfo--->login', JSON.stringify(userInfo, null, 2))
+
+
   const handleSignIn = async () => {
-    const result = await signInWithGoogle();
-    if (result?.success) {
-      console.log('User info:', result.data);
-      console.log('result', JSON.stringify(result, null, 2))
-      setUser(result.data);
-    } else {
-      console.warn('Sign-In Error:', result.error);
+    try {
+      setIsLoading(true);
+      const result = await signInWithGoogle();
+      if (result?.success) {
+        showToast({
+          type: 'success',
+          title: 'Signed in successfully!',
+        });
+        console.log("User info:", result?.data);
+        console.log("result", JSON.stringify(result, null, 2));
+        const userData = result?.data?.user
+        const token = result?.data?.idToken
+        dispatch(placeUserData(userData))
+        dispatch(placeToken(token))
+        navigation.navigate('TabsStack');
+      } else {
+        showToast({
+          type: 'error',
+          title: result.error || 'Google Sign-In failed',
+        });
+        console.warn("Sign-In Error:", result.error);
+      }
+    } catch (error) {
+      console.error("Unexpected error during sign-in:", error);
+      showToast({
+        type: 'error',
+        title: error.message || 'Unexpected error during sign-in',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
+
 
 
 
@@ -309,7 +343,7 @@ const Register = () => {
                   <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} >
                     <Image source={images.facebook} style={styles.icons} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)}>
+                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={clearAppStorage}>
                     <Image source={images.apple} style={styles.appleIcon} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.socialBtn} onPress={handleSignIn} hitSlop={getHitSlop(10)}>
@@ -333,11 +367,14 @@ const Register = () => {
           </View>
         </KeyboardAwareScrollView>
       </ImageBackground>
+      {
+        isLoading && <Loader />
+      }
     </Wrapper>
   );
 };
 
-export default Register;
+export default Login;
 
 const styles = StyleSheet.create({
   bgImage: {

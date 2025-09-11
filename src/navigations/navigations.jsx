@@ -24,6 +24,11 @@ import OnboardingL from "../screens/onBoardingScreens/OnboardingL"
 import OnboardingM from "../screens/onBoardingScreens/OnboardingM"
 import OnboardingN from "../screens/onBoardingScreens/OnboardingN"
 import OnboardingO from "../screens/onBoardingScreens/OnboardingO"
+import NoInternet from "../components/NoInternet"
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import NetInfo from '@react-native-community/netinfo';
+
 
 
 const springConfig = {
@@ -88,36 +93,44 @@ function AuthStack() {
 
 
 export default function RootNavigation() {
-    // const dispatch = useDispatch()
-    // const token = useSelector((state) => state?.userInfo.isToken);
-    // const [isConnected, setIsConnected] = useState(true);
-    // const [checking, setChecking] = useState(true);
+    const token = useSelector((state) => state?.userInfo?.isToken)
+    const dispatch = useDispatch()
+    const [isConnected, setIsConnected] = useState(true);
+    const [checking, setChecking] = useState(true);
+    const [showSplash, setShowSplash] = useState(true);
 
-    // useEffect(() => {
-    //     const unsubscribe = NetInfo.addEventListener(state => {
-    //         setIsConnected(state?.isConnected);
-    //         setChecking(false);
-    //     });
-    //     // Initial fetch in case event listener misses it
-    //     NetInfo.fetch().then(state => {
-    //         setIsConnected(state?.isConnected);
-    //         setChecking(false);
-    //     });
+    useEffect(() => {
+        const unsubscribe = NetInfo.addEventListener(state => {
+            setIsConnected(state?.isConnected);
+            setChecking(false);
+        });
+        // Initial fetch in case event listener misses it
+        NetInfo.fetch().then(state => {
+            setIsConnected(state?.isConnected);
+            setChecking(false);
+        });
+        return () => unsubscribe();
+    }, []);
 
-    //     return () => unsubscribe();
-    // }, []);
+    // Show splash always on app start
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowSplash(false);
+        }, 1800);
+        return () => clearTimeout(timer);
+    }, []);
 
-    // if (checking ) return null;
+    if (checking) return null;
 
-    // if (!isConnected) {
-    //     return <NoInternet onRetry={() => {
-    //         setChecking(true);
-    //         NetInfo.fetch().then(state => {
-    //             setIsConnected(state.isConnected);
-    //             setChecking(false);
-    //         });
-    //     }} />;
-    // }
+    if (!isConnected) {
+        return <NoInternet onRetry={() => {
+            setChecking(true);
+            NetInfo.fetch().then(state => {
+                setIsConnected(state.isConnected);
+                setChecking(false);
+            });
+        }} />;
+    }
 
     return (
         <Stack.Navigator screenOptions={{
@@ -131,11 +144,27 @@ export default function RootNavigation() {
             },
             cardStyleInterpolator: CardStyleInterpolators.forFadeFromRightAndroid,
         }}
-            initialRouteName='AuthStack'
+        // initialRouteName='Splash'
         >
-            {/* <Stack.Screen name="Splash" component={Splash} /> */}
-            <Stack.Screen name="AuthStack" component={AuthStack} />
-            <Stack.Screen name="TabsStack" component={TabsStack} />
+            {showSplash ? (
+                <Stack.Screen name="Splash" component={Splash} />
+            ) : token ? (
+                <Stack.Screen name="TabsStack" component={TabsStack} />
+            ) : (
+                <Stack.Screen name="AuthStack" component={AuthStack} />
+            )}
+            {/* <Stack.Screen name="Splash" component={Splash} />
+            {
+                token ? (
+                    <>
+                        <Stack.Screen name="TabsStack" component={TabsStack} />
+                    </>
+                ) : (
+                    <>
+                        <Stack.Screen name="AuthStack" component={AuthStack} />
+                    </>
+                )
+            } */}
         </Stack.Navigator>
     );
 }

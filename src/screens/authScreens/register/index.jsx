@@ -17,11 +17,20 @@ import { fonts } from '../../../constant/fonts';
 import { moderateScale, scale } from '../../../utils/appScale';
 import Button from '../../../components/button';
 import { useNavigation } from '@react-navigation/native';
+import { signInWithGoogle } from '../../../services/authCalls';
+import { placeToken, placeUserData } from '../../../redux/reducers/userInfoReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import showToast from '../../../components/showMessage';
+import { getHitSlop } from '../../../utils/globalFunctions';
 
 
 const Register = () => {
     const isAndroid = Platform.OS === 'android';
+    const dispatch = useDispatch()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const token = useSelector((state) => state?.userInfo?.isToken)
     const navigation = useNavigation()
+    const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -29,10 +38,54 @@ const Register = () => {
     const toLogin = () => {
         navigation.navigate("Login")
     }
-
     const handlewPress = () => {
         navigation.navigate("Login")
     }
+
+
+    console.log('userInfo--->', JSON.stringify(userInfo, null, 2))
+
+
+    const handleSignIn = async () => {
+        try {
+            setIsLoading(true);
+            const result = await signInWithGoogle();
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Signed in successfully!',
+                });
+                console.log("User info:", result?.data);
+                console.log("result", JSON.stringify(result, null, 2));
+                const userData = result?.data?.user
+                const token = result?.data?.idToken
+                dispatch(placeUserData(userData))
+                dispatch(placeToken(token))
+                // navigation.navigate('TabsStack');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: result.error || 'Google Sign-In failed',
+                });
+                console.warn("Sign-In Error:", result.error);
+            }
+        } catch (error) {
+            console.error("Unexpected error during sign-in:", error);
+            showToast({
+                type: 'error',
+                title: error.message || 'Unexpected error during sign-in',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+
+
+
+
+
 
 
     return (
@@ -85,7 +138,7 @@ const Register = () => {
                                     <TouchableOpacity style={styles.socialBtn}>
                                         <Image source={images.apple} style={styles.appleIcon} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.socialBtn}>
+                                    <TouchableOpacity style={styles.socialBtn} onPress={handleSignIn} hitSlop={getHitSlop(10)}>
                                         <Image source={images.google} style={styles.icons} />
                                     </TouchableOpacity>
                                 </View>

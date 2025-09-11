@@ -11,6 +11,7 @@ import { scale } from "../../../utils/appScale";
 import { useNavigation } from "@react-navigation/native";
 import { images } from "../../../constant/images";
 import Wrapper from "../../../components/wrapper";
+import { useSelector } from "react-redux";
 
 
 const { width, height } = Dimensions.get("window");
@@ -25,19 +26,25 @@ const imagesData = [
 const Splash = () => {
   const navigation = useNavigation()
   const [isToken, setIsToken] = useState(false)
+  const token = useSelector((state) => state?.userInfo?.isToken)
+
 
   const opacity1 = useSharedValue(1);
   const opacity2 = useSharedValue(0);
   const opacity3 = useSharedValue(0);
 
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('AuthStack', { screen: 'Login' });
-    }, 1500);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (token) {
+  //       navigation.replace('TabsStack');
+  //     } else {
+  //       navigation.replace('AuthStack', { screen: 'Login' });
+  //     }
+  //   }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [navigation]);
+  //   return () => clearTimeout(timer);
+  // }, [token, navigation]);
 
 
   useEffect(() => {
@@ -76,7 +83,7 @@ const Splash = () => {
   return (
     <Wrapper barStyle="dark-content" isFullView={true}>
       <View style={styles.container}>
-        <Animated.Image
+        {/* <Animated.Image
           source={imagesData[2]}
           style={[styles.image, animatedStyle1]}
           resizeMode="cover"
@@ -90,7 +97,7 @@ const Splash = () => {
           source={imagesData[0]}
           style={[styles.image, animatedStyle3]}
           resizeMode="cover"
-        />
+        /> */}
 
         {/* Dark overlay for contrast */}
         <View style={styles.overlay} />
@@ -127,7 +134,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0,0,0,0.1)", 
+    backgroundColor: "rgba(0,0,0,0.1)",
   },
   logoContainer: {
     position: "absolute",
