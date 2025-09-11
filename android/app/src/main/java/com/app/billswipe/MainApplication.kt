@@ -1,4 +1,4 @@
-package com.billswipe
+package com.app.billswipe
 
 import android.app.Application
 import com.facebook.react.PackageList

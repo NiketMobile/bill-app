@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019765731909",
+    "project_id": "billswipe-app",
+    "storage_bucket": "billswipe-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019765731909:android:5af5273124e34614a1a92c",
+        "android_client_info": {
+          "package_name": "com.app.billswipe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDK0S_MgytI8TXh3n7V7XPw_3N_ouLG14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
