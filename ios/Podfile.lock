@@ -2579,7 +2579,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNWorklets (0.5.0):
+  - RNWorklets (0.5.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2606,10 +2606,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/worklets (= 0.5.0)
+    - RNWorklets/worklets (= 0.5.1)
     - SocketRocket
     - Yoga
-  - RNWorklets/worklets (0.5.0):
+  - RNWorklets/worklets (0.5.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2636,10 +2636,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/worklets/apple (= 0.5.0)
+    - RNWorklets/worklets/apple (= 0.5.1)
     - SocketRocket
     - Yoga
-  - RNWorklets/worklets/apple (0.5.0):
+  - RNWorklets/worklets/apple (0.5.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2930,7 +2930,7 @@ SPEC CHECKSUMS:
   hermes-engine: 4f8246b1f6d79f625e0d99472d1f3a71da4d28ca
   lottie-ios: a881093fab623c467d3bce374367755c272bdd59
   lottie-react-native: d849be4292d467c0e13fd4ca5042bb352b7d1a61
-  RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
+  RCT-Folly: 59ec0ac1f2f39672a0c6e6cecdd39383b764646f
   RCTDeprecation: c4b9e2fd0ab200e3af72b013ed6113187c607077
   RCTRequired: e97dd5dafc1db8094e63bc5031e0371f092ae92a
   RCTTypeSafety: 720403058b7c1380c6a3ae5706981d6362962c89
@@ -2999,7 +2999,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 4f7cc97a71d4fe0fcba38c94acdd969f5f17c91c
   RNReanimated: 1163d28eb3e11e5b24a932b10fb17c168ee1c9a4
   RNScreens: 74985ca8e102294a60cec7513fa84c936fa0b20b
-  RNWorklets: d24560051beb87ad91223feec6cb6e776775cdfd
+  RNWorklets: 582ee5c59370d483a7a3c3f8a8014d48b1bff6bd
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 11c9686a21e2cd82a094a723649d9f4507200fb0
 
