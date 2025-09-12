@@ -116,7 +116,7 @@ export default function RootNavigation() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowSplash(false);
-        }, 1800);
+        }, 1200);
         return () => clearTimeout(timer);
     }, []);
 
@@ -146,6 +146,10 @@ export default function RootNavigation() {
         }}
         // initialRouteName='Splash'
         >
+            {/* <Stack.Screen name="Splash" component={Splash} />
+            <Stack.Screen name="TabsStack" component={TabsStack} />
+            <Stack.Screen name="AuthStack" component={AuthStack} /> */}
+
             {showSplash ? (
                 <Stack.Screen name="Splash" component={Splash} />
             ) : token ? (
@@ -153,18 +157,7 @@ export default function RootNavigation() {
             ) : (
                 <Stack.Screen name="AuthStack" component={AuthStack} />
             )}
-            {/* <Stack.Screen name="Splash" component={Splash} />
-            {
-                token ? (
-                    <>
-                        <Stack.Screen name="TabsStack" component={TabsStack} />
-                    </>
-                ) : (
-                    <>
-                        <Stack.Screen name="AuthStack" component={AuthStack} />
-                    </>
-                )
-            } */}
+
         </Stack.Navigator>
     );
 }

@@ -1,217 +1,3 @@
-// import React, { useState } from 'react';
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   TouchableOpacity,
-//   ImageBackground,
-//   Image,
-// } from 'react-native';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-// import Wrapper from '../../../components/wrapper';
-// import InputBox from '../../../components/inputBox';
-// import { colors } from '../../../constant/colors';
-// import { images } from '../../../constant/images';
-// import { fonts } from '../../../constant/fonts';
-// import { scale } from '../../../utils/appScale';
-// import Button from '../../../components/button';
-// import { useNavigation } from '@react-navigation/native';
-
-
-// const Login = () => {
-//   const navigation = useNavigation()
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-
-//   const toRegister = () => {
-//     navigation.navigate("Register")
-//   }
-
-//   const handlewPress = () => {
-//     navigation.navigate("OnboardingA")
-//   }
-
-
-//   return (
-//     <Wrapper barStyle="dark-content" isFullView={true}>
-//       <ImageBackground
-//         source={images.registerScreenBg}
-//         imageStyle={styles.bgImage}
-//         style={{ flex: 1 }}
-//       >
-//         <KeyboardAwareScrollView
-//           style={{ flexGrow: 1 }}
-//           contentContainerStyle={styles.scrollContainer}
-//         >
-//           <View style={styles.innerContainer}>
-//             {/* Title */}
-// <Text style={styles.title}>Login now</Text>
-// <Text style={styles.subTitle}>
-//   Welcome back! Swipe through the latest bills in your state.
-// </Text>
-
-//             {/* Input Fields */}
-//             <InputBox
-//               value={email}
-//               onChangeText={setEmail}
-//               placeholder="Email"
-//               keyboardType="email-address"
-//             />
-//             <InputBox
-//               value={password}
-//               onChangeText={setPassword}
-//               placeholder="Password"
-//               isPassword={true}
-//             />
-
-//             {/* Register button */}
-//             <Button
-//               title="Login"
-//               onPress={handlewPress}
-//               loading={false}
-//               disabled={false}
-//             />
-
-//             {/* OR divider */}
-//             <View style={styles.orContainer}>
-//               <View style={styles.line} />
-//               <Text style={styles.orText}>or</Text>
-//               <View style={styles.line} />
-//             </View>
-
-//             {/* Social login */}
-//             <Text style={styles.socialTitle}>Login with</Text>
-//             <View style={styles.socialRow}>
-//               <TouchableOpacity style={[styles.socialBtn,]}>
-//                 <Image source={images.facebook} style={styles.icons} />
-//               </TouchableOpacity>
-//               <TouchableOpacity style={[styles.socialBtn]}>
-//                 <Image source={images.apple} style={styles.icons} />
-//               </TouchableOpacity>
-//               <TouchableOpacity style={[styles.socialBtn]}>
-//                 <Image source={images.google} style={styles.icons} />
-//               </TouchableOpacity>
-//             </View>
-
-//             {/* Bottom link */}
-// <View style={styles.bottomRow}>
-//   <Text style={styles.bottomText}>
-//     You don’t have an account?{' '}
-//   </Text>
-
-//   <TouchableOpacity onPress={toRegister}>
-//     <Text style={styles.linkText}>Register now.</Text>
-//   </TouchableOpacity>
-// </View>
-
-//           </View>
-//         </KeyboardAwareScrollView>
-//       </ImageBackground>
-//     </Wrapper>
-//   );
-// };
-
-// export default Login;
-
-// const styles = StyleSheet.create({
-//   bgImage: {
-//     width: '100%',
-//     height: '100%',
-//     resizeMode: 'cover',
-//   },
-//   scrollContainer: {
-//     flexGrow: 1,
-//     paddingHorizontal: scale(15),
-//     justifyContent: 'center',
-//   },
-//   innerContainer: {
-//     width: '100%',
-//     alignItems: 'center',
-//   },
-//   title: {
-//     fontSize: scale(29),
-//     fontFamily: fonts.regular,
-//     color: colors.text,
-//     textAlign: 'left',
-//     fontWeight: '400',
-//     width: '100%',
-//   },
-//   subTitle: {
-//     marginBottom: scale(20),
-//     marginTop: scale(10),
-//     width: '100%',
-//     textAlign: 'left',
-//     color: colors.text_v1,
-//     fontFamily: fonts.light,
-//     fontSize: scale(14),
-//   },
-//   orContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginTop: scale(45),
-//     marginBottom: scale(5),
-//     width: '100%',
-//   },
-//   line: {
-//     flex: 1,
-//     height: 1,
-//     backgroundColor: colors.theme_v1,
-//   },
-//   orText: {
-//     marginHorizontal: 10,
-//     fontSize: scale(16),
-//     fontFamily: fonts.regular,
-//     fontWeight: "400",
-//     color: colors.black,
-//   },
-//   socialTitle: {
-//     fontSize: scale(15.5),
-//     fontFamily: fonts.semiBold,
-//     fontWeight: "600",
-//     marginBottom: scale(15),
-//     marginTop: scale(15),
-//     color: colors.text,
-//   },
-//   socialRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'center',
-//     marginBottom: 20,
-//   },
-//   socialBtn: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginHorizontal: scale(5),
-//   },
-//   bottomRow: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     paddingTop: scale(70),
-//     justifyContent: 'center',
-//   },
-//   bottomText: {
-//     fontSize: scale(14),
-//     fontWeight: '300',
-//     color: colors.text,
-//     fontFamily: fonts.light,
-//   },
-//   linkText: {
-//     color: colors.themeColor,
-//     fontFamily: fonts.medium,
-//     fontSize: scale(14),
-//     fontWeight: '300',
-//     borderBottomWidth: 1,
-//     borderBottomColor: colors.themeColor,
-//     paddingBottom: 2,
-//   },
-//   icons: {
-//     width: scale(45),
-//     height: scale(45),
-//     resizeMode: "contain"
-//   }
-// });
-
-
-
 import React, { useState } from 'react';
 import {
   View,
@@ -231,7 +17,7 @@ import { fonts } from '../../../constant/fonts';
 import { moderateScale, scale } from '../../../utils/appScale';
 import Button from '../../../components/button';
 import { useNavigation } from '@react-navigation/native';
-import { signInWithGoogle } from '../../../services/authCalls';
+import { loginUserAction, signInWithGoogle } from '../../../services/authCalls';
 import { clearAppStorage, getHitSlop } from '../../../utils/globalFunctions';
 import Loader from '../../../components/loader'
 import { useDispatch, useSelector } from 'react-redux';
@@ -248,15 +34,104 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // const [email, setEmail] = useState(__DEV__ ? "test1234@gmail.com" : "");
+  // const [password, setPassword] = useState(__DEV__ ? "test@test" : "");
+
+  const [isErrors, setIsErrors] = useState({
+    field: "",
+    message: ""
+  })
+
+  const logoutPress = async () => {
+    // navigation.navigate('Splash');
+    await clearAppStorage()
+    dispatch(placeToken(null));
+    dispatch(placeUserData({}));
+  }
+
+
   const toRegister = () => {
     navigation.navigate("Register")
   }
-  const handlewPress = () => {
-    navigation.navigate("OnboardingA")
-  }
 
-  console.log('token--->login', JSON.stringify(token, null, 2))
-  console.log('userInfo--->login', JSON.stringify(userInfo, null, 2))
+
+  const isValid = () => {
+    let newErrors = { field: "", message: "" };
+
+    if (!email?.trim()) {
+      newErrors = {
+        field: "email",
+        message: "Email is required",
+      };
+      setIsErrors(newErrors);
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      newErrors = {
+        field: "email",
+        message: "Please enter a valid email address",
+      };
+      setIsErrors(newErrors);
+      return false;
+    }
+
+    if (!password?.trim()) {
+      newErrors = {
+        field: "password",
+        message: "Password is required",
+      };
+      setIsErrors(newErrors);
+      return false;
+    }
+
+    setIsErrors({ field: "", message: "" });
+    return true;
+  };
+
+
+  const loginCall = async () => {
+    try {
+      setIsLoading(true);
+
+      const result = await loginUserAction(email, password);
+
+      console.log('result', JSON.stringify(result, null, 2))
+
+      if (result?.success) {
+        showToast({
+          type: 'success',
+          title: 'Signed in successfully!',
+        });
+        console.log("User registered:", result);
+      } else {
+        showToast({
+          type: 'error',
+          title: result?.message,
+        });
+      }
+    } catch (error) {
+      console.log("Register call failed:", error);
+      showToast({
+        type: 'error',
+        title: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  const handlewPress = () => {
+    // navigation.navigate("OnboardingA")
+    const isValidated = isValid();
+    console.log('isValidated', JSON.stringify(isValidated, null, 2))
+    if (isValidated) {
+      loginCall()
+      // navigation.navigate("OnboardingA")
+    }
+  }
 
 
   const handleSignIn = async () => {
@@ -268,13 +143,27 @@ const Login = () => {
           type: 'success',
           title: 'Signed in successfully!',
         });
-        console.log("User info:", result?.data);
-        console.log("result", JSON.stringify(result, null, 2));
+        // console.log("User info:", result);
+        console.log("result--->", JSON.stringify(result?.data, null, 2));
+
+        const userDatas = {
+          "email": "pavan@abc.com",
+          "providerId": "password",
+          "photoURL": null,
+          "phoneNumber": null,
+          "displayName": null,
+          "uid": "mYkJMaeJA9TJ396n0xHMp8cC9TA3",
+        }
+
         const userData = result?.data?.user
         const token = result?.data?.idToken
+        // const token = result?.data?.refreshToken
+        // console.log('token--->', JSON.stringify(token, null, 2))
+
         dispatch(placeUserData(userData))
         dispatch(placeToken(token))
         navigation.navigate('TabsStack');
+
       } else {
         showToast({
           type: 'error',
@@ -283,7 +172,7 @@ const Login = () => {
         console.warn("Sign-In Error:", result.error);
       }
     } catch (error) {
-      console.error("Unexpected error during sign-in:", error);
+      console.log("Unexpected error during sign-in:", error);
       showToast({
         type: 'error',
         title: error.message || 'Unexpected error during sign-in',
@@ -304,8 +193,14 @@ const Login = () => {
         style={{ flex: 1 }}
       >
         <KeyboardAwareScrollView
-          style={{ flex: 1 }}
+          // style={{ flex: 1 }}
+          // contentContainerStyle={styles.scrollContainer}
           contentContainerStyle={styles.scrollContainer}
+          style={{ flexGrow: 1 }}
+          extraScrollHeight={5}
+          enableOnAndroid={true}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={styles.innerContainer}>
             <View style={styles.formContainer}>
@@ -318,12 +213,14 @@ const Login = () => {
                 onChangeText={setEmail}
                 placeholder="Email"
                 keyboardType="email-address"
+                error={isErrors.field == "email" ? isErrors?.message : ""}
               />
               <InputBox
                 value={password}
                 onChangeText={setPassword}
                 placeholder="Password"
                 isPassword={true}
+                error={isErrors.field == "password" ? isErrors?.message : ""}
               />
               <Button
                 title="Register"
@@ -343,7 +240,7 @@ const Login = () => {
                   <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} >
                     <Image source={images.facebook} style={styles.icons} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={clearAppStorage}>
+                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={logoutPress}>
                     <Image source={images.apple} style={styles.appleIcon} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.socialBtn} onPress={handleSignIn} hitSlop={getHitSlop(10)}>

@@ -147,9 +147,11 @@ const styles = StyleSheet.create({
         color: colors.primary,
     },
     errorText: {
-        marginTop: 6,
-        color: colors.danger,
-        fontSize: moderateScale(12.6),
-        fontFamily: fonts.regular || undefined,
+        marginTop: 1,
+        color: colors.red,
+        fontSize: moderateScale(11.5),
+        fontFamily: fonts.regular,
+        marginLeft: moderateScale(3),
+        fontWeight: "400"
     },
 });

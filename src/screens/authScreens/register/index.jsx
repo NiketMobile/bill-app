@@ -17,11 +17,12 @@ import { fonts } from '../../../constant/fonts';
 import { moderateScale, scale } from '../../../utils/appScale';
 import Button from '../../../components/button';
 import { useNavigation } from '@react-navigation/native';
-import { signInWithGoogle } from '../../../services/authCalls';
+import { registerUserAction, signInWithGoogle } from '../../../services/authCalls';
 import { placeToken, placeUserData } from '../../../redux/reducers/userInfoReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import showToast from '../../../components/showMessage';
 import { getHitSlop } from '../../../utils/globalFunctions';
+import Loader from '../../../components/loader';
 
 
 const Register = () => {
@@ -34,16 +35,105 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    // const [email, setEmail] = useState(__DEV__ ? "test@gmail.com" : "");
+    // const [password, setPassword] = useState(__DEV__ ? "test123" : "");
+
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
 
     const toLogin = () => {
         navigation.navigate("Login")
     }
+
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!email?.trim()) {
+            newErrors = {
+                field: "email",
+                message: "Email is required",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            newErrors = {
+                field: "email",
+                message: "Please enter a valid email address",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        if (!password?.trim()) {
+            newErrors = {
+                field: "password",
+                message: "Password is required",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        if (password?.trim()?.length < 6) {
+            newErrors = {
+                field: "password",
+                message: "Password must be at least 6 characters long",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+    const registerCall = async () => {
+        try {
+            setIsLoading(true);
+            const result = await registerUserAction(email, password);
+            console.log('result', JSON.stringify(result, null, 2))
+
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Signed in successfully!',
+                });
+                console.log("User registered:", result);
+                // navigation.replace("TabsStack")
+            } else {
+                showToast({
+                    type: 'error',
+                    title: result?.message,
+                });
+            }
+        } catch (error) {
+            console.log("Register call failed:", error);
+            showToast({
+                type: 'error',
+                title: error.message,
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
     const handlewPress = () => {
-        navigation.navigate("Login")
+        // navigation.navigate("OnboardingA")
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (isValidated) {
+            registerCall()
+            // navigation.navigate("OnboardingA")
+        }
     }
 
-
-    console.log('userInfo--->', JSON.stringify(userInfo, null, 2))
 
 
     const handleSignIn = async () => {
@@ -96,8 +186,12 @@ const Register = () => {
                 style={{ flex: 1 }}
             >
                 <KeyboardAwareScrollView
-                    style={{ flex: 1 }}
                     contentContainerStyle={styles.scrollContainer}
+                    style={{ flexGrow: 1 }}
+                    extraScrollHeight={5}
+                    enableOnAndroid={true}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
                 >
                     <View style={styles.innerContainer}>
                         <View style={styles.formContainer}>
@@ -110,12 +204,14 @@ const Register = () => {
                                 onChangeText={setEmail}
                                 placeholder="Email"
                                 keyboardType="email-address"
+                                error={isErrors.field == "email" ? isErrors?.message : ""}
                             />
                             <InputBox
                                 value={password}
                                 onChangeText={setPassword}
                                 placeholder="Password"
                                 isPassword={true}
+                                error={isErrors.field == "password" ? isErrors?.message : ""}
                             />
                             <Button
                                 title="Register"
@@ -159,6 +255,9 @@ const Register = () => {
 
                 </KeyboardAwareScrollView>
             </ImageBackground>
+            {
+                isLoading && <Loader />
+            }
         </Wrapper>
     );
 };
