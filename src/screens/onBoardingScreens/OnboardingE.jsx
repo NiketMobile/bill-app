@@ -9,6 +9,10 @@ import { moderateScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
+import showToast from '../../components/showMessage'
+import { sendOtpAction } from '../../services/authCalls'
+import Loader from '../../components/loader'
+import { useKeyboard } from '../../hooks/useKeyboard'
 
 
 
@@ -16,6 +20,7 @@ const track_id = "4"
 
 const OnboardingE = () => {
     const navigation = useNavigation()
+    const { keyboardVisible } = useKeyboard();
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState("")
@@ -38,7 +43,7 @@ const OnboardingE = () => {
         let newErrors = { field: "", message: "" };
 
         // ✅ Phone number validation
-        const phoneRegex = /^[0-9]{10}$/; // Adjust regex based on your requirement
+        const phoneRegex = /^[0-9]{10}$/;
         if (!phoneNumber?.trim()) {
             newErrors = {
                 field: "phoneNumber",
@@ -61,35 +66,45 @@ const OnboardingE = () => {
 
 
 
-
     const handleSubmit = async () => {
-        //  navigation?.navigate('OnboardingH');
-        const isValidated = isValid();
-        console.log('isValidated', JSON.stringify(isValidated, null, 2))
-        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+         const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2));
+        if (!isValidated) return; // Stop if validation fails
+        navigation?.navigate('OnboardingF');
+
+        // const isValidated = isValid();
+        // console.log('isValidated', JSON.stringify(isValidated, null, 2));
+        // if (!isValidated) return; // Stop if validation fails
+
         // try {
         //     setLoading(true);
-        //     const result = await apiServices.updateUserDoc(userInfo?.uid, {
-        //         "race": {
-        //             "raceId": selectedId,
-        //             "other": selectedId == 9 ? otherValue : ""
-        //         },
-        //     });
+        //     const USA = "+1";
+        //     const INDIA = "+91";
 
-        //     if (result?.success) {
-        //         showToast({
-        //             type: 'success',
-        //             title: 'Race has been added successfully.',
-        //         });
-        //         navigation?.navigate('OnboardingF');
-        //     } else {
+        //     const countryCode = INDIA;
+        //     const numberValue = `${countryCode}${phoneNumber}`;
+
+        //     const { success, confirm, message } = await sendOtpAction(numberValue);
+
+        //     console.log('confirm', JSON.stringify(confirm, null, 2))
+        //     console.log('message', JSON.stringify(message, null, 2))
+
+        //     if (!success) {
         //         showToast({
         //             type: 'error',
-        //             title: 'Something went wrong. Please try again.',
+        //             title: message || "Failed to send OTP. Please try again.",
         //         });
+        //         return;
         //     }
+        //     navigation?.navigate('OnboardingF', { confirmData: confirm });
+
+        //     showToast({
+        //         type: 'success',
+        //         title: "OTP sent successfully!",
+        //     });
+
         // } catch (error) {
-        //     console.error('Onboarding start error:', error);
+        //     console.error('handleSubmit error:', error);
         //     showToast({
         //         type: 'error',
         //         title: 'Unexpected error occurred.',
@@ -97,7 +112,8 @@ const OnboardingE = () => {
         // } finally {
         //     setLoading(false);
         // }
-    }
+    };
+
 
 
 
@@ -149,10 +165,15 @@ const OnboardingE = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
-                    <Image source={images.right} style={styles.rightIcon} />
-                </TouchableOpacity>
+                {!keyboardVisible &&
+                    <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
+                        <Image source={images.right} style={styles.rightIcon} />
+                    </TouchableOpacity>
+                }
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

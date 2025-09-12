@@ -124,3 +124,55 @@ export const loginUserAction = async (email, password) => {
         return { success: false, message };
     }
 };
+
+
+export const sendOtpAction = async (phoneNumber) => {
+    try {
+        if (!phoneNumber) throw new Error("Phone number is required");
+
+        const confirm = await auth().signInWithPhoneNumber(phoneNumber);
+        return { success: true, confirm }; // `confirm` is needed for verifying OTP
+    } catch (error) {
+        console.error('sendOtpAction error:', error);
+        let message = "Something went wrong. Please try again.";
+        switch (error.code) {
+            case "auth/invalid-phone-number":
+                message = "The phone number entered is invalid.";
+                break;
+            case "auth/too-many-requests":
+                message = "Too many requests. Please try again later.";
+                break;
+            default:
+                console.error("Firebase Phone Auth Error:", error);
+        }
+        return { success: false, message };
+    }
+};
+
+
+export const verifyOtpAction = async (confirm, otp) => {
+    try {
+        if (!otp) throw new Error("OTP is required");
+        if (!confirm) throw new Error("Confirmation object is missing");
+
+        const userCredential = await confirm?.confirm(otp);
+        return { success: true, user: userCredential?.user };
+    } catch (error) {
+        console.error('verifyOtpAction error:', error);
+
+        let message = "Invalid OTP. Please try again.";
+
+        switch (error.code) {
+            case "auth/invalid-verification-code":
+                message = "The OTP entered is invalid.";
+                break;
+            case "auth/session-expired":
+                message = "OTP has expired. Please request a new one.";
+                break;
+            default:
+                console.error("Firebase Phone OTP Error:", error);
+        }
+
+        return { success: false, message };
+    }
+};

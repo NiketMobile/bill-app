@@ -7,10 +7,13 @@ import { fonts } from '../../constant/fonts'
 import { images } from '../../constant/images'
 import { moderateScale, moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import InputOtpComp from "../../components/InputOtpComp"
 import Loader from '../../components/loader'
 import MessageModal from '../../components/messageModal'
+import showToast from '../../components/showMessage'
+import { verifyOtpAction } from '../../services/authCalls'
+import { useKeyboard } from '../../hooks/useKeyboard'
 
 
 
@@ -19,9 +22,14 @@ const track_id = "5"
 
 const OnboardingF = () => {
     const navigation = useNavigation()
+    const { keyboardVisible } = useKeyboard();
+    const route = useRoute()
     const [otp, setOtp] = useState("")
     const [isLoader, setIsLoader] = useState(false)
     const [isVisible, setIsVisible] = useState(false)
+
+    const otpData = route?.params?.confirmData?.confirm
+
 
     const goBack = () => {
         navigation.goBack()
@@ -34,19 +42,62 @@ const OnboardingF = () => {
     }, [isLoader])
 
 
-    const handlewNext = () => {
-        setIsVisible(true)
-        // navigation?.navigate('Login');
-    }
-
     const resendNow = () => {
         setIsLoader(true)
     }
+
 
     const onButtonPressed = () => {
         setIsVisible(false)
         navigation?.navigate('OnboardingG');
     }
+
+
+    const handleVerifyOtp = async () => {
+        if (!otp) {
+            showToast({ type: 'error', title: 'Please enter the OTP.' });
+            return;
+        }
+        if (otp.length !== 6) {
+            showToast({ type: 'error', title: 'OTP must be 6 digits.' });
+            return;
+        }
+        // console.log('otpData', JSON.stringify(otpData, null, 2))
+        navigation?.navigate('OnboardingG');
+        return
+        // if (!otp) {
+        //     showToast({ type: 'error', title: 'Please enter the OTP.' });
+        //     return;
+        // }
+        // console.log('otpData', JSON.stringify(otpData, null, 2))
+        // console.log('otp', JSON.stringify(otp, null, 2))
+        // try {
+        //     setIsLoader(true);
+        //     const { success, user, message } = await verifyOtpAction(otpData, otp);
+
+        //     if (!success) {
+        //         showToast({ type: 'error', title: message });
+        //         return;
+        //     }
+        //     showToast({ type: 'success', title: 'Logged in successfully!' });
+        //     setIsVisible(true)
+        //     console.log("Logged in user:", user);
+
+        // } catch (error) {
+        //     console.error('OTP verification error:', error);
+        //     showToast({ type: 'error', title: 'Unexpected error occurred.' });
+        // } finally {
+        //     setIsLoader(false);
+        // }
+    };
+
+
+
+
+
+
+
+
 
 
 
@@ -81,9 +132,10 @@ const OnboardingF = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
-                    <Image source={images.right} style={styles.rightIcon} />
-                </TouchableOpacity>
+                {!keyboardVisible &&
+                    <TouchableOpacity style={[styles.fab]} onPress={handleVerifyOtp} >
+                        <Image source={images.right} style={styles.rightIcon} />
+                    </TouchableOpacity>}
                 {
                     isLoader && <Loader />
                 }
