@@ -9,11 +9,18 @@ import { moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import { selectGender, selectRaceList, selectSexualOrientation } from '../../constant/dataJson'
+import { useSelector } from 'react-redux'
+import showToast from '../../components/showMessage'
+import { apiServices } from '../../services/apiService'
+import Loader from '../../components/loader'
 
 
+const track_id = "8"
 
 const OnboardingI = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
 
@@ -21,9 +28,79 @@ const OnboardingI = () => {
         navigation.goBack()
     }
 
-    const handlewNext = () => {
-        navigation?.navigate('OnboardingJ');
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!selectedId) {
+            newErrors = {
+                field: "sexualOrientation",
+                message: "Sexual orientation is required",
+            };
+            showToast({
+                type: 'error',
+                title: 'Sexual orientation is required',
+            });
+            setIsErrors(newErrors);
+            return false;
+        }
+        if (selectedId == 5 && !otherValue?.trim()) {
+            newErrors = {
+                field: "otherValue",
+                message: "Other value is required when option other is selected",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "sexual_orientation": {
+                    "sexual_orientation_id": selectedId,
+                    "other": selectedId == 5 ? otherValue : ""
+                },
+                track_id: track_id
+            });
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Sexual orientation has been added successfully.',
+                });
+                navigation?.navigate('OnboardingJ');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
     }
+
+
+
 
 
     const renderItem = ({ item }) => (
@@ -66,6 +143,7 @@ const OnboardingI = () => {
                             textAlignVertical: "top",
                             marginTop: scale(5),
                         }}
+                        error={isErrors.field === "otherValue" ? isErrors.message : ""}
                     />
                 </View>
             )}
@@ -104,10 +182,13 @@ const OnboardingI = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
+                <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

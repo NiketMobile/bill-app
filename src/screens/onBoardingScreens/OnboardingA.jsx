@@ -8,13 +8,85 @@ import { images } from '../../constant/images'
 import { moderateScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
+import { apiServices } from "../../services/apiService"
+import { useSelector } from 'react-redux'
+import Loader from '../../components/loader'
+import showToast from '../../components/showMessage'
 
 
 const { height } = Dimensions.get('window');
 
+const track_id = "1"
+
 const OnboardingA = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [name, setName] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+        if (!name?.trim()) {
+            newErrors = {
+                field: "name",
+                message: "Name is required",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+        if (name?.trim()?.length < 5) {
+            newErrors = {
+                field: "name",
+                message: "Name must be at least 5 characters long",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+
+        try {
+            setLoading(true);
+            const result = await apiServices.createUserDoc(userInfo?.uid, {
+                name: name,
+                track_id: track_id
+            });
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Name has been added successfully.',
+                });
+                navigation?.navigate('OnboardingB');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+
+
 
     return (
         <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
@@ -29,22 +101,19 @@ const OnboardingA = () => {
                             value={name}
                             onChangeText={setName}
                             placeholder="Name"
+                            error={isErrors.field === "name" ? isErrors.message : ""}
                         />
                     </View>
                 </KeyboardAwareScrollView>
-
                 <TouchableOpacity
                     style={[
                         styles.fab,
-                        // !name.trim() && { backgroundColor: colors.tab_disabled }, // disable look if empty
+                        (!name.trim()) && { backgroundColor: colors.tab_disabled },
                     ]}
                     onPress={() => {
-                        navigation?.navigate('OnboardingB');
-                        // if (name.trim()) {
-                        //     navigation?.navigate('OnboardingB', { name });
-                        // }
+                        handleSubmit();
                     }}
-                // disabled={!name.trim()}
+                    disabled={!name.trim()}
                 >
                     <Image source={images.right} style={{
                         width: 18,
@@ -53,6 +122,9 @@ const OnboardingA = () => {
                     }} />
                 </TouchableOpacity>
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

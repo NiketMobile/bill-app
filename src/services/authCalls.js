@@ -19,14 +19,11 @@ export const signInWithGoogle = async () => {
         await GoogleSignin.hasPlayServices();
         const response = await GoogleSignin.signIn();
         console.log('GoogleSignin->response->', JSON.stringify(response?.type, null, 2))
-
         // Create Firebase credential with the token // Sign in the user with Firebase
         const googleCredential = auth.GoogleAuthProvider.credential(response?.data?.idToken);
         const userCredential = await auth().signInWithCredential(googleCredential);
         const firebaseUser = userCredential?.user;
         const token = await firebaseUser?.getIdToken();
-        // console.log('firebaseUser', JSON.stringify(firebaseUser, null, 2))
-
         // Safely extract providerData[0]
         const providerInfo = firebaseUser.providerData?.[0] || {};
 
@@ -40,7 +37,6 @@ export const signInWithGoogle = async () => {
             uid: firebaseUser?.uid,
             token,
         };
-
         console.log('responseData-->', JSON.stringify(responseData, null, 2))
 
         // Check if response is success

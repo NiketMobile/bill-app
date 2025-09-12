@@ -10,28 +10,83 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useNavigation } from '@react-navigation/native'
 import { Calendar } from 'react-native-calendars';
 import CustomCalendar from '../../components/customCalendar'
+import { apiServices } from '../../services/apiService'
+import { useSelector } from 'react-redux'
+import Loader from '../../components/loader'
+import showToast from '../../components/showMessage'
 
 
 
 
 const { height } = Dimensions.get('window');
 
+const track_id = "2"
+
 const OnboardingB = () => {
     const navigation = useNavigation()
-    const [name, setName] = useState('');
-    const [isDate, setIsDate] = useState(false)
-    const [selectDate, setSelectDate] = useState("")
-
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [dob, setDob] = useState('');
+    const [loading, setLoading] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
 
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
 
     const goBack = () => {
         navigation.goBack()
     }
 
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+        if (!dob?.trim()) {
+            newErrors = {
+                field: "dob",
+                message: "Dob is required",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
 
-    console.log('dob', JSON.stringify(dob, null, 2))
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "date_of_birth": dob,
+                track_id: track_id
+            });
+
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Date Of Birth has been added successfully.',
+                });
+                navigation?.navigate('OnboardingC');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
+
 
 
 
@@ -59,6 +114,7 @@ const OnboardingB = () => {
                             onRightElementPress={() => setShowCalendar(true)}
                             rightElement={
                                 <Image source={images.calender} style={styles.icons} />}
+                            error={isErrors.field === "dob" ? isErrors.message : ""}
                         />
                         <CustomCalendar
                             visible={showCalendar}
@@ -71,15 +127,12 @@ const OnboardingB = () => {
                 <TouchableOpacity
                     style={[
                         styles.fab,
-                        // !name.trim() && { backgroundColor: colors.tab_disabled }, // disable look if empty
+                        !dob.trim() && { backgroundColor: colors.tab_disabled }, // disable look if empty
                     ]}
                     onPress={() => {
-                        navigation?.navigate('OnboardingC', { name });
-                        // if (name.trim()) {
-                        //     navigation?.navigate('OnboardingB', { name });
-                        // }
+                        handleSubmit()
                     }}
-                // disabled={!name.trim()}
+                    disabled={!dob.trim()}
                 >
                     <Image source={images.right} style={{
                         width: 18,
@@ -87,8 +140,10 @@ const OnboardingB = () => {
                         resizeMode: "contain"
                     }} />
                 </TouchableOpacity>
-
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

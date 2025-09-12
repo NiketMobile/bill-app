@@ -9,21 +9,97 @@ import { moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import { selectGender, selectRaceList } from '../../constant/dataJson'
+import Loader from '../../components/loader'
+import showToast from '../../components/showMessage'
+import { apiServices } from '../../services/apiService'
+import { useSelector } from 'react-redux'
 
 
+const track_id = "7"
 
 const OnboardingH = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
+
 
     const goBack = () => {
         navigation.goBack()
     }
 
-    const handlewNext = () => {
-        navigation?.navigate('OnboardingI');
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!selectedId) {
+            newErrors = {
+                field: "gender",
+                message: "Gender is required",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        if (selectedId == 4 && !otherValue?.trim()) {
+            newErrors = {
+                field: "otherValue",
+                message: "Other value is required when option other is selected",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+
+    const handleSubmit = async () => {
+        //  navigation?.navigate('OnboardingH');
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "gender": {
+                    "gender_id": selectedId,
+                    "other": selectedId == 4 ? otherValue : ""
+                },
+                track_id: track_id
+            });
+
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Gender has been added successfully.',
+                });
+                navigation?.navigate('OnboardingI');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
     }
+
+
 
 
     const renderItem = ({ item }) => (
@@ -66,6 +142,7 @@ const OnboardingH = () => {
                             textAlignVertical: "top",
                             marginTop: scale(5),
                         }}
+                        error={isErrors.field === "otherValue" ? isErrors.message : ""}
                     />
                 </View>
             )}
@@ -104,10 +181,13 @@ const OnboardingH = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
+                <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

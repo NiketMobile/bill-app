@@ -9,26 +9,28 @@ import { moderateScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import StatesBottomSheet from '../../components/statesBottomSheet'
+import { useSelector } from 'react-redux'
+import Loader from '../../components/loader'
+import { apiServices } from '../../services/apiService'
+import showToast from '../../components/showMessage'
 
 
 
+const track_id = "3"
 
 const OnboardingC = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
     const sheetRef = useRef(null);
-    const [selectedCountry, setSelectedCountry] = useState(null);
-    const [name, setName] = useState('');
+    const [selectedState, setSelectedState] = useState(null)
     const [streetAddress, setStreetAddress] = useState("")
     const [apartment, setApartment] = useState("")
     const [city, setCity] = useState("")
     const [zipCode, setZipCode] = useState("")
+    const [loading, setLoading] = useState(false);
 
     const goBack = () => {
         navigation.goBack()
-    }
-
-    const handlewNext = () => {
-        navigation?.navigate('OnboardingD');
     }
 
     // callbacks
@@ -45,7 +47,7 @@ const OnboardingC = () => {
     }, []);
 
     const handleCountrySelect = useCallback((country) => {
-        setSelectedCountry(country?.name);
+        setSelectedState(country?.name);
         console.log('country', JSON.stringify(country, null, 2))
         handleClosePress();
     }, []);
@@ -57,6 +59,109 @@ const OnboardingC = () => {
     const handlewSlectState = () => {
         handleOpenModal()
     }
+
+
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!streetAddress?.trim()) {
+            newErrors = { field: "streetAddress", message: "Street Address is required" };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        if (!apartment?.trim()) {
+            newErrors = { field: "apartment", message: "Apartment Address is required" };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        // Apartment is optional → no check
+        if (!city?.trim()) {
+            newErrors = { field: "city", message: "City is required" };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        if (!selectedState?.trim()) {
+            newErrors = { field: "selectedState", message: "State is required" };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        if (!zipCode?.trim()) {
+            newErrors = { field: "zipCode", message: "ZIP Code is required" };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        // Zip must be 5 digits
+        if (!/^\d{5}$/.test(zipCode.trim())) {
+            newErrors = { field: "zipCode", message: "ZIP Code must be 5 digits" };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        // ✅ Clear errors if everything is valid
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+
+        try {
+            setLoading(true);
+            const addressData = {
+                state: selectedState || "",
+                streetAddress: streetAddress || "",
+                apartment: apartment || "",
+                city: city || "",
+                zipCode: zipCode || "",
+            };
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "address_data": addressData,
+                track_id: track_id
+            });
+
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Address has been added successfully.',
+                });
+                // navigation?.navigate('OnboardingD');
+                navigation?.navigate('OnboardingE');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
+
+
+
+
 
 
 
@@ -89,6 +194,7 @@ const OnboardingC = () => {
                                         <Image source={images.edit} style={styles.editIcons} />
                                     ) : null
                                 }
+                                error={isErrors.field === "streetAddress" ? isErrors.message : ""}
                             />
                             <InputBox
                                 value={apartment}
@@ -99,6 +205,7 @@ const OnboardingC = () => {
                                         <Image source={images.edit} style={styles.editIcons} />
                                     ) : null
                                 }
+                                error={isErrors.field === "apartment" ? isErrors.message : ""}
                             />
                             <InputBox
                                 value={city}
@@ -109,17 +216,19 @@ const OnboardingC = () => {
                                         <Image source={images.edit} style={styles.editIcons} />
                                     ) : null
                                 }
+                                error={isErrors.field === "city" ? isErrors.message : ""}
                             />
                             <InputBox
-                                value={selectedCountry}
-                                onChangeText={(t) => { setSelectedCountry(t) }}
+                                value={selectedState}
+                                onChangeText={(t) => { setSelectedState(t) }}
                                 placeholder="States"
                                 onRightElementPress={handlewSlectState}
                                 rightElement={
-                                    selectedCountry?.length > 0 ? (
+                                    selectedState?.length > 0 ? (
                                         <Image source={images.edit} style={styles.editIcons} />
                                     ) : <Image source={images.down} style={styles.icons} />
                                 }
+                                error={isErrors.field === "selectedState" ? isErrors.message : ""}
                             />
                             <InputBox
                                 value={zipCode}
@@ -130,11 +239,12 @@ const OnboardingC = () => {
                                         <Image source={images.edit} style={styles.editIcons} />
                                     ) : null
                                 }
+                                error={isErrors.field === "zipCode" ? isErrors.message : ""}
                             />
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
+                <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
                 <StatesBottomSheet
@@ -143,6 +253,9 @@ const OnboardingC = () => {
                     snapPoints={["50%", "75%"]}
                 />
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

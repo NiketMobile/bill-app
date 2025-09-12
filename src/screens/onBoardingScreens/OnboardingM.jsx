@@ -9,11 +9,18 @@ import { moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import { selectDisability, selectReligion } from '../../constant/dataJson'
+import showToast from '../../components/showMessage'
+import { useSelector } from 'react-redux'
+import { apiServices } from '../../services/apiService'
+import Loader from '../../components/loader'
 
 
+const track_id = "12"
 
 const OnboardingM = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
 
@@ -21,9 +28,81 @@ const OnboardingM = () => {
         navigation.goBack()
     }
 
-    const handlewNext = () => {
-        navigation?.navigate('OnboardingN');
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!selectedId) {
+            newErrors = {
+                field: "religion",
+                message: "Religion is required",
+            };
+            showToast({
+                type: 'error',
+                title: 'Select Religion, is required',
+            });
+            setIsErrors(newErrors);
+            return false;
+        }
+        if (selectedId == 9 && !otherValue?.trim()) {
+            newErrors = {
+                field: "otherValue",
+                message: "Other value is required when option other is selected",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "religion": {
+                    "religion_id": selectedId,
+                    "other": selectedId == 9 ? otherValue : ""
+                },
+                track_id:track_id
+            });
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Religion has been added successfully.',
+                });
+                navigation?.navigate('OnboardingN');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
     }
+
+
+
+
+
 
 
     const renderItem = ({ item }) => (
@@ -66,6 +145,7 @@ const OnboardingM = () => {
                             textAlignVertical: "top",
                             marginTop: scale(5),
                         }}
+                        error={isErrors.field === "otherValue" ? isErrors.message : ""}
                     />
                 </View>
             )}
@@ -106,10 +186,13 @@ const OnboardingM = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
+                <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }

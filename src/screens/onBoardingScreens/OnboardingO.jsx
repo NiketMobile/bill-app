@@ -11,35 +11,126 @@ import { useNavigation } from '@react-navigation/native'
 import { selectPoliticalAffiliation } from '../../constant/dataJson'
 import MessageModal from '../../components/messageModal'
 import Loader from '../../components/loader'
+import { apiServices } from '../../services/apiService'
+import { useDispatch, useSelector } from 'react-redux'
+import showToast from '../../components/showMessage'
+import { placeToken } from '../../redux/reducers/userInfoReducer'
 
 
+
+const track_id = "14"
 
 const OnboardingO = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
-    const [isLoader, setIsLoader] = useState(false)
     const [isVisible, setIsVisible] = useState(false)
 
     const goBack = () => {
         navigation.goBack()
     }
 
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoader(false)
-        }, 2000);
-    }, [isLoader])
+    const onButtonPressed = async () => {
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                track_id: "true",
+            });
+            if (result?.success) {
+                setIsVisible(false);
+                if (userInfo?.token) {
+                    dispatch(placeToken(userInfo?.token));
+                }
+                navigation?.navigate('TabsStack');
+                showToast({ type: 'success', title: 'Track ID updated successfully!' });
+            } else {
+                showToast({ type: 'error', title: 'Failed to update Track ID.' });
+            }
+        } catch (error) {
+            console.error('Error updating Track ID:', error);
+            showToast({ type: 'error', title: 'Something went wrong. Please try again.' });
+        } finally {
+            setLoading(false); // optional: hide loader
+        }
+    };
 
 
-    const handlewNext = () => {
-        setIsVisible(true)
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!selectedId) {
+            newErrors = {
+                field: "politicalAffiliation",
+                message: "select political affiliation, is required",
+            };
+            showToast({
+                type: 'error',
+                title: 'select political affiliation is required',
+            });
+            setIsErrors(newErrors);
+            return false;
+        }
+        if (selectedId == 9 && !otherValue?.trim()) {
+            newErrors = {
+                field: "otherValue",
+                message: "Other value is required when option other is selected",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "political_affiliation": {
+                    "political_affiliation_id": selectedId,
+                    "other": selectedId == 9 ? otherValue : ""
+                },
+                track_id: track_id
+            });
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Sexual orientation has been added successfully.',
+                });
+                setIsVisible(true)
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
     }
 
-    const onButtonPressed = () => {
-        setIsVisible(false)
-        navigation?.navigate('Login');
-    }
+
+
 
 
     const renderItem = ({ item }) => (
@@ -82,6 +173,7 @@ const OnboardingO = () => {
                             textAlignVertical: "top",
                             marginTop: scale(5),
                         }}
+                        error={isErrors.field === "otherValue" ? isErrors.message : ""}
                     />
                 </View>
             )}
@@ -121,12 +213,12 @@ const OnboardingO = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
+                <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
             </View>
             {
-                isLoader && <Loader />
+                loading && <Loader />
             }
             <MessageModal
                 isVisible={isVisible}

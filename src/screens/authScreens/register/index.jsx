@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import showToast from '../../../components/showMessage';
 import { getHitSlop } from '../../../utils/globalFunctions';
 import Loader from '../../../components/loader';
+import { apiServices } from '../../../services/apiService';
 
 
 const Register = () => {
@@ -32,11 +33,11 @@ const Register = () => {
     const token = useSelector((state) => state?.userInfo?.isToken)
     const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(false)
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    // const [email, setEmail] = useState('');
+    // const [password, setPassword] = useState('');
 
-    // const [email, setEmail] = useState(__DEV__ ? "test@gmail.com" : "");
-    // const [password, setPassword] = useState(__DEV__ ? "test123" : "");
+    const [email, setEmail] = useState(__DEV__ ? "test2@gmail.com" : "");
+    const [password, setPassword] = useState(__DEV__ ? "test@test" : "");
 
     const [isErrors, setIsErrors] = useState({
         field: "",
@@ -97,15 +98,38 @@ const Register = () => {
         try {
             setIsLoading(true);
             const result = await registerUserAction(email, password);
-            console.log('result', JSON.stringify(result, null, 2))
 
             if (result?.success) {
                 showToast({
                     type: 'success',
-                    title: 'Signed in successfully!',
+                    title: 'Registered user successfully!',
                 });
-                console.log("User registered:", result);
-                // navigation.replace("TabsStack")
+
+                const firebaseUser = result?.user;
+                const firebaseToken = await firebaseUser.getIdToken();
+
+                const responseData = {
+                    providerId: firebaseUser?.providerData?.[0]?.providerId || null,
+                    email: firebaseUser?.email || null,
+                    photoURL: firebaseUser?.photoURL || null,
+                    phoneNumber: firebaseUser?.phoneNumber || null,
+                    displayName: firebaseUser?.displayName || null,
+                    uid: firebaseUser?.uid || null,
+                    token: firebaseToken,
+                };
+                console.log("result--->", JSON.stringify(responseData, null, 2));
+
+                const userData = responseData
+                const token = responseData?.token
+
+                //  checkUserProgressFinalNavigate(firebaseUser?.uid, responseData)
+
+                if (token) {
+                    // dispatch(placeUserData(userData))
+                    navigation?.navigate('Login');
+                }
+                // dispatch(placeToken(token))
+
             } else {
                 showToast({
                     type: 'error',
@@ -135,6 +159,96 @@ const Register = () => {
     }
 
 
+    const checkUserProgressFinalNavigate = async (uid, response) => {
+        try {
+            if (!uid) throw new Error("UID is required");
+
+            console.log('response--->', JSON.stringify(response, null, 2))
+            console.log('uid--->', JSON.stringify(uid, null, 2))
+
+            // ✅ Check if user already registered
+            const userDoc = await apiServices.getUserDoc(uid);
+            console.log('userDoc', JSON.stringify(userDoc, null, 2))
+
+            const userData = response
+            const token = response?.token
+
+            dispatch(placeUserData(userData))
+            // dispatch(placeToken(token))
+
+            if (!userDoc?.track_id) {
+                // If no track_id → start onboarding from first screen
+                navigation.navigate('OnboardingA');
+                return;
+            }
+            const trackId = userDoc?.track_id;
+
+            if (trackId == 1) navigation.navigate('OnboardingB');
+            else if (trackId == 2) navigation.navigate('OnboardingC');
+            else if (trackId == 3) navigation.navigate('OnboardingE');
+
+            // track_id = "4"
+            // phonescreen is OnboardingE
+            else if (trackId == 4) navigation.navigate('OnboardingF');
+            // const track_id = "5"
+            // otpScreen is  OnboardingF
+            else if (trackId == 5) navigation.navigate('OnboardingG');
+
+            else if (trackId == 6) navigation.navigate('OnboardingH');
+            else if (trackId == 7) navigation.navigate('OnboardingI');
+            else if (trackId == 8) navigation.navigate('OnboardingJ');
+            else if (trackId == 9) navigation.navigate('OnboardingK');
+            else if (trackId == 10) navigation.navigate('OnboardingL');
+            else if (trackId == 11) navigation.navigate('OnboardingM');
+            else if (trackId == 12) navigation.navigate('OnboardingN');
+            else if (trackId == 13) navigation.navigate('OnboardingO');
+            else if (trackId == 14) navigation.navigate('OnboardingO');
+            else if (trackId == "true" && token) {
+                navigation.navigate('TabsStack')
+                dispatch(placeToken(token));
+            }
+            else {
+                navigation.navigate('LogIn');
+            }
+
+            // if (!userDoc?.track_id) {
+            //     // If no track_id → start onboarding from first screen
+            //     navigation.navigate('OnboardingA');
+            //     return;
+            // }
+            // const trackId = userDoc?.track_id;
+            // if (trackId === 1) navigation.navigate('OnboardingA');
+            // else if (trackId === 2) navigation.navigate('OnboardingB');
+            // else if (trackId === 3) navigation.navigate('OnboardingC');
+
+            // // track_id = "4"
+            // // phonescreen is OnboardingE
+            // else if (trackId === 4) navigation.navigate('OnboardingE');
+            // // const track_id = "5"
+            // // otpScreen is  OnboardingF
+            // else if (trackId === 5) navigation.navigate('OnboardingF');
+
+            // else if (trackId === 6) navigation.navigate('OnboardingG');
+            // else if (trackId === 7) navigation.navigate('OnboardingH');
+            // else if (trackId === 8) navigation.navigate('OnboardingI');
+            // else if (trackId === 9) navigation.navigate('OnboardingJ');
+            // else if (trackId === 10) navigation.navigate('OnboardingK');
+            // else if (trackId === 11) navigation.navigate('OnboardingL');
+            // else if (trackId === 12) navigation.navigate('OnboardingM');
+            // else if (trackId === 13) navigation.navigate('OnboardingN');
+            // else if (trackId === 14) navigation.navigate('OnboardingO');
+            // else if (trackId === "true") navigation.navigate('TabsStack');
+            // else navigation.navigate('LogIn');
+
+        } catch (error) {
+            console.error('Error checking user progress:', error);
+            showToast({
+                type: 'error',
+                title: 'Unable to fetch user progress. Please try again.',
+            });
+        }
+    };
+
 
     const handleSignIn = async () => {
         try {
@@ -145,13 +259,21 @@ const Register = () => {
                     type: 'success',
                     title: 'Signed in successfully!',
                 });
-                console.log("User info:", result?.data);
-                console.log("result", JSON.stringify(result, null, 2));
-                const userData = result?.data?.user
-                const token = result?.data?.idToken
-                dispatch(placeUserData(userData))
-                dispatch(placeToken(token))
-                // navigation.navigate('TabsStack');
+
+                // const userData = result?.data
+                // const token = result?.data?.token
+                // console.log('token--->', JSON.stringify(token, null, 2))
+
+                const userData = result?.data
+                const token = result?.data?.token
+                console.log('token--->', JSON.stringify(token, null, 2))
+
+                checkUserProgressFinalNavigate(userData?.uid, userData)
+
+                // dispatch(placeUserData(userData))
+                // dispatch(placeToken(token))
+                // navigation.replace('OnboardingA');
+
             } else {
                 showToast({
                     type: 'error',

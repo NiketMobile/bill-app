@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 
 
 
-const OnboardingC = () => {
+const OnboardingD = () => {
     const navigation = useNavigation()
     const [phoneNumber, setPhoneNumber] = useState("")
 
@@ -23,7 +23,6 @@ const OnboardingC = () => {
     const handlewNext = () => {
         navigation?.navigate('OnboardingE');
     }
-
 
 
 
@@ -81,7 +80,7 @@ const OnboardingC = () => {
     )
 }
 
-export default OnboardingC
+export default OnboardingD
 
 const styles = StyleSheet.create({
     container: {

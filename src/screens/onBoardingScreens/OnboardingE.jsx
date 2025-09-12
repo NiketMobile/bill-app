@@ -8,12 +8,16 @@ import { images } from '../../constant/images'
 import { moderateScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
 
 
 
+const track_id = "4"
 
-const OnboardingC = () => {
+const OnboardingE = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const [loading, setLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState("")
 
     const goBack = () => {
@@ -22,6 +26,77 @@ const OnboardingC = () => {
 
     const handlewNext = () => {
         navigation?.navigate('OnboardingF');
+    }
+
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    });
+
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        // ✅ Phone number validation
+        const phoneRegex = /^[0-9]{10}$/; // Adjust regex based on your requirement
+        if (!phoneNumber?.trim()) {
+            newErrors = {
+                field: "phoneNumber",
+                message: "Phone number is required",
+            };
+            setIsErrors(newErrors);
+            return false;
+        } else if (!phoneRegex.test(phoneNumber)) {
+            newErrors = {
+                field: "phoneNumber",
+                message: "Enter a valid 10-digit phone number",
+            };
+            setIsErrors(newErrors);
+            return false;
+        }
+        // ✅ No errors
+        setIsErrors({ field: "", message: "" });
+        return true;
+    }
+
+
+
+
+    const handleSubmit = async () => {
+        //  navigation?.navigate('OnboardingH');
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+        // try {
+        //     setLoading(true);
+        //     const result = await apiServices.updateUserDoc(userInfo?.uid, {
+        //         "race": {
+        //             "raceId": selectedId,
+        //             "other": selectedId == 9 ? otherValue : ""
+        //         },
+        //     });
+
+        //     if (result?.success) {
+        //         showToast({
+        //             type: 'success',
+        //             title: 'Race has been added successfully.',
+        //         });
+        //         navigation?.navigate('OnboardingF');
+        //     } else {
+        //         showToast({
+        //             type: 'error',
+        //             title: 'Something went wrong. Please try again.',
+        //         });
+        //     }
+        // } catch (error) {
+        //     console.error('Onboarding start error:', error);
+        //     showToast({
+        //         type: 'error',
+        //         title: 'Unexpected error occurred.',
+        //     });
+        // } finally {
+        //     setLoading(false);
+        // }
     }
 
 
@@ -62,6 +137,7 @@ const OnboardingC = () => {
                                     onChangeText={(t) => setPhoneNumber(t?.replace(/[^0-9]/g, ''))}
                                     placeholder=""
                                     keyboardType='number-pad'
+                                    error={isErrors.field === "phoneNumber" ? isErrors.message : ""}
                                 // inputStyle={{
                                 //     minHeight: Platform.OS === "ios" ? scale(44) : scale(46),
                                 //     // borderTopLeftRadius: 0,
@@ -81,7 +157,7 @@ const OnboardingC = () => {
     )
 }
 
-export default OnboardingC
+export default OnboardingE
 
 const styles = StyleSheet.create({
     container: {

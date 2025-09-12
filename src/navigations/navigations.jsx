@@ -62,8 +62,8 @@ function TabsStack() {
     )
 }
 
-function AuthStack() {
 
+function AuthStack() {
     return (
         <Stack.Navigator
             initialRouteName="Login"
@@ -146,9 +146,9 @@ export default function RootNavigation() {
         }}
         // initialRouteName='Splash'
         >
-            {/* <Stack.Screen name="Splash" component={Splash} />
-            <Stack.Screen name="TabsStack" component={TabsStack} />
-            <Stack.Screen name="AuthStack" component={AuthStack} /> */}
+            {/* <Stack.Screen name="Splash" component={Splash} /> */}
+            {/* <Stack.Screen name="AuthStack" component={AuthStack} /> */}
+            {/* <Stack.Screen name="TabsStack" component={TabsStack} /> */}
 
             {showSplash ? (
                 <Stack.Screen name="Splash" component={Splash} />
@@ -157,7 +157,6 @@ export default function RootNavigation() {
             ) : (
                 <Stack.Screen name="AuthStack" component={AuthStack} />
             )}
-
         </Stack.Navigator>
     );
 }

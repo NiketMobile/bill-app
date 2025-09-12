@@ -9,13 +9,18 @@ import { moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
 import { selectMaritalStatus } from '../../constant/dataJson'
+import showToast from '../../components/showMessage'
+import { apiServices } from '../../services/apiService'
+import { useSelector } from 'react-redux'
+import Loader from '../../components/loader'
 
-
+const track_id = "13"
 
 const OnboardingN = () => {
     const navigation = useNavigation()
+    const userInfo = useSelector((state) => state?.userInfo?.userData)
+    const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
-    const [otherValue, setOtherValue] = useState("");
 
     const goBack = () => {
         navigation.goBack()
@@ -24,6 +29,70 @@ const OnboardingN = () => {
     const handlewNext = () => {
         navigation?.navigate('OnboardingO');
     }
+
+
+    const [isErrors, setIsErrors] = useState({
+        field: "",
+        message: ""
+    })
+
+    const isValid = () => {
+        let newErrors = { field: "", message: "" };
+
+        if (!selectedId) {
+            newErrors = {
+                field: "maritalstatus",
+                message: "Select Marital status is required",
+            };
+            showToast({
+                type: 'error',
+                title: 'Select Marital status, is required',
+            });
+            setIsErrors(newErrors);
+            return false;
+        }
+        setIsErrors({ field: "", message: "" });
+        return true;
+    };
+
+
+
+    const handleSubmit = async () => {
+        const isValidated = isValid();
+        console.log('isValidated', JSON.stringify(isValidated, null, 2))
+        if (!isValidated) return;  // ⬅️ Stop execution if validation fails
+        try {
+            setLoading(true);
+            const result = await apiServices.updateUserDoc(userInfo?.uid, {
+                "marital_status": selectedId,
+                track_id:track_id
+            });
+            if (result?.success) {
+                showToast({
+                    type: 'success',
+                    title: 'Marital status has been added successfully.',
+                });
+                navigation?.navigate('OnboardingO');
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Onboarding start error:', error);
+            showToast({
+                type: 'error',
+                title: 'Unexpected error occurred.',
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
+
+
 
 
     const renderItem = ({ item }) => (
@@ -86,10 +155,13 @@ const OnboardingN = () => {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-                <TouchableOpacity style={[styles.fab]} onPress={handlewNext} >
+                <TouchableOpacity style={[styles.fab]} onPress={handleSubmit} >
                     <Image source={images.right} style={styles.rightIcon} />
                 </TouchableOpacity>
             </View>
+            {
+                loading && <Loader />
+            }
         </Wrapper>
     )
 }
