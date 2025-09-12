@@ -83,7 +83,7 @@ const Splash = () => {
   return (
     <Wrapper barStyle="dark-content" isFullView={true}>
       <View style={styles.container}>
-        {/* <Animated.Image
+        <Animated.Image
           source={imagesData[2]}
           style={[styles.image, animatedStyle1]}
           resizeMode="cover"
@@ -97,7 +97,7 @@ const Splash = () => {
           source={imagesData[0]}
           style={[styles.image, animatedStyle3]}
           resizeMode="cover"
-        /> */}
+        />
 
         {/* Dark overlay for contrast */}
         <View style={styles.overlay} />

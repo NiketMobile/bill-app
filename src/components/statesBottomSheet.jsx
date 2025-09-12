@@ -68,7 +68,6 @@ const StatesBottomSheet = forwardRef(({ onCountrySelect }, ref) => {
                 backgroundColor: colors.thumb,
                 width: scale(50)
             }}
-
         >
             <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>States</Text>
@@ -90,6 +89,7 @@ const StatesBottomSheet = forwardRef(({ onCountrySelect }, ref) => {
                                 style={styles.countryList}
                                 contentContainerStyle={styles.countryListContent}
                                 showsVerticalScrollIndicator={false}
+                                keyboardShouldPersistTaps="handled"
                             />
                         )
                 }

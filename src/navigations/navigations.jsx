@@ -144,19 +144,19 @@ export default function RootNavigation() {
             },
             cardStyleInterpolator: CardStyleInterpolators.forFadeFromRightAndroid,
         }}
-        // initialRouteName='AuthStack'
+        initialRouteName='AuthStack'
         >
             {/* <Stack.Screen name="Splash" component={Splash} /> */}
-            {/* <Stack.Screen name="AuthStack" component={AuthStack} /> */}
+            <Stack.Screen name="AuthStack" component={AuthStack} />
             {/* <Stack.Screen name="TabsStack" component={TabsStack} /> */}
 
-            {showSplash ? (
+            {/* {showSplash ? (
                 <Stack.Screen name="Splash" component={Splash} />
             ) : token ? (
                 <Stack.Screen name="TabsStack" component={TabsStack} />
             ) : (
                 <Stack.Screen name="AuthStack" component={AuthStack} />
-            )}
+            )} */}
         </Stack.Navigator>
     );
 }
