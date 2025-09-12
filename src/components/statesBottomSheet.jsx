@@ -1,5 +1,5 @@
-import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { forwardRef, useCallback, useMemo, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { STATES } from '../constant/dataJson';
 import InputBox from './inputBox';
@@ -7,6 +7,10 @@ import { colors } from '../constant/colors';
 import { fonts } from '../constant/fonts';
 import { scale } from '../utils/appScale';
 import { images } from '../constant/images';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllStatesAction } from '../redux/actions/getStatesAction';
+import Loader from './loader';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -14,15 +18,21 @@ const StatesBottomSheet = forwardRef(({ onCountrySelect }, ref) => {
     const snapPoints = useMemo(() => ["70%", "85%", "98%"], []);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCountry, setSelectedCountry] = useState(null);
+    const dispatch = useDispatch()
+    const { data, loading, error } = useSelector((state) => state?.statesReducer)
+
+    useEffect(() => {
+        dispatch(getAllStatesAction({ collectionName: "States" }));
+    }, [])
 
     // Filter countries based on search query
     const filteredCountries = useMemo(() => {
-        if (!searchQuery) return STATES;
-        return STATES.filter(country =>
-            country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            country.code.toLowerCase().includes(searchQuery.toLowerCase())
+        if (!searchQuery) return data;
+        return data?.filter(country =>
+            country?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            country?.code.toLowerCase().includes(searchQuery.toLowerCase())
         );
-    }, [searchQuery]);
+    }, [searchQuery, data]);
 
     const handleCountrySelect = useCallback((country) => {
         setSelectedCountry(country);
@@ -69,15 +79,20 @@ const StatesBottomSheet = forwardRef(({ onCountrySelect }, ref) => {
                     placeholder="Search.."
                     containerStyle={styles.searchContainer}
                 />
-
-                <FlatList
-                    data={filteredCountries}
-                    keyExtractor={(item) => item.code}
-                    renderItem={renderCountryItem}
-                    style={styles.countryList}
-                    contentContainerStyle={styles.countryListContent}
-                    showsVerticalScrollIndicator={false}
-                />
+                {
+                    loading ?
+                        <ActivityIndicator size="small" color={colors.themeColor} style={{ marginTop: 20 }} />
+                        : (
+                            <FlatList
+                                data={filteredCountries}
+                                keyExtractor={(item) => item.code}
+                                renderItem={renderCountryItem}
+                                style={styles.countryList}
+                                contentContainerStyle={styles.countryListContent}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        )
+                }
             </View>
         </BottomSheet>
     )

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -12,18 +12,25 @@ import { selectGender, selectRaceList } from '../../constant/dataJson'
 import Loader from '../../components/loader'
 import showToast from '../../components/showMessage'
 import { apiServices } from '../../services/apiService'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 const track_id = "7"
 
 const OnboardingH = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
 
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "Gender" }));
+    }, [])
 
     const goBack = () => {
         navigation.goBack()
@@ -46,7 +53,7 @@ const OnboardingH = () => {
             return false;
         }
 
-        if (selectedId == 4 && !otherValue?.trim()) {
+        if (selectedId == "04" && !otherValue?.trim()) {
             newErrors = {
                 field: "otherValue",
                 message: "Other value is required when option other is selected",
@@ -60,7 +67,6 @@ const OnboardingH = () => {
     };
 
 
-
     const handleSubmit = async () => {
         //  navigation?.navigate('OnboardingH');
         const isValidated = isValid();
@@ -71,7 +77,7 @@ const OnboardingH = () => {
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "gender": {
                     "gender_id": selectedId,
-                    "other": selectedId == 4 ? otherValue : ""
+                    "other": selectedId == "04" ? otherValue : ""
                 },
                 track_id: track_id
             });
@@ -117,7 +123,7 @@ const OnboardingH = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -127,7 +133,7 @@ const OnboardingH = () => {
                     )}
                 </View>
             </TouchableOpacity>
-            {item.id === 4 && selectedId === 4 && (
+            {item.id == "04" && selectedId == "04" && (
                 <View style={{ marginTop: selectedId == item?.id ? scale(7) : 0 }}>
                     <InputBox
                         value={otherValue}
@@ -186,7 +192,7 @@ const OnboardingH = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
         </Wrapper>
     )

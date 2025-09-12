@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -11,17 +11,26 @@ import { useNavigation } from '@react-navigation/native'
 import { selectDisability } from '../../constant/dataJson'
 import showToast from '../../components/showMessage'
 import { apiServices } from '../../services/apiService'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/loader'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 const track_id = "9"
 
 const OnboardingJ = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+    
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "Disability" }));
+    }, [])
+
 
     const goBack = () => {
         navigation.goBack()
@@ -110,7 +119,7 @@ const OnboardingJ = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -143,7 +152,8 @@ const OnboardingJ = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectDisability}
+                                // data={selectDisability}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -160,7 +170,7 @@ const OnboardingJ = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
         </Wrapper>
     )

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -12,7 +12,8 @@ import { selectRaceList } from '../../constant/dataJson'
 import Loader from '../../components/loader'
 import { apiServices } from '../../services/apiService'
 import showToast from '../../components/showMessage'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 
@@ -20,10 +21,18 @@ const track_id = "6"
 
 const OnboardingG = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
     const [loading, setLoading] = useState(false);
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "Race" }));
+    }, [])
+
 
     const goBack = () => {
         navigation.goBack()
@@ -46,7 +55,7 @@ const OnboardingG = () => {
             return false;
         }
 
-        if (selectedId == 9 && !otherValue?.trim()) {
+        if (selectedId == "09" && !otherValue?.trim()) {
             newErrors = {
                 field: "otherValue",
                 message: "Other value is required when option other is selected",
@@ -60,7 +69,6 @@ const OnboardingG = () => {
     };
 
 
-
     const handleSubmit = async () => {
         //  navigation?.navigate('OnboardingH');
         const isValidated = isValid();
@@ -71,7 +79,7 @@ const OnboardingG = () => {
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "race": {
                     "race_id": selectedId,
-                    "other": selectedId == 9 ? otherValue : ""
+                    "other": selectedId == "09" ? otherValue : ""
                 },
                 track_id: track_id
             });
@@ -106,15 +114,6 @@ const OnboardingG = () => {
 
 
 
-
-
-
-
-
-
-
-
-
     const renderItem = ({ item }) => (
         <View style={{ marginBottom: scale(5) }}>
             <TouchableOpacity
@@ -133,7 +132,7 @@ const OnboardingG = () => {
                             },
                         ]}
                     >
-                        {item.title}
+                        {item.name}
                     </Text>
                 </View>
                 <View style={[styles.radioOuter, {
@@ -146,7 +145,7 @@ const OnboardingG = () => {
                     )}
                 </View>
             </TouchableOpacity>
-            {item.id === 9 && selectedId === 9 && (
+            {item.id == "09" && selectedId == "09" && (
                 <View style={{ marginTop: selectedId == item?.id ? scale(7) : 0, }}>
                     <InputBox
                         value={otherValue}
@@ -184,7 +183,8 @@ const OnboardingG = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectRaceList}
+                                // data={selectRaceList}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -201,7 +201,7 @@ const OnboardingG = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
         </Wrapper>
     )

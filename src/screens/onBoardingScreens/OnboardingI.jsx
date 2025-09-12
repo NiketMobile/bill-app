@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -8,21 +8,29 @@ import { images } from '../../constant/images'
 import { moderateVerticalScale, scale } from '../../utils/appScale'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useNavigation } from '@react-navigation/native'
-import { selectGender, selectRaceList, selectSexualOrientation } from '../../constant/dataJson'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import showToast from '../../components/showMessage'
 import { apiServices } from '../../services/apiService'
 import Loader from '../../components/loader'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 const track_id = "8"
 
 const OnboardingI = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "SexualOrientation" }));
+    }, [])
+
 
     const goBack = () => {
         navigation.goBack()
@@ -48,7 +56,7 @@ const OnboardingI = () => {
             setIsErrors(newErrors);
             return false;
         }
-        if (selectedId == 5 && !otherValue?.trim()) {
+        if (selectedId == "05" && !otherValue?.trim()) {
             newErrors = {
                 field: "otherValue",
                 message: "Other value is required when option other is selected",
@@ -72,7 +80,7 @@ const OnboardingI = () => {
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "sexual_orientation": {
                     "sexual_orientation_id": selectedId,
-                    "other": selectedId == 5 ? otherValue : ""
+                    "other": selectedId == "05" ? otherValue : ""
                 },
                 track_id: track_id
             });
@@ -118,7 +126,7 @@ const OnboardingI = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -128,7 +136,7 @@ const OnboardingI = () => {
                     )}
                 </View>
             </TouchableOpacity>
-            {item.id === 5 && selectedId === 5 && (
+            {item.id == "05" && selectedId == "05" && (
                 <View style={{ marginTop: selectedId == item?.id ? scale(7) : 0 }}>
                     <InputBox
                         value={otherValue}
@@ -170,7 +178,8 @@ const OnboardingI = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectSexualOrientation}
+                                // data={selectSexualOrientation}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -187,7 +196,7 @@ const OnboardingI = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
         </Wrapper>
     )

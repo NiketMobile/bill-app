@@ -23,6 +23,7 @@ const OnboardingC = () => {
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const sheetRef = useRef(null);
     const [selectedState, setSelectedState] = useState(null)
+    const [stateId, setStateId] = useState("")
     const [streetAddress, setStreetAddress] = useState("")
     const [apartment, setApartment] = useState("")
     const [city, setCity] = useState("")
@@ -48,6 +49,7 @@ const OnboardingC = () => {
 
     const handleCountrySelect = useCallback((country) => {
         setSelectedState(country?.name);
+        setStateId(country?.id);
         console.log('country', JSON.stringify(country, null, 2))
         handleClosePress();
     }, []);
@@ -122,6 +124,7 @@ const OnboardingC = () => {
         try {
             setLoading(true);
             const addressData = {
+                state_id: stateId || "",
                 state: selectedState || "",
                 streetAddress: streetAddress || "",
                 apartment: apartment || "",

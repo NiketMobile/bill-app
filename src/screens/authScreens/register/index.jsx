@@ -36,7 +36,7 @@ const Register = () => {
     // const [email, setEmail] = useState('');
     // const [password, setPassword] = useState('');
 
-    const [email, setEmail] = useState(__DEV__ ? "test2@gmail.com" : "");
+    const [email, setEmail] = useState(__DEV__ ? "test3@gmail.com" : "");
     const [password, setPassword] = useState(__DEV__ ? "test@test" : "");
 
     const [isErrors, setIsErrors] = useState({

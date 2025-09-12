@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -10,19 +10,28 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useNavigation } from '@react-navigation/native'
 import { selectDisability, selectReligion } from '../../constant/dataJson'
 import showToast from '../../components/showMessage'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { apiServices } from '../../services/apiService'
 import Loader from '../../components/loader'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 const track_id = "12"
 
 const OnboardingM = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "Religion" }));
+    }, [])
+
 
     const goBack = () => {
         navigation.goBack()
@@ -35,7 +44,6 @@ const OnboardingM = () => {
 
     const isValid = () => {
         let newErrors = { field: "", message: "" };
-
         if (!selectedId) {
             newErrors = {
                 field: "religion",
@@ -48,7 +56,7 @@ const OnboardingM = () => {
             setIsErrors(newErrors);
             return false;
         }
-        if (selectedId == 9 && !otherValue?.trim()) {
+        if (selectedId == "09" && !otherValue?.trim()) {
             newErrors = {
                 field: "otherValue",
                 message: "Other value is required when option other is selected",
@@ -72,9 +80,9 @@ const OnboardingM = () => {
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "religion": {
                     "religion_id": selectedId,
-                    "other": selectedId == 9 ? otherValue : ""
+                    "other": selectedId == "09" ? otherValue : ""
                 },
-                track_id:track_id
+                track_id: track_id
             });
             if (result?.success) {
                 showToast({
@@ -120,7 +128,7 @@ const OnboardingM = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -130,7 +138,7 @@ const OnboardingM = () => {
                     )}
                 </View>
             </TouchableOpacity>
-            {item.id === 9 && selectedId === 9 && (
+            {item.id == "09" && selectedId == "09" && (
                 <View style={{ marginTop: selectedId == item?.id ? scale(7) : 0 }}>
                     <InputBox
                         value={otherValue}
@@ -174,7 +182,8 @@ const OnboardingM = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectReligion}
+                                // data={selectReligion}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -191,7 +200,7 @@ const OnboardingM = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loading || loading) && <Loader />
             }
         </Wrapper>
     )

@@ -70,8 +70,32 @@ export const getUserDoc = async (uid) => {
 };
 
 
+export const getCollectionDocs = async (collectionName) => {
+    try {
+        if (!collectionName) throw new Error("Collection name is required");
+
+        const snapshot = await firestore().collection(collectionName).get();
+
+        if (snapshot?.empty) {
+            return [];
+        }
+
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return data;
+    } catch (error) {
+        console.error(`getCollectionDocs error [${collectionName}]:`, error);
+        return [];
+    }
+};
+
+
 export const apiServices = {
     createUserDoc,
     updateUserDoc,
-    getUserDoc
+    getUserDoc,
+    getCollectionDocs
 };

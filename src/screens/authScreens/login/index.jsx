@@ -24,6 +24,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { placeToken, placeUserData } from '../../../redux/reducers/userInfoReducer';
 import showToast from '../../../components/showMessage';
 import { apiServices } from '../../../services/apiService';
+import firestore from '@react-native-firebase/firestore';
+import { selectGender, selectSexualOrientation } from '../../../constant/dataJson';
+
+
 
 const Login = () => {
   const isAndroid = Platform.OS === 'android';
@@ -35,7 +39,7 @@ const Login = () => {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
 
-  const [email, setEmail] = useState(__DEV__ ? "test2@gmail.com" : "");
+  const [email, setEmail] = useState(__DEV__ ? "test3@gmail.com" : "");
   const [password, setPassword] = useState(__DEV__ ? "test@test" : "");
 
   const [isErrors, setIsErrors] = useState({
@@ -287,6 +291,31 @@ const Login = () => {
 
 
 
+  const uploadStatesToFirestore = async () => {
+    try {
+      const batch = firestore().batch(); // Use batch for better performance
+
+      const Datasss = [
+        { id: "01", name: "Yes" },
+        { id: "02", name: "No" },
+        { id: "03", name: "Prefer not to answer" },
+      ];
+
+      Datasss.forEach(state => {
+        // Create a document with ID equal to state.id
+        const docRef = firestore().collection('Veteran').doc(state.id.toString());
+        batch.set(docRef, state); // add the whole state object
+      });
+
+      await batch.commit();
+      console.log('All states uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading states:', error);
+    }
+  };
+
+
+
 
   return (
     <Wrapper barStyle="dark-content" isFullView={true}>
@@ -340,7 +369,7 @@ const Login = () => {
               <View style={styles.socialContainer}>
                 <Text style={styles.socialTitle}>Login with</Text>
                 <View style={styles.socialRow}>
-                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} >
+                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={uploadStatesToFirestore}>
                     <Image source={images.facebook} style={styles.icons} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={logoutPress}>

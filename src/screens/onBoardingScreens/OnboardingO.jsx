@@ -15,6 +15,7 @@ import { apiServices } from '../../services/apiService'
 import { useDispatch, useSelector } from 'react-redux'
 import showToast from '../../components/showMessage'
 import { placeToken } from '../../redux/reducers/userInfoReducer'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 
@@ -28,6 +29,12 @@ const OnboardingO = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [otherValue, setOtherValue] = useState("");
     const [isVisible, setIsVisible] = useState(false)
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "PoliticalAffiliation" }));
+    }, [])
+
 
     const goBack = () => {
         navigation.goBack()
@@ -78,7 +85,7 @@ const OnboardingO = () => {
             setIsErrors(newErrors);
             return false;
         }
-        if (selectedId == 9 && !otherValue?.trim()) {
+        if (selectedId == "09" && !otherValue?.trim()) {
             newErrors = {
                 field: "otherValue",
                 message: "Other value is required when option other is selected",
@@ -102,7 +109,7 @@ const OnboardingO = () => {
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "political_affiliation": {
                     "political_affiliation_id": selectedId,
-                    "other": selectedId == 9 ? otherValue : ""
+                    "other": selectedId == "09" ? otherValue : ""
                 },
                 track_id: track_id
             });
@@ -148,7 +155,7 @@ const OnboardingO = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -158,7 +165,7 @@ const OnboardingO = () => {
                     )}
                 </View>
             </TouchableOpacity>
-            {item.id === 9 && selectedId === 9 && (
+            {item.id == "09" && selectedId == "09" && (
                 <View style={{ marginTop: selectedId == item?.id ? scale(7) : 0 }}>
                     <InputBox
                         value={otherValue}
@@ -201,7 +208,8 @@ const OnboardingO = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectPoliticalAffiliation}
+                                // data={selectPoliticalAffiliation}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -218,7 +226,7 @@ const OnboardingO = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
             <MessageModal
                 isVisible={isVisible}

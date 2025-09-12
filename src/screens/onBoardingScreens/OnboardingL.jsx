@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -12,16 +12,24 @@ import { selectDisability, selectIncomeRange } from '../../constant/dataJson'
 import { apiServices } from '../../services/apiService'
 import showToast from '../../components/showMessage'
 import Loader from '../../components/loader'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 
 const track_id = "11"
 
 const OnboardingL = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "IncomeRange" }));
+    }, [])
 
     const goBack = () => {
         navigation.goBack()
@@ -61,7 +69,7 @@ const OnboardingL = () => {
             setLoading(true);
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "income_range_id": selectedId,
-                track_id:track_id
+                track_id: track_id
             });
             if (result?.success) {
                 showToast({
@@ -108,7 +116,7 @@ const OnboardingL = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -140,7 +148,8 @@ const OnboardingL = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectIncomeRange}
+                                // data={selectIncomeRange}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -157,7 +166,7 @@ const OnboardingL = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
         </Wrapper>
     )

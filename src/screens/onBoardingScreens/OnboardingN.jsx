@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../../components/wrapper'
 import InputBox from '../../components/inputBox'
 import { colors } from '../../constant/colors'
@@ -11,16 +11,23 @@ import { useNavigation } from '@react-navigation/native'
 import { selectMaritalStatus } from '../../constant/dataJson'
 import showToast from '../../components/showMessage'
 import { apiServices } from '../../services/apiService'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/loader'
+import { getCollectionAction } from '../../redux/actions/getCollectionsAction'
 
 const track_id = "13"
 
 const OnboardingN = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const userInfo = useSelector((state) => state?.userInfo?.userData)
     const [loading, setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const { data, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+
+    useEffect(() => {
+        dispatch(getCollectionAction({ collectionName: "MaritalStatus" }));
+    }, [])
 
     const goBack = () => {
         navigation.goBack()
@@ -65,7 +72,7 @@ const OnboardingN = () => {
             setLoading(true);
             const result = await apiServices.updateUserDoc(userInfo?.uid, {
                 "marital_status": selectedId,
-                track_id:track_id
+                track_id: track_id
             });
             if (result?.success) {
                 showToast({
@@ -110,7 +117,7 @@ const OnboardingN = () => {
                         },
                     ]}
                 >
-                    {item.title}
+                    {item.name}
                 </Text>
                 <View style={styles.radioOuter}>
                     {selectedId == item.id ? (
@@ -143,7 +150,8 @@ const OnboardingN = () => {
                         <View style={{ flex: 1 }}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
-                                data={selectMaritalStatus}
+                                // data={selectMaritalStatus}
+                                data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.id}
                                 ListFooterComponent={() => {
@@ -160,7 +168,7 @@ const OnboardingN = () => {
                 </TouchableOpacity>
             </View>
             {
-                loading && <Loader />
+                (loader || loading) && <Loader />
             }
         </Wrapper>
     )

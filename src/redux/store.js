@@ -2,10 +2,14 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import reduxStorage from "./storage";
 import userInfoReducer from "./reducers/userInfoReducer";
+import statesReducer from "./reducers/getStatesReducer";
+import collectionReducer from "./reducers/getCollectionReducer";
 
 
 const rootReducer = combineReducers({
     userInfo: userInfoReducer,
+    statesReducer: statesReducer,
+    collectionReducer: collectionReducer
 });
 
 const persistConfig = {
