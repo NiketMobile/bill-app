@@ -1,5 +1,5 @@
 {
   "extends": "@react-native/typescript-config",
-  "include": ["**/*.ts", "**/*.tsx", "App.jsx"],
+  "include": ["**/*.ts", "**/*.tsx", "App.jsx", "src/components/BillCharts.jsx", "src/components/charts/RadialBarChart.jsx", "src/components/charts/DonutChart.jsx", "src/components/charts/HorizontalBarChart.jsx", "src/components/charts/PairBarChart.jsx", "src/components/charts/PolarAreaChart.jsx", "src/components/charts/ImageStyleBlur.jsx", "src/components/charts/CurvedPieChart.jsx", "src/components/BillSponser.jsx", "src/components/TopHeader.jsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

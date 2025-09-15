@@ -8,6 +8,7 @@ import Profile from '../screens/tabScreens/profile';
 import { CustomTab } from './customTab';
 import Login from '../screens/authScreens/login';
 import Splash from '../screens/stackScreens/splash';
+import SearchScreen from '../screens/stackScreens/searchScreen';
 import Register from "../screens/authScreens/register";
 import OnboardingA from "../screens/onBoardingScreens/OnboardingA"
 import OnboardingB from "../screens/onBoardingScreens/OnboardingB"
@@ -59,6 +60,20 @@ function TabsStack() {
             <Tab.Screen name="Liked" component={Liked} />
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
+    )
+}
+
+
+function StackScreens() {
+    return (
+        <Stack.Navigator
+            initialRouteName="TabsStack"
+            screenOptions={({ route }) => ({
+                headerShown: false,
+            })} >
+            <Stack.Screen name="TabsStack" component={TabsStack} />
+            <Stack.Screen name="SearchScreen" component={SearchScreen} />
+        </Stack.Navigator>
     )
 }
 
@@ -149,7 +164,7 @@ export default function RootNavigation() {
             {showSplash ? (
                 <Stack.Screen name="Splash" component={Splash} />
             ) : token ? (
-                <Stack.Screen name="TabsStack" component={TabsStack} />
+                <Stack.Screen name="StackScreens" component={StackScreens} />
             ) : (
                 <Stack.Screen name="AuthStack" component={AuthStack} />
             )}

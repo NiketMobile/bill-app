@@ -25,4 +25,23 @@ export const images = {
     right_check: require('../assets/images/rightCheck.png'),
     radio_check: require('../assets/images/radio-check.png'),
     radio: require('../assets/images/radio.png'),
+    filter: require('../assets/images/filter.png'),
+    search_black: require('../assets/images/search.png'),
+    notification: require('../assets/images/notification.png'),
+    approved: require('../assets/images/approved.png'),
+    expnad: require('../assets/images/expand.png'),
+    bookmark: require('../assets/images/Bookmark.png'),
+    like: require('../assets/images/like.png'),
+    id: require('../assets/images/id.png'),
+    date: require('../assets/images/date.png'),
+
+    cross: require('../assets/images/cross.png'),
+    bookmarks2: require('../assets/images/bookmarks2.png'),
+    heart2: require('../assets/images/heart2.png'),
+    email2: require('../assets/images/mage_email.png'),
+    back_2: require('../assets/images/back2.png'),
+
+    liked: require('../assets/images/liked.png'),
+    disliked: require('../assets/images/disliked.png'),
+    nutral: require('../assets/images/nutral.png'),
 };
