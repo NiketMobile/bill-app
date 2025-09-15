@@ -44,4 +44,5 @@ export const images = {
     liked: require('../assets/images/liked.png'),
     disliked: require('../assets/images/disliked.png'),
     nutral: require('../assets/images/nutral.png'),
+    filter: require('../assets/images/mage_filter.png'),
 };

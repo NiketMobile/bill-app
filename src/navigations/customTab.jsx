@@ -62,9 +62,9 @@ export function CustomTab({ state, descriptors, navigation }) {
                 let iconSource;
                 if (route.name === 'Home') {
                     iconSource = images.home;
-                } else if (route.name === 'Article') {
+                } else if (route.name === 'News') {
                     iconSource = images.article;
-                } else if (route.name === 'Bill') {
+                } else if (route.name === 'Bills') {
                     iconSource = images.solar_bill;
                 } else if (route.name === 'Liked') {
                     iconSource = images.heart;

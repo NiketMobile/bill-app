@@ -267,9 +267,7 @@ const HomeScreen = () => {
   return (
     <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
       <View style={styles.container}>
-
         <TopHeader onPressSearch={handleSearch} />
-
         <View style={{ flex: 1 }}>
           {loading && currentIndex === 0 ? (
             <View style={styles.loadingContainer}>

@@ -16,5 +16,6 @@ export const colors = {
     border_v1: "#B5B5B5",
     thumb: "#8A8A8A",
     bg_v1: "#F5F6FA",
-    text_v3: "#141C4699"
+    text_v3: "#141C4699",
+    lite_red:"#FAF5F5"
 }

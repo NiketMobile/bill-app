@@ -1,8 +1,8 @@
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/tabScreens/home';
-import Article from '../screens/tabScreens/article';
-import Bill from '../screens/tabScreens/bill';
+import News from '../screens/tabScreens/news';
+import Bills from '../screens/tabScreens/bills';
 import Liked from '../screens/tabScreens/liked';
 import Profile from '../screens/tabScreens/profile';
 import { CustomTab } from './customTab';
@@ -55,8 +55,8 @@ function TabsStack() {
             tabBar={(props) => <CustomTab {...props} />}
             screenOptions={{ headerShown: false }} >
             <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="Article" component={Article} />
-            <Tab.Screen name="Bill" component={Bill} />
+            <Tab.Screen name="News" component={News} />
+            <Tab.Screen name="Bills" component={Bills} />
             <Tab.Screen name="Liked" component={Liked} />
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>

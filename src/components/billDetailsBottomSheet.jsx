@@ -7,7 +7,7 @@ import { scale } from '../utils/appScale';
 
 
 
-const BillDetailsBottomSheet = forwardRef(({ children }, ref) => {
+const BillDetailsBottomSheet = forwardRef(({ children, sheetStyle }, ref) => {
     const snapPoints = useMemo(() => ["70%", "85%", "92%"], []);
 
 
@@ -22,7 +22,7 @@ const BillDetailsBottomSheet = forwardRef(({ children }, ref) => {
             snapPoints={snapPoints}
             enableDynamicSizing={false}
             enablePanDownToClose={true}
-            style={styles.bottomSheetCont}
+            style={[styles.bottomSheetCont, sheetStyle]}
             handleIndicatorStyle={{
                 backgroundColor: colors.thumb,
                 width: scale(50)

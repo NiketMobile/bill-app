@@ -50,6 +50,7 @@ import Wrapper from '../../../components/wrapper'
 import { fontScale, scale } from '../../../utils/appScale'
 import { images } from "../../../constant/images";
 import { fonts } from "../../../constant/fonts";
+import { useNavigation } from "@react-navigation/native";
 
 
 
@@ -120,12 +121,18 @@ const bills = [
 ];
 
 const Search = () => {
+    const navigation = useNavigation()
+
+
+
     return (
         <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.container}>
                     <View style={styles.searchContainer}>
-                        <TouchableOpacity
+                        <TouchableOpacity onPress={() => {
+                            navigation.goBack()
+                        }}
                             style={styles.backContainer}
                         >
                             <Image source={images.back_2} style={styles.searchIcon} />
