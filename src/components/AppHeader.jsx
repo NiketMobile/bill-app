@@ -25,11 +25,21 @@ export default function AppHeader({
         <Text numberOfLines={1} style={styles.title}>{title}</Text>
       </View>
 
-      <TouchableOpacity style={styles.side} onPress={onRightPress}>
-        {rightIcon ? (
-          <Image source={rightIcon} style={styles.icon} tintColor={colors.black} />
-        ) : null}
-      </TouchableOpacity>
+      {
+        rightIcon ? (
+          <TouchableOpacity style={styles.side} onPress={onRightPress}>
+            {rightIcon ? (
+              <Image source={rightIcon} style={styles.icon} tintColor={colors.black} />
+            ) : null}
+          </TouchableOpacity>
+        ) : (
+          <View style={{
+            width: 60,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }} />
+        )
+      }
     </View>
   );
 }
@@ -45,8 +55,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.white,
-    height: scale(40),
-    width: scale(40),
+    height: scale(38),
+    width: scale(38),
     borderRadius: 50,
     shadowColor: "#000",
     shadowOffset: {

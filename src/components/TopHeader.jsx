@@ -3,8 +3,9 @@ import React from 'react';
 // import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { images } from '../constant/images';
 import { scale } from '../utils/appScale';
+import { colors } from '../constant/colors';
 
-const TopHeader = ({ onPressSearch }) => {
+const TopHeader = ({ onPressSearch, onPressFilter }) => {
   // const router = useRouter();
   const onPress = () => { };
 
@@ -12,9 +13,9 @@ const TopHeader = ({ onPressSearch }) => {
   return (
     <View style={styles.top_header}>
       <View style={{ flexDirection: 'row', gap: 4 }}>
-        <TouchableOpacity onPress={onPress} style={styles.small_btn_rounder}>
+        <TouchableOpacity onPress={onPressFilter} style={styles.small_btn_rounder}>
           {/* <FontAwesome name="sliders" size={16} color="black" /> */}
-          <Image source={images.filter} style={{ width: 16, height: 16 }} />
+          <Image source={images.filter} style={styles.icon} tintColor={colors.black} />
         </TouchableOpacity>
       </View>
 
@@ -35,7 +36,7 @@ const TopHeader = ({ onPressSearch }) => {
         >
           <Image
             source={images.search}
-            style={{ width: 16, height: 16, tintColor: '#000' }}
+            style={[styles.icon, { tintColor: '#000' }]}
           />
         </TouchableOpacity>
 
@@ -50,7 +51,7 @@ const TopHeader = ({ onPressSearch }) => {
         >
           <Image
             source={images.notification}
-            style={{ width: 16, height: 16 }}
+            style={[styles.icon, { tintColor: '#000' }]}
           />
         </TouchableOpacity>
       </View>
@@ -75,8 +76,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   small_btn_rounder: {
-    height: 40,
-    width: 40,
+    height: scale(38),
+    width: scale(38),
     backgroundColor: '#fff',
     alignSelf: 'center',
     borderRadius: 40,
@@ -92,11 +93,16 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
   },
-
   billHolder: {
     padding: 24,
     borderRadius: 12,
     backgroundColor: '#fff',
     width: '100%',
+  },
+  icon: {
+    width: scale(16),
+    height: scale(16),
+    resizeMode: 'contain',
+    tintColor: colors.theme_v1,
   },
 });

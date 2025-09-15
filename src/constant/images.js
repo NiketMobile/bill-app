@@ -45,4 +45,27 @@ export const images = {
     disliked: require('../assets/images/disliked.png'),
     nutral: require('../assets/images/nutral.png'),
     filter: require('../assets/images/mage_filter.png'),
+    right_arrow: require('../assets/images/right-arrow.png'),
+
+    help: require('../assets/images/help.png'),
+    notifications: require('../assets/images/notifications.png'),
+    newuser: require('../assets/images/newuser.png'),
+    info: require('../assets/images/info.png'),
+    shield: require('../assets/images/shield.png'),
+
+    
+    email_user: require('../assets/images/email-user.png'),
+    dates: require('../assets/images/dates.png'),
+    datetime: require('../assets/images/datetime.png'),
+    gender_male: require('../assets/images/gender-male.png'),
+    gender_trans: require('../assets/images/gender-trans.png'),
+    carbon_badge: require('../assets/images/carbon_badge.png'),
+    money_bag: require('../assets/images/money-bag.png'),
+    oui_users: require('../assets/images/oui_users.png'),
+    gem_ring: require('../assets/images/gem-ring.png'),
+    religion_cross: require('../assets/images/religion-cross.png'),
+    disability: require('../assets/images/disability.png'),
+    compaign: require('../assets/images/compaign.png'),
+    shield: require('../assets/images/shield.png'),
+    verified_new: require('../assets/images/verified-new.png'),
 };

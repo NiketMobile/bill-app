@@ -41,7 +41,6 @@
 
 
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Animated,
@@ -49,7 +48,6 @@ import {
   Text,
   Pressable,
   ActivityIndicator,
-  ScrollView,
 } from 'react-native';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -136,9 +134,9 @@ const HomeScreen = () => {
     handleOpenModal()
   }
 
-
-
-
+  const handleFilter = () => {
+    navigation.navigate("StackScreens", { screen: "FilterScreen" })
+  }
 
 
 
@@ -267,7 +265,7 @@ const HomeScreen = () => {
   return (
     <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
       <View style={styles.container}>
-        <TopHeader onPressSearch={handleSearch} />
+        <TopHeader onPressSearch={handleSearch} onPressFilter={handleFilter} />
         <View style={{ flex: 1 }}>
           {loading && currentIndex === 0 ? (
             <View style={styles.loadingContainer}>

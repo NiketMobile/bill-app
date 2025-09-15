@@ -8,6 +8,10 @@ import Profile from '../screens/tabScreens/profile';
 import { CustomTab } from './customTab';
 import Login from '../screens/authScreens/login';
 import Splash from '../screens/stackScreens/splash';
+import EditProfile from '../screens/stackScreens/editProfile';
+import PrivacySettings from '../screens/stackScreens/privacySettings';
+import FilterScreen from '../screens/stackScreens/filterScreen';
+import AboutUs from '../screens/stackScreens/aboutUs';
 import SearchScreen from '../screens/stackScreens/searchScreen';
 import Register from "../screens/authScreens/register";
 import OnboardingA from "../screens/onBoardingScreens/OnboardingA"
@@ -73,6 +77,10 @@ function StackScreens() {
             })} >
             <Stack.Screen name="TabsStack" component={TabsStack} />
             <Stack.Screen name="SearchScreen" component={SearchScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="PrivacySettings" component={PrivacySettings} />
+            <Stack.Screen name="FilterScreen" component={FilterScreen} />
+            <Stack.Screen name="AboutUs" component={AboutUs} />
         </Stack.Navigator>
     )
 }
