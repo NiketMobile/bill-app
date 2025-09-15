@@ -369,7 +369,7 @@ const Login = () => {
               <View style={styles.socialContainer}>
                 <Text style={styles.socialTitle}>Login with</Text>
                 <View style={styles.socialRow}>
-                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={uploadStatesToFirestore}>
+                  <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)}>
                     <Image source={images.facebook} style={styles.icons} />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.socialBtn} hitSlop={getHitSlop(10)} onPress={logoutPress}>

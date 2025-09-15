@@ -67,7 +67,7 @@ const OnboardingE = () => {
 
 
     const handleSubmit = async () => {
-         const isValidated = isValid();
+        const isValidated = isValid();
         console.log('isValidated', JSON.stringify(isValidated, null, 2));
         if (!isValidated) return; // Stop if validation fails
         navigation?.navigate('OnboardingF');
