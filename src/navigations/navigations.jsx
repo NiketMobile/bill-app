@@ -56,11 +56,14 @@ function TabsStack() {
 
     return (
         <Tab.Navigator
+            initialRouteName="Home"
             tabBar={(props) => <CustomTab {...props} />}
-            screenOptions={{ headerShown: false }} >
-            <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="News" component={News} />
+            screenOptions={{
+                headerShown: false,
+            }} >
             <Tab.Screen name="Bills" component={Bills} />
+            <Tab.Screen name="News" component={News} />
+            <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Liked" component={Liked} />
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>

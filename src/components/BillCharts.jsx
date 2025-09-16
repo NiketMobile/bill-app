@@ -159,7 +159,7 @@ const BillCharts = ({ bill }) => {
               <Text style={styles.statesSubText}>Voted</Text>
             </View>
             <View style={styles.statesIconContainer}>
-                 <Image source={images.check} style={styles.searchIcon} tintColor={colors.themeColor} />
+              <Image source={images.check} style={styles.searchIcon} tintColor={colors.themeColor} />
             </View>
           </View>
         </View>

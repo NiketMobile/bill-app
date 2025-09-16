@@ -119,7 +119,6 @@ const HomeScreen = () => {
 
 
 
-
   const loadInitialData = async () => {
     try {
       const [savedBookmarks, savedLoves] = await Promise.all([
@@ -144,7 +143,6 @@ const HomeScreen = () => {
       const newBills = await fetchBills(currentPage);
 
       console.log('newBills?.length', JSON.stringify(newBills?.length, null, 2))
-
 
       setResults(prev => [...prev, ...newBills]);
       setCurrentPage(prev => prev + 1);
@@ -189,52 +187,9 @@ const HomeScreen = () => {
 
 
 
-  const userDetassils = {
-    "veteran_id": "03",
-    "marital_status": "01",
-    "income_range_id": "03",
-    "sexual_orientation": {
-      "other": "",
-      "sexual_orientation_id": "03"
-    },
-    "religion": {
-      "other": "other",
-      "religion_id": "09"
-    },
-    "track_id": "true",
-    "race": {
-      "other": "",
-      "race_id": "02"
-    },
-    "political_affiliation": {
-      "other": "",
-      "political_affiliation_id": "03"
-    },
-    "date_of_birth": "2005-09-07",
-    "address_data": {
-      "state_id": "10",
-      "state": "Georgia",
-      "zipCode": "12345",
-      "apartment": "tested add",
-      "city": "test USA",
-      "streetAddress": "tested"
-    },
-    "person_disability": "03",
-    "gender": {
-      "other": "",
-      "gender_id": "01"
-    },
-    "name": "test new"
-  }
-
-
-  // console.log('userInfo', JSON.stringify(userInfo, null, 2))
-
   const handlewSwipedLeft = async (cardIndex) => {
 
     const swipedBill = results[cardIndex];
-
-    console.log('handlewSwipedLeft---swipedBill--->', JSON.stringify(swipedBill?.bill_id, null, 2))
 
     if (swipedBill?.bill_id && userDetails) {
       const payload = {
@@ -284,13 +239,36 @@ const HomeScreen = () => {
   };
 
 
+  const handlewSwipedDown = (cardIndex) => {
+
+    const swipedBill = results[cardIndex];
+
+    console.log('handlewSwipedRight---swipedBill--->', JSON.stringify(swipedBill?.bill_id, null, 2))
+
+    if (swipedBill?.bill_id && userDetails) {
+
+      const payload = {
+        income_range: userDetails?.income_range_id,
+        religion: userDetails?.religion?.religion_id,
+        marital_status: userDetails?.marital_status,
+        veteran: userDetails?.veteran_id,
+        disability: userDetails?.person_disability,
+        political_affiliation: userDetails?.political_affiliation?.political_affiliation_id,
+        race: userDetails?.race?.race_id,
+        sexual_orientation: userDetails?.sexual_orientation?.sexual_orientation_id,
+        gender: userDetails?.gender?.gender_id
+      }
+
+      console.log('payload', JSON.stringify(payload, null, 2))
+
+      apiServices.incrementSwipeCount(swipedBill?.bill_id, 'down', payload);
+      apiServices.saveDownSwipe(userInfo?.uid, swipedBill?.bill_id);
+    }
+
+  }
+
+
   console.log('userInfo?.uid', JSON.stringify(userInfo?.uid, null, 2))
-
-
-
-
-
-
 
 
   // --- Called every swipe ---
@@ -345,6 +323,8 @@ const HomeScreen = () => {
                   //   console.log('Swiped RIGHT on card index:', cardIndex)
                   // }
                   onSwipedAll={() => console.log('All cards swiped')}
+                  // onSwipedBottom={handlewSwipedDown}
+                  onSwipedTop={handlewSwipedDown}
                   onSwiped={handleSwiped}
                   stackSize={2}
                   backgroundColor="transparent"

@@ -333,7 +333,7 @@ const Liked = () => {
     <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
       <View style={styles.container}>
         <AppHeader
-          title="My Bills"
+          title="Tracked Bills"
           leftIcon={images.back_2}
           rightIcon={images.filter}
           onLeftPress={() => navigation.goBack()}

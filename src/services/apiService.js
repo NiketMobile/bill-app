@@ -131,50 +131,23 @@ const saveLeftSwipe = async (uid, bill_id) => {
 };
 
 
-const incrementSwipeCountaa = async (rawBillId, direction) => {
+const saveDownSwipe = async (uid, bill_id) => {
+    if (!uid || !bill_id) {
+        console.log('Missing uid or bill_id');
+        return { success: false, error: 'Missing uid or bill_id' };
+    }
     try {
-        // basic validation
-        if (rawBillId === undefined || rawBillId === null) {
-            throw new Error('billId missing or null');
-        }
-        if (direction !== 'left' && direction !== 'right') {
-            throw new Error('direction must be "left" or "right"');
-        }
-
-        // make sure it's a string and safe for use as a doc id
-        const billId = String(rawBillId).trim();
-        // replace slashes which would break path semantics
-        const sanitizedId = billId.replace(/\//g, '_');
-
-        console.log('incrementSwipeCount -> billId:', billId, 'sanitized:', sanitizedId, 'direction:', direction);
-
-        const incrementLiked = direction === 'right' ? 1 : 0;
-        const incrementDislike = direction === 'left' ? 1 : 0;
-        const incrementNeutral = direction === 'down' ? 3 : 0;
-
         await firestore()
-            .collection('SwipeSummary')        // consistent collection name
-            .doc(sanitizedId)
-            .add(
-                {
-                    billId,
-                    liked: firestore.FieldValue.increment(incrementLiked),
-                    disliked: firestore.FieldValue.increment(incrementDislike),
-                    neutral: firestore.FieldValue.increment(incrementNeutral),
-                    updatedAt: firestore.FieldValue.serverTimestamp(),
-                    income_range: "",
-                    religion: "",
-                    marital_status: "",
-                    veteran: "",
-                    disability: ""
-                },
-                { merge: true }
-            );
-
-        console.log('incrementSwipeCount success for', sanitizedId);
+            .collection('Users')
+            .doc(uid)
+            .collection('downSwipes')
+            .add({
+                billId: bill_id,
+                timestamp: firestore.FieldValue.serverTimestamp(),
+            });
         return { success: true };
     } catch (error) {
-        console.error('Error updating swipe summary:', error);
+        console.error('Error saving right swipe:', error);
         return { success: false, error };
     }
 };
@@ -182,8 +155,6 @@ const incrementSwipeCountaa = async (rawBillId, direction) => {
 
 const incrementSwipeCount = async (rawBillId, direction, data) => {
     try {
-
-        console.log('data--->', JSON.stringify(data, null, 2))
 
         if (!rawBillId) throw new Error('billId missing or null');
 
@@ -200,16 +171,6 @@ const incrementSwipeCount = async (rawBillId, direction, data) => {
         const incrementNeutral = direction === 'down' ? 1 : 0; // 👈 count 1 per down swipe
 
         console.log('incrementLiked', JSON.stringify(incrementLiked, null, 2))
-
-        // const data ={ 
-        // income_range: data?.income_range || '',
-        // disability: data?.disability || '',
-        // marital_status: data?.marital_status || '',
-        // race: data?.race || "",
-        // religion: data?.religion || '',
-        // veteran: data?.veteran || '',
-        // political_affiliation: data?.political_affiliation || "",
-        // sexual_orientation: data?.sexual_orientation || ""}
 
         const genderKey = data?.gender; // e.g., "01"
         const disabilityKey = data?.disability;
@@ -317,7 +278,8 @@ export const apiServices = {
     getCollectionDocs,
     saveRightSwipe,
     saveLeftSwipe,
-    incrementSwipeCount
+    incrementSwipeCount,
+    saveDownSwipe
 };
 
 
