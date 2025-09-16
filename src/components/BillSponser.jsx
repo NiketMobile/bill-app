@@ -27,7 +27,7 @@ const BillSponser = ({ sponsors, ...rest }) => {
       <View style={styles.cards}>
         <Image source={{ uri: item.image }} style={styles.avatars} />
         <View style={{ flex: 1, marginLeft: 5 }}>
-          <Text style={styles.names}>{item.name}</Text>
+          <Text numberOfLines={1} style={styles.names}>{item.name}</Text>
           <Text style={styles.role}>Cosponsor</Text>
           <TouchableOpacity style={styles.iconWrappers}>
             <Image source={images.email2} style={styles.icons} />

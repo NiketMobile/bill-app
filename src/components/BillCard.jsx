@@ -25,8 +25,6 @@ export default function BillCard({
   // ...panHandlers
 }) {
 
-  console.log('item--->', JSON.stringify(item, null, 2))
-
   if (!item) return null;
 
   const formatBillNumber = bill => {

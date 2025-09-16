@@ -74,6 +74,9 @@ const HomeScreen = () => {
   const swipe = useRef(new Animated.ValueXY()).current;
   const sheetRef = useRef(null);
   const swiperRef = useRef(null);
+  const [isDataToModal, setisDataToModal] = useState(null)
+
+
 
   const handleSheetChange = useCallback((index) => {
     console.log("handleSheetChange", index);
@@ -85,6 +88,7 @@ const HomeScreen = () => {
 
   const handleClosePress = useCallback(() => {
     sheetRef.current?.close();
+    setisDataToModal(null)
   }, []);
 
   const handleCountrySelect = useCallback(() => {
@@ -113,7 +117,7 @@ const HomeScreen = () => {
 
   const getData = async () => {
     const userDoc = await apiServices.getUserDoc(userInfo?.uid);
-    console.log('userDoc', JSON.stringify(userDoc, null, 2))
+    // console.log('userDoc', JSON.stringify(userDoc, null, 2))
     setUserDetails(userDoc)
   }
 
@@ -278,6 +282,8 @@ const HomeScreen = () => {
     }
   };
 
+  console.log('isDataToModal--->', JSON.stringify(isDataToModal?.bill_id, null, 2))
+
 
 
   return (
@@ -297,13 +303,17 @@ const HomeScreen = () => {
                   ref={swiperRef}
                   cards={results}
                   renderCard={(item) => {
-                    console.log('item---', JSON.stringify(item?.bill_id, null, 2))
+                    console.log('Swiper---', JSON.stringify(item?.bill_id, null, 2))
+
                     return (
                       <BillCard
                         // item={results[currentIndex]}
                         item={item}
                         swipe={swipe}
-                        openModal={openModal}
+                        openModal={() => {
+                          openModal(item)
+                          setisDataToModal(item)
+                        }}
                         isBookmarked={bookmarkedBills?.has(results[currentIndex]?.bill_id)}
                       // isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
                       // onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
@@ -364,7 +374,8 @@ const HomeScreen = () => {
             }}>
               <BillDetails
                 setIsModalVisible={setIsModalVisible}
-                bill={results[currentIndex]}
+                // bill={results[currentIndex]}
+                bill={isDataToModal}
                 isBookmarked={bookmarkedBills.has(results[currentIndex]?.bill_id)}
                 isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
                 onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
