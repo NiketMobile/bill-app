@@ -25,10 +25,6 @@ export default function BillCard({
   // ...panHandlers
 }) {
 
-  console.log('item', JSON.stringify(item, null, 2))
-
-  // console.log('bill', JSON.stringify(bill, null, 2))
-
   if (!item) return null;
 
   const formatBillNumber = bill => {
@@ -37,7 +33,7 @@ export default function BillCard({
       : 'N/A';
   };
 
-  console.log('item?.title', JSON.stringify(item?.title, null, 2))
+  // console.log('item?.title', JSON.stringify(item?.title, null, 2))
 
   const formatDate = dateString => {
     return dateString ? new Date(dateString).toLocaleDateString() : 'N/A';

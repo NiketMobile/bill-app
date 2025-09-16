@@ -16,6 +16,8 @@ import { colors } from '../../../constant/colors';
 import { useNavigation } from '@react-navigation/native';
 import Swiper from 'react-native-deck-swiper';
 import { Host, Portal } from 'react-native-portalize';
+import { useSelector } from 'react-redux';
+import { apiServices } from '../../../services/apiService'
 
 
 
@@ -60,6 +62,7 @@ const fetchBills = async (page = 1, pageSize = 10) => {
 
 const HomeScreen = () => {
   const navigation = useNavigation()
+  const userInfo = useSelector((state) => state?.userInfo?.userData)
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -100,9 +103,22 @@ const HomeScreen = () => {
     navigation.navigate("StackScreens", { screen: "FilterScreen" })
   }
 
+  const [userDetails, setUserDetails] = useState({})
+
+
   useEffect(() => {
     loadInitialData();
+    getData()
   }, []);
+
+  const getData = async () => {
+    const userDoc = await apiServices.getUserDoc(userInfo?.uid);
+    console.log('userDoc', JSON.stringify(userDoc, null, 2))
+    setUserDetails(userDoc)
+  }
+
+
+
 
   const loadInitialData = async () => {
     try {
@@ -165,22 +181,117 @@ const HomeScreen = () => {
   };
 
   const handleSearch = () => {
+    navigation.navigate("StackScreens", { screen: "SearchScreen" })
   }
 
   console.log('results--->', JSON.stringify(results.length, null, 2))
   console.log('currentIndex--->', JSON.stringify(currentIndex, null, 2))
-  console.log('loading', JSON.stringify(loading, null, 2))
 
 
 
-  const handlewSwipedLeft = (data) => {
-
+  const userDetassils = {
+    "veteran_id": "03",
+    "marital_status": "01",
+    "income_range_id": "03",
+    "sexual_orientation": {
+      "other": "",
+      "sexual_orientation_id": "03"
+    },
+    "religion": {
+      "other": "other",
+      "religion_id": "09"
+    },
+    "track_id": "true",
+    "race": {
+      "other": "",
+      "race_id": "02"
+    },
+    "political_affiliation": {
+      "other": "",
+      "political_affiliation_id": "03"
+    },
+    "date_of_birth": "2005-09-07",
+    "address_data": {
+      "state_id": "10",
+      "state": "Georgia",
+      "zipCode": "12345",
+      "apartment": "tested add",
+      "city": "test USA",
+      "streetAddress": "tested"
+    },
+    "person_disability": "03",
+    "gender": {
+      "other": "",
+      "gender_id": "01"
+    },
+    "name": "test new"
   }
 
-  const handlewSwipedRight = (data) => {
 
-  }
-  
+  // console.log('userInfo', JSON.stringify(userInfo, null, 2))
+
+  const handlewSwipedLeft = async (cardIndex) => {
+
+    const swipedBill = results[cardIndex];
+
+    console.log('handlewSwipedLeft---swipedBill--->', JSON.stringify(swipedBill?.bill_id, null, 2))
+
+    if (swipedBill?.bill_id && userDetails) {
+      const payload = {
+        income_range: userDetails?.income_range_id,
+        religion: userDetails?.religion?.religion_id,
+        marital_status: userDetails?.marital_status,
+        veteran: userDetails?.veteran_id,
+        disability: userDetails?.person_disability,
+        political_affiliation: userDetails?.political_affiliation?.political_affiliation_id,
+        race: userDetails?.race?.race_id,
+        sexual_orientation: userDetails?.sexual_orientation?.sexual_orientation_id,
+        gender: userDetails?.gender?.gender_id
+      }
+      console.log('payload', JSON.stringify(payload, null, 2))
+
+      await apiServices.incrementSwipeCount(swipedBill?.bill_id, 'left', payload);
+      await apiServices.saveLeftSwipe(userInfo?.uid, swipedBill?.bill_id);
+    }
+  };
+
+  const handlewSwipedRight = (cardIndex) => {
+    const swipedBill = results[cardIndex];
+
+    console.log('handlewSwipedRight---swipedBill--->', JSON.stringify(swipedBill?.bill_id, null, 2))
+
+    if (swipedBill?.bill_id && userDetails) {
+
+      const payload = {
+        income_range: userDetails?.income_range_id,
+        religion: userDetails?.religion?.religion_id,
+        marital_status: userDetails?.marital_status,
+        veteran: userDetails?.veteran_id,
+        disability: userDetails?.person_disability,
+        political_affiliation: userDetails?.political_affiliation?.political_affiliation_id,
+        race: userDetails?.race?.race_id,
+        sexual_orientation: userDetails?.sexual_orientation?.sexual_orientation_id,
+        gender: userDetails?.gender?.gender_id
+      }
+
+      console.log('payload', JSON.stringify(payload, null, 2))
+
+      apiServices.incrementSwipeCount(swipedBill?.bill_id, 'right', payload);
+      apiServices.saveRightSwipe(userInfo?.uid, swipedBill?.bill_id);
+    }
+
+    // saveRightSwipe(swipedBill);
+  };
+
+
+  console.log('userInfo?.uid', JSON.stringify(userInfo?.uid, null, 2))
+
+
+
+
+
+
+
 
   // --- Called every swipe ---
   const handleSwiped = (index) => {
@@ -225,12 +336,14 @@ const HomeScreen = () => {
                       />
                     )
                   }}
-                  onSwipedLeft={(cardIndex) =>
-                    console.log('Swiped LEFT on card index:', cardIndex)
-                  }
-                  onSwipedRight={(cardIndex) =>
-                    console.log('Swiped RIGHT on card index:', cardIndex)
-                  }
+                  onSwipedLeft={handlewSwipedLeft}
+                  onSwipedRight={handlewSwipedRight}
+                  // onSwipedLeft={(cardIndex) =>
+                  //   console.log('Swiped LEFT on card index:', cardIndex)
+                  // }
+                  // onSwipedRight={(cardIndex) =>
+                  //   console.log('Swiped RIGHT on card index:', cardIndex)
+                  // }
                   onSwipedAll={() => console.log('All cards swiped')}
                   onSwiped={handleSwiped}
                   stackSize={2}

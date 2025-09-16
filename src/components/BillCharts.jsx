@@ -10,6 +10,7 @@ import DonutChart from "./charts/DonutChart";
 import RadialBarChart from "./charts/RadialBarChart";
 import { scale } from "../utils/appScale";
 import { colors } from "../constant/colors";
+import { images } from "../constant/images";
 // import { ICONS } from "@assets/icons";
 
 const BillCharts = ({ bill }) => {
@@ -147,11 +148,9 @@ const BillCharts = ({ bill }) => {
     <View style={{
       marginTop: scale(24)
     }}>
-      {/* <View style={styles.statesContainer}>
-        <LinearGradient
-          colors={["#8A9EFF", "#F0D9D9"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+      <View style={styles.statesContainer}>
+
+        <View
           style={styles.border}
         >
           <View style={styles.states}>
@@ -160,15 +159,16 @@ const BillCharts = ({ bill }) => {
               <Text style={styles.statesSubText}>Voted</Text>
             </View>
             <View style={styles.statesIconContainer}>
+                 <Image source={images.check} style={styles.searchIcon} tintColor={colors.themeColor} />
             </View>
           </View>
-        </LinearGradient>
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          colors={["#8A9EFF", "#F0D9D9"]}
+        </View>
+
+
+        <View
           style={styles.border2}
         >
+
           <View style={styles.states2}>
             <View style={styles.statesTextContainer}>
               <Text style={styles.percentageText}>61%</Text>
@@ -183,9 +183,11 @@ const BillCharts = ({ bill }) => {
               <Text style={styles.labelText}>Neutral</Text>
             </View>
           </View>
-        </LinearGradient>
 
-      </View> */}
+        </View>
+
+      </View>
+
       {/* <Text style={styles.title}>Insights</Text> */}
 
 
@@ -279,38 +281,30 @@ const BillCharts = ({ bill }) => {
         </View>
       </View>
 
-      {/* <View style={styles.statesContainer}>
-        <LinearGradient
-          colors={["#8A9EFF", "#F0D9D9"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.border}
-        >
+      <View style={styles.statesContainer}>
+        <View style={styles.border} >
           <View style={styles.states}>
             <View style={styles.statesTextContainer}>
               <Text style={styles.statesMainText}>506</Text>
               <Text style={styles.statesSubText}>Veteran</Text>
             </View>
             <View style={styles.statesIconContainer}>
+              <Image source={images.carbon_badge} style={styles.searchIcon} />
             </View>
           </View>
-        </LinearGradient>
-        <LinearGradient
-          colors={["#8A9EFF", "#F0D9D9"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.border}
-        >
+        </View>
+        <View style={styles.border} >
           <View style={styles.states}>
             <View style={styles.statesTextContainer}>
               <Text style={styles.statesMainText}>140</Text>
               <Text style={styles.statesSubText}>Disability</Text>
             </View>
             <View style={styles.statesIconContainer}>
+              <Image source={images.disability} style={styles.searchIcon} />
             </View>
           </View>
-        </LinearGradient>
-      </View> */}
+        </View>
+      </View>
 
 
 
@@ -412,11 +406,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 13,
-    marginTop: scale(30),
+    gap: 5,
+    marginTop: scale(15),
   },
-  border: { padding: 1.5, borderRadius: 10, flex: 2 },
-
+  border: {
+    padding: 1.5,
+    borderRadius: 10,
+    width: "48%",
+    borderRadius: 8,
+    borderWidth: 0.7,
+    borderColor: colors.border_v1
+  },
   chartBorder: {
     padding: 1.5,
     borderRadius: 10,
@@ -449,9 +449,10 @@ const styles = StyleSheet.create({
     gap: 2,
     padding: 10,
     paddingHorizontal: 15,
-    backgroundColor: "#fff",
     borderRadius: 8,
     flex: 1,
+    borderWidth: 0.7,
+    borderColor: colors.border_v1
   },
   percentageText: { fontSize: 17, color: "#050A20", fontWeight: "600" },
   labelText: { fontSize: 13, color: "#050A20", fontWeight: "500" },
