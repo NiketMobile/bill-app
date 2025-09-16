@@ -111,7 +111,7 @@ const BillDetails = ({
         {/* Bill metadata */}
         <View style={styles.metaRow}>
           {/* <Text style={styles.metaText}>{bill.state || 'N/A'}</Text> */}
-          <Text style={styles.metaText}>{'Pennsylvania'}</Text>
+          <Text style={styles.metaText}>{bill?.state || ''}</Text>
           <Text style={styles.billNumber}>{formatBillNumber(bill)}</Text>
         </View>
 
@@ -123,7 +123,7 @@ const BillDetails = ({
           alignSelf: 'flex-start',
           borderRadius: 15
         }}>
-          <Text style={styles.chamber}>{"House of Representatives" || 'N/A'}</Text>
+          <Text style={styles.chamber}>{bill?.committee?.name || 'N/A'}</Text>
         </View>
 
         <View style={styles.dateSponsorRow}>
@@ -224,7 +224,7 @@ const BillDetails = ({
         {/* Content area */}
         <View style={styles.contentArea}>
           {isActiveDescription && (
-            <BillDescription description={bill.description} />
+            <BillDescription description={bill?.description} />
           )}
           {isActiveChart && <BillCharts bill={bill} />}
           {isActiveSponser && <BillSponser sponsors={bill.sponsors} />}

@@ -4,12 +4,14 @@ import reduxStorage from "./storage";
 import userInfoReducer from "./reducers/userInfoReducer";
 import statesReducer from "./reducers/getStatesReducer";
 import collectionReducer from "./reducers/getCollectionReducer";
+import documentByIdReducer from "./reducers/getByDocumentByIdReducer";
 
 
 const rootReducer = combineReducers({
     userInfo: userInfoReducer,
     statesReducer: statesReducer,
-    collectionReducer: collectionReducer
+    collectionReducer: collectionReducer,
+    documentByIdReducer: documentByIdReducer
 });
 
 const persistConfig = {

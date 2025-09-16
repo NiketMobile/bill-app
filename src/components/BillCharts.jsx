@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { CurvedPieChart } from "./charts/CurvedPieChart";
@@ -11,9 +11,31 @@ import RadialBarChart from "./charts/RadialBarChart";
 import { scale } from "../utils/appScale";
 import { colors } from "../constant/colors";
 import { images } from "../constant/images";
+import { useDispatch, useSelector } from "react-redux";
+import { getCollectionAction } from "../redux/actions/getCollectionsAction";
+import { getByDocumentByIdAction } from "../redux/actions/getByDocumentByIdAction";
 // import { ICONS } from "@assets/icons";
 
 const BillCharts = ({ bill }) => {
+  const dispatch = useDispatch()
+  const { data: listData, loading: loader, error } = useSelector((state) => state?.collectionReducer)
+  const { data: billData, loading: loading, error: isError } = useSelector((state) => state?.documentByIdReducer)
+
+  console.log('bill', JSON.stringify(bill?.bill_id, null, 2))
+  console.log('listData--->', JSON.stringify(listData, null, 2))
+  console.log('billData--->', JSON.stringify(billData, null, 2))
+
+  useEffect(() => {
+    dispatch(getCollectionAction({ collectionName: "MaritalStatus" }));
+
+    if (bill?.bill_id) {
+      dispatch(getByDocumentByIdAction({ collectionName: "SwipeSummary", docId: "1885910" }));
+    }
+  }, [bill?.bill_id])
+
+
+
+
 
   const chartData = [
     {
@@ -41,8 +63,13 @@ const BillCharts = ({ bill }) => {
       textColor: "#333",
     },
   ];
+
   const sampleData = [
-    { label: "< $25,000", value: 130, color: "#9f97f7", percentage: "24%" },
+    {
+      label: "< $25,000",
+      value: 130, color: "#9f97f7",
+      percentage: "24%"
+    },
     {
       label: "$25,000 - $50,000",
       value: 90,
@@ -61,25 +88,69 @@ const BillCharts = ({ bill }) => {
       color: "#9bdfc4",
       percentage: "30%",
     },
-    { label: "$200,000 +", value: 105, color: "#62b2fd", percentage: "21%" },
+    {
+      label: "$200,000 +",
+      value: 105, color: "#62b2fd",
+      percentage: "21%"
+    },
   ];
 
   const data = [
-    { label: "18-25", value1: 25, value2: 35 },
-    { label: "26-35", value1: 40, value2: 55 },
-    { label: "36-45", value1: 70, value2: 85 },
-    { label: "46-55", value1: 60, value2: 45 },
-    { label: "56-65", value1: 30, value2: 25 },
-    { label: "65+", value1: 20, value2: 75 },
+    {
+      label: "18-25",
+      value1: 25,
+      value2: 35
+    },
+    {
+      label: "26-35",
+      value1: 40,
+      value2: 55
+    },
+    {
+      label: "36-45",
+      value1: 70,
+      value2: 85
+    },
+    {
+      label: "46-55",
+      value1: 60, value2: 45
+    },
+    {
+      label: "56-65",
+      value1: 30, value2: 25
+    },
+    {
+      label: "65+",
+      value1: 20,
+      value2: 75
+    },
   ];
 
   const religionData = [
-    { label: "Christian", value: 2435 },
-    { label: "Muslim", value: 1325 },
-    { label: "Jewish", value: 735 },
-    { label: "Hindu", value: 580 },
-    { label: "Buddhist", value: 428 },
-    { label: "Atheist", value: 208 },
+    {
+      label: "Christian",
+      value: 2435
+    },
+    {
+      label: "Muslim",
+      value: 1325
+    },
+    {
+      label: "Jewish",
+      value: 735
+    },
+    {
+      label: "Hindu",
+      value: 580
+    },
+    {
+      label: "Buddhist",
+      value: 428
+    },
+    {
+      label: "Atheist",
+      value: 208
+    },
   ];
 
   const DonutData = [
@@ -134,12 +205,50 @@ const BillCharts = ({ bill }) => {
     },
   ];
 
+
+
+  const maritalDataColors = ["#62B2FD", "#9BDFC4", "#9F97F7", "#F59E0B", "#F87171"];
+  const maritalDataDynamic = listData
+    // ?.filter(item => item.id !== "05") // skip "Prefer not to answer" if needed
+    ?.map((item, index) => {
+      const counts = billData.marital_status_counts[item.id] || {
+        disliked: 0,
+        liked: 0,
+        neutral: 0
+      };
+      const value = counts.liked + counts.disliked + counts.neutral;
+      return {
+        label: item.name,
+        value,
+        color: maritalDataColors[index % maritalDataColors?.length]
+      };
+    });
+  console.log('maritalDataDynamic', JSON.stringify(maritalDataDynamic, null, 2))
+
   const maritalData = [
-    { label: "Single", value: 22, color: "#62B2FD" },
-    { label: "Married", value: 27, color: "#9BDFC4" },
-    { label: "Divorced", value: 38, color: "#9F97F7" },
-    { label: "Widowed", value: 39, color: "#F59E0B" },
+    {
+      label: "Single",
+      value: 102,
+      color: "#62B2FD"
+    },
+    {
+      label: "Married",
+      value: 27,
+      color: "#9BDFC4"
+    },
+    {
+      label: "Divorced",
+      value: 38,
+      color: "#9F97F7"
+    },
+    {
+      label: "Widowed",
+      value: 39,
+      color: "#F59E0B"
+    },
   ];
+
+
 
 
 
@@ -261,7 +370,7 @@ const BillCharts = ({ bill }) => {
         <View style={styles.radialChartContainer}>
           <View style={styles.radialLegendContainer}>
             <Text style={styles.legendTitle}>Marital Status</Text>
-            {maritalData?.map((item, index) => {
+            {maritalDataDynamic?.map((item, index) => {
               return (
                 <View key={index} style={styles.legendItem}>
                   <View
@@ -277,7 +386,7 @@ const BillCharts = ({ bill }) => {
               );
             })}
           </View>
-          <RadialBarChart data={maritalData} maxSize={180} />
+          <RadialBarChart data={maritalDataDynamic} maxSize={180} />
         </View>
       </View>
 

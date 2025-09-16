@@ -271,6 +271,27 @@ const incrementSwipeCount = async (rawBillId, direction, data) => {
 };
 
 
+const getDataByDocumentById = async (collectionName, docId) => {
+    try {
+        if (!collectionName || !docId) {
+            throw new Error('Both collection name and document id are required');
+        }
+
+        const docSnap = await firestore()
+            .collection(collectionName)
+            .doc(docId)
+            .get();
+
+        if (!docSnap.exists) return null;
+
+        return { id: docSnap.id, ...docSnap.data() };
+    } catch (error) {
+        console.error(`getDocumentById error [${collectionName}/${docId}]:`, error);
+        return null;
+    }
+};
+
+
 export const apiServices = {
     createUserDoc,
     updateUserDoc,
@@ -279,7 +300,8 @@ export const apiServices = {
     saveRightSwipe,
     saveLeftSwipe,
     incrementSwipeCount,
-    saveDownSwipe
+    saveDownSwipe,
+    getDataByDocumentById
 };
 
 

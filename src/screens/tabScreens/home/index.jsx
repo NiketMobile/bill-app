@@ -268,9 +268,6 @@ const HomeScreen = () => {
   }
 
 
-  console.log('userInfo?.uid', JSON.stringify(userInfo?.uid, null, 2))
-
-
   // --- Called every swipe ---
   const handleSwiped = (index) => {
     setCurrentIndex(index + 1);

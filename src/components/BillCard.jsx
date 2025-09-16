@@ -25,6 +25,8 @@ export default function BillCard({
   // ...panHandlers
 }) {
 
+  console.log('item--->', JSON.stringify(item, null, 2))
+
   if (!item) return null;
 
   const formatBillNumber = bill => {
@@ -43,20 +45,7 @@ export default function BillCard({
     <Animated.View
       style={[
         styles.cardContainer,
-        // {
-        //   transform: [
-        //     { translateX: swipe.x },
-        //     { translateY: swipe.y },
-        //     {
-        //       rotate: swipe.x.interpolate({
-        //         inputRange: [-width, 0, width],
-        //         outputRange: ['-30deg', '0deg', '30deg'],
-        //       }),
-        //     },
-        //   ],
-        // },
       ]}
-    // {...panHandlers}
     >
       <View style={styles.billHolder}>
         {/* Header */}
