@@ -1,64 +1,22 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-// import Wrapper from '../../../components/wrapper'
-// import { clearAppStorage } from '../../../utils/globalFunctions'
-// import Button from '../../../components/button'
-// import { useNavigation } from '@react-navigation/native'
-// import { placeToken, placeUserData } from '../../../redux/reducers/userInfoReducer'
-// import { useDispatch } from 'react-redux'
-
-// const Home = () => {
-//   const navigation = useNavigation()
-//   const dispatch = useDispatch()
-
-//   const logoutPress = async () => {
-//     navigation.navigate('Splash');
-//     await clearAppStorage()
-//     dispatch(placeToken(null));
-//     dispatch(placeUserData({}));
-//   }
-
-
-//   return (
-//     <Wrapper barStyle="dark-content">
-//       <View style={{
-//         justifyContent: "center",
-//         alignItems: "center",
-//         flex: 1,
-//         paddingHorizontal: 20
-//       }}>
-//         <Text>Home screen</Text>
-//         <Button onPress={logoutPress} title="Logout" />
-//       </View>
-//     </Wrapper>
-//   )
-// }
-
-// export default Home
-
-// const styles = StyleSheet.create({})
-
-
-
 import {
   StyleSheet,
   View,
   Animated,
-  PanResponder,
   Text,
   Pressable,
   ActivityIndicator,
 } from 'react-native';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import BillCard from '../../../components/BillCard';
 import TopHeader from '../../../components/TopHeader';
 import BillDetails from '../../../components/BillDetails';
 import BillDetailsBottomSheet from '../../../components/billDetailsBottomSheet';
-import Modal from 'react-native-modal';
 import Wrapper from '../../../components/wrapper';
 import { colors } from '../../../constant/colors';
 import { useNavigation } from '@react-navigation/native';
+import Swiper from 'react-native-deck-swiper';
+import { Host, Portal } from 'react-native-portalize';
+
 
 
 const API_KEY = '134cb3a1ea3eef93c5c1b71312b2da6a';
@@ -89,7 +47,11 @@ const fetchBills = async (page = 1, pageSize = 10) => {
       }),
     );
 
-    return billDetails.filter(bill => bill);
+    return billDetails.filter(bill => {
+      // console.log('bill', JSON.stringify(bill, null, 2))
+      return bill
+    });
+
   } catch (error) {
     console.error('Error fetching bills:', error);
     return [];
@@ -108,7 +70,7 @@ const HomeScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const swipe = useRef(new Animated.ValueXY()).current;
   const sheetRef = useRef(null);
-
+  const swiperRef = useRef(null);
 
   const handleSheetChange = useCallback((index) => {
     console.log("handleSheetChange", index);
@@ -138,40 +100,40 @@ const HomeScreen = () => {
     navigation.navigate("StackScreens", { screen: "FilterScreen" })
   }
 
-
-
-
   useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        const [savedBookmarks, savedLoves] = await Promise.all([
-          // AsyncStorage.getItem('bookmarkedBills'),
-          // AsyncStorage.getItem('lovedBills'),
-        ]);
-
-        if (savedBookmarks)
-          setBookmarkedBills(new Set(JSON.parse(savedBookmarks)));
-        if (savedLoves) setLovedBills(new Set(JSON.parse(savedLoves)));
-
-        await loadMoreBills();
-      } catch (error) {
-        console.error('Initial load error:', error);
-      }
-    };
-
     loadInitialData();
   }, []);
+
+  const loadInitialData = async () => {
+    try {
+      const [savedBookmarks, savedLoves] = await Promise.all([
+        // AsyncStorage.getItem('bookmarkedBills'),
+        // AsyncStorage.getItem('lovedBills'),
+      ]);
+
+      if (savedBookmarks)
+        setBookmarkedBills(new Set(JSON.parse(savedBookmarks)));
+      if (savedLoves) setLovedBills(new Set(JSON.parse(savedLoves)));
+
+      await loadMoreBills();
+    } catch (error) {
+      console.error('Initial load error:', error);
+    }
+  };
 
   const loadMoreBills = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
       const newBills = await fetchBills(currentPage);
-      // console.log('newBills===========>', JSON.stringify(newBills, null, 2));
+
+      console.log('newBills?.length', JSON.stringify(newBills?.length, null, 2))
+
 
       setResults(prev => [...prev, ...newBills]);
       setCurrentPage(prev => prev + 1);
-      setHasMore(newBills.length > 0);
+      setHasMore(newBills?.length > 0);
+
     } catch (error) {
       console.error('Failed to fetch bills:', error);
     } finally {
@@ -179,65 +141,15 @@ const HomeScreen = () => {
     }
   };
 
-  const animateAndChangeCard = direction => {
-    const currentBillId = results[currentIndex]?.bill_id;
 
-    if (direction > 0) {
-      handleLove(currentBillId, false);
-    } else {
-      handleBookmark(currentBillId, false);
-    }
-
-    Animated.timing(swipe, {
-      toValue: { x: direction * 500, y: 0 },
-      useNativeDriver: true,
-      duration: 300,
-    }).start(() => {
-      if (currentIndex >= results.length - 3) {
-        loadMoreBills();
-      }
-
-      if (currentIndex < results.length - 1) {
-        setCurrentIndex(prev => prev + 1);
-      }
-
-      swipe.setValue({ x: 0, y: 0 });
-    });
-  };
-
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: (_, { dx, dy }) => swipe.setValue({ x: dx, y: dy }),
-    onPanResponderRelease: (_, { dx, dy }) => {
-      const direction = Math.sign(dx);
-      const isActionActive = Math.abs(dx) > 100;
-
-      if (isActionActive) {
-        animateAndChangeCard(direction);
-      } else {
-        Animated.spring(swipe, {
-          toValue: { x: 0, y: 0 },
-          useNativeDriver: true,
-          friction: 5,
-        }).start();
-      }
-    },
-  });
-
-  const handleBookmark = async (billId, shouldAnimate = true) => {
+  const handleBookmark = async (billId) => {
     const newBookmarks = new Set(bookmarkedBills);
+
     newBookmarks.has(billId)
       ? newBookmarks.delete(billId)
       : newBookmarks.add(billId);
-    setBookmarkedBills(newBookmarks);
-    // await AsyncStorage.setItem(
-    //   'bookmarkedBills',
-    //   JSON.stringify([...newBookmarks]),
-    // );
 
-    if (shouldAnimate) {
-      animateAndChangeCard(-1);
-    }
+    setBookmarkedBills(newBookmarks);
   };
 
   const handleLove = async (billId, shouldAnimate = true) => {
@@ -245,10 +157,6 @@ const HomeScreen = () => {
     newLoves.has(billId) ? newLoves.delete(billId) : newLoves.add(billId);
     setLovedBills(newLoves);
     // await AsyncStorage.setItem('lovedBills', JSON.stringify([...newLoves]));
-
-    if (shouldAnimate) {
-      animateAndChangeCard(1);
-    }
   };
 
   const openModal = () => {
@@ -257,76 +165,125 @@ const HomeScreen = () => {
   };
 
   const handleSearch = () => {
-    navigation.navigate("StackScreens", { screen: "SearchScreen" })
   }
 
-  // console.log('results', JSON.stringify(results, null, 2))
+  console.log('results--->', JSON.stringify(results.length, null, 2))
+  console.log('currentIndex--->', JSON.stringify(currentIndex, null, 2))
+  console.log('loading', JSON.stringify(loading, null, 2))
+
+
+
+  const handlewSwipedLeft = (data) => {
+
+  }
+
+  const handlewSwipedRight = (data) => {
+
+  }
+  
+
+  // --- Called every swipe ---
+  const handleSwiped = (index) => {
+    setCurrentIndex(index + 1);
+
+    // if user reaches 2 cards before the end, prefetch next page
+    if (hasMore && index >= results.length - 3) {
+      loadMoreBills(false);
+    }
+  };
+
+
 
   return (
     <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
-      <View style={styles.container}>
-        <TopHeader onPressSearch={handleSearch} onPressFilter={handleFilter} />
-        <View style={{ flex: 1 }}>
-          {loading && currentIndex === 0 ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#050A20" />
-            </View>
-          ) : results.length > 0 ? (
-            <>
-              <BillCard
-                item={results[currentIndex]}
-                swipe={swipe}
-                {...panResponder.panHandlers}
-                openModal={openModal}
+      <Host>
+        <View style={styles.container}>
+          <TopHeader onPressSearch={handleSearch} onPressFilter={handleFilter} />
+          <View style={{ flex: 1, }}>
+
+            {loading && currentIndex === 0 ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#050A20" />
+              </View>
+            ) : results?.length > 0 ? (
+              <>
+                <Swiper
+                  ref={swiperRef}
+                  cards={results}
+                  renderCard={(item) => {
+                    console.log('item---', JSON.stringify(item?.bill_id, null, 2))
+                    return (
+                      <BillCard
+                        // item={results[currentIndex]}
+                        item={item}
+                        swipe={swipe}
+                        openModal={openModal}
+                        isBookmarked={bookmarkedBills?.has(results[currentIndex]?.bill_id)}
+                      // isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
+                      // onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
+                      // onLove={() => handleLove(results[currentIndex]?.bill_id)}
+                      />
+                    )
+                  }}
+                  onSwipedLeft={(cardIndex) =>
+                    console.log('Swiped LEFT on card index:', cardIndex)
+                  }
+                  onSwipedRight={(cardIndex) =>
+                    console.log('Swiped RIGHT on card index:', cardIndex)
+                  }
+                  onSwipedAll={() => console.log('All cards swiped')}
+                  onSwiped={handleSwiped}
+                  stackSize={2}
+                  backgroundColor="transparent"
+                  cardVerticalMargin={10}
+                />
+                {loading && (
+                  <View style={styles.loadingMoreContainer}>
+                    <ActivityIndicator size="small" color="#050A20" />
+                    <Text style={styles.loadingText}>Loading more bills...</Text>
+                  </View>
+                )}
+              </>
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyText}>
+                  {hasMore ? 'Loading bills...' : 'No more bills to display'}
+                </Text>
+                {!hasMore && (
+                  <Pressable
+                    onPress={() => {
+                      setCurrentIndex(0);
+                      setCurrentPage(1);
+                      setHasMore(true);
+                      loadMoreBills();
+                    }}
+                    style={styles.resetButton}
+                  >
+                    <Text style={styles.resetText}>Reload Bills</Text>
+                  </Pressable>
+                )}
+              </View>
+            )}
+          </View>
+        </View>
+        <Portal>
+          <BillDetailsBottomSheet
+            ref={sheetRef}>
+            <View style={{
+              flexGrow: 1,
+            }}>
+              <BillDetails
+                setIsModalVisible={setIsModalVisible}
+                bill={results[currentIndex]}
                 isBookmarked={bookmarkedBills.has(results[currentIndex]?.bill_id)}
                 isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
                 onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
                 onLove={() => handleLove(results[currentIndex]?.bill_id)}
               />
-              {loading && (
-                <View style={styles.loadingMoreContainer}>
-                  <ActivityIndicator size="small" color="#050A20" />
-                  <Text style={styles.loadingText}>Loading more bills...</Text>
-                </View>
-              )}
-            </>
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyText}>
-                {hasMore ? 'Loading bills...' : 'No more bills to display'}
-              </Text>
-              {!hasMore && (
-                <Pressable
-                  onPress={() => {
-                    setCurrentIndex(0);
-                    setCurrentPage(1);
-                    setHasMore(true);
-                    loadMoreBills();
-                  }}
-                  style={styles.resetButton}
-                >
-                  <Text style={styles.resetText}>Reload Bills</Text>
-                </Pressable>
-              )}
             </View>
-          )}
-
-        </View>
-      </View>
-      <BillDetailsBottomSheet
-        ref={sheetRef}
-      >
-        <View style={{ flexGrow: 1 }}>
-          <BillDetails
-            setIsModalVisible={setIsModalVisible}
-            bill={results[currentIndex]}
-            isBookmarked={bookmarkedBills.has(results[currentIndex]?.bill_id)}
-            isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
-            onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
-            onLove={() => handleLove(results[currentIndex]?.bill_id)}
-          />
-        </View>
-      </BillDetailsBottomSheet>
+          </BillDetailsBottomSheet>
+        </Portal>
+      </Host>
     </Wrapper>
   );
 };
@@ -336,7 +293,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: colors.bg_v1,
   },
   emptyState: {

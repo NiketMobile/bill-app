@@ -22,8 +22,13 @@ export default function BillCard({
   isLoved = false,
   onBookmark,
   onLove,
-  ...panHandlers
+  // ...panHandlers
 }) {
+
+  console.log('item', JSON.stringify(item, null, 2))
+
+  // console.log('bill', JSON.stringify(bill, null, 2))
+
   if (!item) return null;
 
   const formatBillNumber = bill => {
@@ -31,6 +36,8 @@ export default function BillCard({
       ? `${bill.bill_type.toUpperCase()} ${bill.bill_number}`
       : 'N/A';
   };
+
+  console.log('item?.title', JSON.stringify(item?.title, null, 2))
 
   const formatDate = dateString => {
     return dateString ? new Date(dateString).toLocaleDateString() : 'N/A';
@@ -40,26 +47,26 @@ export default function BillCard({
     <Animated.View
       style={[
         styles.cardContainer,
-        {
-          transform: [
-            { translateX: swipe.x },
-            { translateY: swipe.y },
-            {
-              rotate: swipe.x.interpolate({
-                inputRange: [-width, 0, width],
-                outputRange: ['-30deg', '0deg', '30deg'],
-              }),
-            },
-          ],
-        },
+        // {
+        //   transform: [
+        //     { translateX: swipe.x },
+        //     { translateY: swipe.y },
+        //     {
+        //       rotate: swipe.x.interpolate({
+        //         inputRange: [-width, 0, width],
+        //         outputRange: ['-30deg', '0deg', '30deg'],
+        //       }),
+        //     },
+        //   ],
+        // },
       ]}
-      {...panHandlers}
+    // {...panHandlers}
     >
       <View style={styles.billHolder}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title} numberOfLines={2}>
-            {item.title || 'No Title Available'}
+            {item?.title || 'No Title Available'}
           </Text>
           <View style={styles.statusWrapper}>
             <Image source={images.approved} style={styles.statusIcon} />
@@ -152,10 +159,11 @@ export default function BillCard({
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    width: width - scale(32),
+    // width: "100%",
     position: 'absolute',
-    alignSelf: 'center',
-    top: scale(20),
+    zIndex: 0
+    // alignSelf: 'center',
+    // top: scale(20),
   },
   billHolder: {
     padding: scale(20),

@@ -8,15 +8,26 @@ import AppHeader from '../../../components/AppHeader'
 import CommonSwitch from '../../../components//CommonSwitch'
 import { useNavigation } from '@react-navigation/native'
 import { fonts } from '../../../constant/fonts'
+import { clearAppStorage } from '../../../utils/globalFunctions'
+import { placeToken, placeUserData } from '../../../redux/reducers/userInfoReducer'
+import { useDispatch } from 'react-redux'
 
 
 
 
 const Profile = () => {
   const navigation = useNavigation();
+   const dispatch = useDispatch()
   const [isRequired, setIsRequired] = useState(false)
 
 
+
+  const logoutPress = async () => {
+    navigation.navigate('Splash');
+    await clearAppStorage()
+    dispatch(placeToken(null));
+    dispatch(placeUserData({}));
+  }
 
 
 
@@ -82,7 +93,7 @@ const Profile = () => {
           </View>
         </ScrollView>
         {/* Logout */}
-        <TouchableOpacity style={[styles.logoutBtn]} activeOpacity={0.7}>
+        <TouchableOpacity style={[styles.logoutBtn]} onPress={logoutPress} activeOpacity={0.7}>
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
 

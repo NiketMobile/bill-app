@@ -9,6 +9,7 @@ import { fonts } from './src/constant/fonts';
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from './src/redux/store';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 
@@ -66,7 +67,7 @@ const App = () => {
   LogBox.ignoreAllLogs(true);
 
   return (
-    <View style={{ flex: 1 }}>
+   <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <SafeAreaProvider>
@@ -75,7 +76,7 @@ const App = () => {
           </SafeAreaProvider>
         </PersistGate>
       </Provider>
-    </View>
+    </GestureHandlerRootView>
   )
 }
 

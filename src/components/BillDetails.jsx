@@ -47,8 +47,6 @@ const BillDetails = ({
     return `${bill.bill_type?.toUpperCase() || ''} ${bill.bill_number}`;
   };
 
-  console.log('bill--->', JSON.stringify(bill, null, 2))
-
 
   const formatDate = dateString => {
     if (!dateString) return 'N/A';
