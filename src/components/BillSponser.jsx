@@ -1,5 +1,5 @@
 import { FlatList, Image, Pressable, StyleSheet, Text, TextProps, TouchableOpacity, View, ViewProps } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LinearGradient from "react-native-linear-gradient";
 import { moderateScale, scale } from "../utils/appScale";
 import { colors } from "../constant/colors";
@@ -20,6 +20,18 @@ const CARD_HEIGHT = 80;
 
 
 const BillSponser = ({ sponsors, ...rest }) => {
+
+
+  console.log('sponsors--->', JSON.stringify(sponsors, null, 2))
+
+  const [isListData, setIsListData] = useState([])
+
+  useEffect(() => {
+    if (sponsors?.length > 0) {
+      setIsListData(sponsors)
+    }
+  }, [sponsors])
+
 
 
   const renderItem = ({ item }) => {
@@ -77,7 +89,7 @@ const BillSponser = ({ sponsors, ...rest }) => {
           <Text style={styles.titleView}>Cosponsor</Text>
         </View>
         <FlatList
-          data={cosponsors}
+          data={isListData ?? []}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -173,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.bg_v1,
     borderRadius: 8,
-    flex: 1,
+    width: "49%",
     marginHorizontal: 4,
     minHeight: CARD_HEIGHT + 5,
   },

@@ -18,17 +18,19 @@ import Swiper from 'react-native-deck-swiper';
 import { Host, Portal } from 'react-native-portalize';
 import { useSelector } from 'react-redux';
 import { apiServices } from '../../../services/apiService'
+import showToast from '../../../components/showMessage';
 
 
 
 const API_KEY = '134cb3a1ea3eef93c5c1b71312b2da6a';
 const STATE = 'AL';
 
-const fetchBills = async (page = 1, pageSize = 10) => {
+const fetchBills = async (page = 1, pageSize = 10, isState = "AL") => {
   try {
     const searchUrl = `https://api.legiscan.com/?key=${API_KEY}&op=getSearchRaw&state=${STATE}`;
     const searchResponse = await fetch(searchUrl);
     const searchData = await searchResponse.json();
+    console.log('searchData', JSON.stringify(searchData, null, 2))
 
     if (searchData.status !== 'OK') throw new Error('Failed to fetch bills');
 
@@ -110,8 +112,45 @@ const HomeScreen = () => {
   const [userDetails, setUserDetails] = useState({})
 
 
+  const [bookmarkedBillsList, setBookmarkedBillsList] = useState([])
+  const [likedBillsList, setLikedBillsList] = useState([])
+
+  const getallBookmarkedBills = async (userId) => {
+    try {
+      const res = await apiServices.getBookmarkedBills(userId)
+      if (res?.success) {
+        setBookmarkedBillsList(res?.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getallLikedBills = async (userId) => {
+    try {
+      const res = await apiServices.getLikedBills(userId)
+
+      if (res?.success) {
+        setLikedBillsList(res?.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  console.log('likedBillsList', JSON.stringify(likedBillsList, null, 2))
+
+
   useEffect(() => {
-    loadInitialData();
+    if (userInfo?.uid) {
+      getallBookmarkedBills(userInfo?.uid)
+      getallLikedBills(userInfo?.uid)
+    }
+  }, [userInfo?.uid])
+
+
+
+  useEffect(() => {
+    // loadInitialData();
     getData()
   }, []);
 
@@ -123,30 +162,22 @@ const HomeScreen = () => {
 
 
 
-  const loadInitialData = async () => {
-    try {
-      const [savedBookmarks, savedLoves] = await Promise.all([
-        // AsyncStorage.getItem('bookmarkedBills'),
-        // AsyncStorage.getItem('lovedBills'),
-      ]);
-
-      if (savedBookmarks)
-        setBookmarkedBills(new Set(JSON.parse(savedBookmarks)));
-      if (savedLoves) setLovedBills(new Set(JSON.parse(savedLoves)));
-
-      await loadMoreBills();
-    } catch (error) {
-      console.error('Initial load error:', error);
+  const loadDatas = async () => {
+    if (userInfo?.uid) {
+      getallBookmarkedBills(userInfo?.uid)
+      getallLikedBills(userInfo?.uid)
     }
   };
+
 
   const loadMoreBills = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const newBills = await fetchBills(currentPage);
+      const isState = "AL"
+      const newBills = await fetchBills(currentPage, isState);
 
-      console.log('newBills?.length', JSON.stringify(newBills?.length, null, 2))
+      console.log('newBills?.length------>', JSON.stringify(newBills?.length, null, 2))
 
       setResults(prev => [...prev, ...newBills]);
       setCurrentPage(prev => prev + 1);
@@ -161,20 +192,76 @@ const HomeScreen = () => {
 
 
   const handleBookmark = async (billId) => {
-    const newBookmarks = new Set(bookmarkedBills);
+    // const newBookmarks = new Set(bookmarkedBills);
 
-    newBookmarks.has(billId)
-      ? newBookmarks.delete(billId)
-      : newBookmarks.add(billId);
+    // newBookmarks.has(billId)
+    //   ? newBookmarks.delete(billId)
+    //   : newBookmarks.add(billId);
+    // setBookmarkedBills(newBookmarks);
+    loadDatas()
 
-    setBookmarkedBills(newBookmarks);
+    if (billId) {
+      await addToBookmark(billId)
+    }
+
   };
 
-  const handleLove = async (billId, shouldAnimate = true) => {
-    const newLoves = new Set(lovedBills);
-    newLoves.has(billId) ? newLoves.delete(billId) : newLoves.add(billId);
-    setLovedBills(newLoves);
-    // await AsyncStorage.setItem('lovedBills', JSON.stringify([...newLoves]));
+  const addToLike = async (billId) => {
+    if (billId) {
+      try {
+        const response = await apiServices.addLikedAction(userInfo.uid, billId);
+
+        console.log('response--->', JSON.stringify(response, null, 2))
+
+        if (response?.success) {
+          console.log('Bill successfully liked');
+          showToast({ type: 'success', title: 'Bill successfully liked' });
+          // any UI updates, toasts, etc.
+        } else {
+          console.warn('Failed to like bill:', response.error);
+        }
+      } catch (err) {
+        // This catches unexpected exceptions (e.g., network failures)
+        console.error('addLikedAction threw an error:', err);
+      }
+    }
+  }
+
+  const addToBookmark = async (billId) => {
+    if (billId) {
+      try {
+        const response = await apiServices.addBookmarkAction(userInfo.uid, billId);
+
+        console.log('response--->', JSON.stringify(response, null, 2))
+
+        if (response?.success) {
+          console.log('Bill successfully liked');
+          showToast({ type: 'success', title: 'Bill successfully bookmarked' });
+          // any UI updates, toasts, etc.
+        } else {
+          console.warn('Failed to like bill:', response.error);
+        }
+      } catch (err) {
+        // This catches unexpected exceptions (e.g., network failures)
+        console.error('addLikedAction threw an error:', err);
+      }
+    }
+  }
+
+  const handleLove = async (billId) => {
+
+    console.log('billId--->', JSON.stringify(billId, null, 2))
+
+    loadDatas()
+
+    if (billId) {
+      await addToLike(billId)
+    }
+
+    // const newLoves = new Set(lovedBills);
+    // newLoves.has(billId) ? newLoves.delete(billId) : newLoves.add(billId);
+    // setLovedBills(newLoves);
+    // // await AsyncStorage.setItem('lovedBills', JSON.stringify([...newLoves]));
   };
 
   const openModal = () => {
@@ -314,10 +401,10 @@ const HomeScreen = () => {
                           openModal(item)
                           setisDataToModal(item)
                         }}
-                        isBookmarked={bookmarkedBills?.has(results[currentIndex]?.bill_id)}
-                      // isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
-                      // onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
-                      // onLove={() => handleLove(results[currentIndex]?.bill_id)}
+                        isBookmarked={bookmarkedBillsList?.some(bill => bill.billId === item?.bill_id)}
+                        isLoved={likedBillsList?.some(bill => bill.billId === item?.bill_id)}
+                        onBookmark={() => handleBookmark(item?.bill_id)}
+                        onLove={() => handleLove(item?.bill_id)}
                       />
                     )
                   }}

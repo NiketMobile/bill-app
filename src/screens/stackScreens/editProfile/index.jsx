@@ -68,8 +68,51 @@ export default function EditProfileScreen() {
     };
 
     const onEdit = (field) => {
-        Alert.alert("Edit", `Open editor for: ${field}`);
+
+        console.log('field--->', JSON.stringify(field, null, 2))
+
+        if (field == "Name") {
+            navigation.navigate('EditStakcs', { screen: "EditName" })
+        }
+        if (field == "Dateofbirth") {
+            navigation.navigate('EditStakcs', { screen: "EditDob" })
+        }
+        // if (field == "Dateofbirth") {
+        //     navigation.navigate('EditStakcs', { screen: "EditAddress" })
+        // }
+
+        if (field == "Gender") {
+            navigation.navigate('EditStakcs', { screen: "EditGender" })
+        }
+        if (field == "Sexualorientation") {
+            navigation.navigate('EditStakcs', { screen: "EditOrientation" })
+        }
+        if (field == "Veteran") {
+            navigation.navigate('EditStakcs', { screen: "EditVeteran" })
+        }
+        if (field == "Incomerange") {
+            navigation.navigate('EditStakcs', { screen: "EditIncomeRange" })
+        }
+
+        if (field == "Maritalstatus") {
+            navigation.navigate('EditStakcs', { screen: "EditMaritalStatus" })
+        }
+
+        if (field == "Religion") {
+            navigation.navigate('EditStakcs', { screen: "EditReligion" })
+        }
+
+        if (field == "Disability") {
+            navigation.navigate('EditStakcs', { screen: "EditDisability" })
+        }
+
+        if (field == "Politicalaffiliation") {
+            navigation.navigate('EditStakcs', { screen: "EditPoliticalAffiliation" })
+        }
+
     };
+
+
 
 
 
@@ -102,7 +145,7 @@ export default function EditProfileScreen() {
                                 }
                                 title="Date of birth"
                                 subtitle={user.dob}
-                                onEdit={() => onEdit("Date of birth")}
+                                onEdit={() => onEdit("Dateofbirth")}
                             />
 
                             <View style={styles.sep} />
@@ -157,12 +200,12 @@ export default function EditProfileScreen() {
                                 }
                                 title="Sexual orientation"
                                 subtitle={user.sexualOrientation}
-                                onEdit={() => onEdit("Sexual orientation")}
+                                onEdit={() => onEdit("Sexualorientation")}
                             />
 
                             <View style={styles.sep} />
 
-                            <ProfileRow
+                            {/* <ProfileRow
                                 leftIcon={
                                     <Image source={images.carbon_badge} style={styles.avatar} tintColor={colors.themeColor} />
                                 }
@@ -177,7 +220,17 @@ export default function EditProfileScreen() {
                                     trackColor={{ false: "#d6d6d6", true: colors.themeColor }}
                                     thumbColor={isVeteran ? "#fff" : "#fff"}
                                 />
-                            </ProfileRow>
+                            </ProfileRow> */}
+
+                            <ProfileRow
+                                leftIcon={
+                                    <Image source={images.carbon_badge} style={styles.avatar} tintColor={colors.themeColor} />
+                                }
+                                title="Veteran"
+                                subtitle="Are you a veteran?"
+                                onEdit={() => onEdit("Veteran")}
+                            />
+
                             <View style={styles.sep} />
 
                             <ProfileRow
@@ -186,7 +239,7 @@ export default function EditProfileScreen() {
                                 }
                                 title="Income range"
                                 subtitle={user.sexualOrientation}
-                                onEdit={() => onEdit("Sexual orientation")}
+                                onEdit={() => onEdit("Incomerange")}
                             />
                             <View style={styles.sep} />
 
@@ -205,7 +258,7 @@ export default function EditProfileScreen() {
                                 }
                                 title="Marital status"
                                 subtitle={user.sexualOrientation}
-                                onEdit={() => onEdit("Sexual orientation")}
+                                onEdit={() => onEdit("Maritalstatus")}
                             />
                             <View style={styles.sep} />
                             <ProfileRow
@@ -214,7 +267,7 @@ export default function EditProfileScreen() {
                                 }
                                 title="Religion"
                                 subtitle={user.sexualOrientation}
-                                onEdit={() => onEdit("Sexual orientation")}
+                                onEdit={() => onEdit("Religion")}
                             />
                             <View style={styles.sep} />
                             <ProfileRow
@@ -223,7 +276,7 @@ export default function EditProfileScreen() {
                                 }
                                 title="Disability"
                                 subtitle={user.sexualOrientation}
-                                onEdit={() => onEdit("Sexual orientation")}
+                                onEdit={() => onEdit("Disability")}
                             />
                             <View style={styles.sep} />
                             <ProfileRow
@@ -232,14 +285,14 @@ export default function EditProfileScreen() {
                                 }
                                 title="Political affiliation"
                                 subtitle={user.sexualOrientation}
-                                onEdit={() => onEdit("Sexual orientation")}
+                                onEdit={() => onEdit("Politicalaffiliation")}
                             />
                             <View style={styles.sep} />
                             <ProfileRow
                                 leftIcon={
                                     <Image source={images.verified_new} style={styles.avatar} tintColor={colors.themeColor} />
                                 }
-                                title="Political affiliation"
+                                title="Verification status"
                                 subtitle={user.sexualOrientation}
                                 onEdit={() => onEdit("Sexual orientation")}
                             />

@@ -6,11 +6,13 @@ import {
   Pressable,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import { images } from '../constant/images';
 import { scale } from '../utils/appScale';
 import { colors } from '../constant/colors';
+import { getHitSlop } from '../utils/globalFunctions';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +26,8 @@ export default function BillCard({
   onLove,
   // ...panHandlers
 }) {
+
+  // console.log('item--->first---->', JSON.stringify(item, null, 2))
 
   if (!item) return null;
 
@@ -102,13 +106,12 @@ export default function BillCard({
           </Pressable>
 
           <View style={styles.actionButtons}>
-            <Pressable
+            <TouchableOpacity hitSlop={getHitSlop(10)}
               style={[
                 styles.smallButton,
                 { borderColor: '#ddd', borderWidth: scale(1) },
               ]}
               onPress={e => {
-                e.stopPropagation();
                 onLove(item.bill_id);
               }}
             >
@@ -119,19 +122,21 @@ export default function BillCard({
                   { tintColor: isLoved ? 'red' : '#050A20' },
                 ]}
               />
-            </Pressable>
-            <Pressable
-              style={[styles.smallButton, { backgroundColor: '#050A20' }]}
+            </TouchableOpacity>
+            <TouchableOpacity hitSlop={getHitSlop(10)}
+              style={[styles.smallButton, { backgroundColor: isBookmarked ? colors.themeColor : '#050A20' }]}
               onPress={e => {
-                e.stopPropagation();
                 onBookmark(item.bill_id);
               }}
             >
               <Image
                 source={images.bookmark}
-                style={[styles.actionIcon, { tintColor: '#fff' }]}
+                style={[styles.actionIcon,
+                {
+                  tintColor: colors.white,
+                },]}
               />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

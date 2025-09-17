@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
         borderColor: colors.theme_v2,
         padding: 12,
         color: "#050A20",
+        textAlignVertical: "top",
     },
     postButton: {
         borderRadius: 6,

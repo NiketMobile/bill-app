@@ -1,4 +1,24 @@
 import firestore from '@react-native-firebase/firestore';
+// import { getApp } from '@react-native-firebase/app';
+// import {
+//     getFirestore,
+//     doc,
+//     getDoc,
+//     setDoc,
+//     updateDoc,
+//     collection,
+//     getDocs,
+//     increment,
+//     serverTimestamp,
+// } from 'firebase/firestore';
+// import { getAuth } from '@react-native-firebase/auth';
+
+// const firebaseConfig = {
+
+// };
+// firebase.initializeApp(firebaseConfig);
+// const app = getApp();                
+// const db  = getFirestore(app); 
 
 
 // Create user document (first onboarding step)
@@ -276,7 +296,6 @@ const getDataByDocumentById = async (collectionName, docId) => {
         if (!collectionName || !docId) {
             throw new Error('Both collection name and document id are required');
         }
-
         const docSnap = await firestore()
             .collection(collectionName)
             .doc(docId)
@@ -292,6 +311,162 @@ const getDataByDocumentById = async (collectionName, docId) => {
 };
 
 
+
+const checkDocumentIdIsPresent = async (collectionName, docId) => {
+    try {
+        if (!collectionName || !docId) {
+            throw new Error('Both collection name and document id are required');
+        }
+
+        const docRef = firestore().collection(collectionName).doc(docId);
+        const snapshot = await docRef.get();
+
+        console.log('snapshot--->', JSON.stringify(snapshot, null, 2))
+        console.log('docRef--->', JSON.stringify(docRef, null, 2))
+
+        if (!snapshot.exists) {
+            // Document does not exist
+            return null;
+        }
+
+        // Return the document data with the id
+        return { id: snapshot.id, ...snapshot.data() };
+    } catch (error) {
+        console.error(`checkDocumentIdIsPresent error [${collectionName}/${docId}]:`, error);
+        return null;
+    }
+};
+
+
+const addToLiked = async (uid, bill_id) => {
+    if (!uid || !bill_id) {
+        return { success: false, error: 'Missing uid or bill_id' };
+    }
+
+    try {
+        const likedRef = firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('likedBills');
+
+        // 🔎 Check if a doc with this billId already exists
+        const existingSnap = await likedRef
+            .where('billId', '==', bill_id)
+            .limit(1)
+            .get();
+
+        if (!existingSnap.empty) {
+            // ✅ Already liked, don’t add again
+            return { success: true, alreadyExists: true };
+        }
+
+        // ➕ Add new liked bill
+        await likedRef.add({
+            billId: bill_id,
+            timestamp: firestore.FieldValue.serverTimestamp(),
+        });
+
+        return { success: true, alreadyExists: false };
+    } catch (error) {
+        console.error('saveLeftSwipe error:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+
+const addLikedAction = async (uid, bill_id) => {
+    if (!uid || !bill_id) {
+        console.log('Missing uid or bill_id');
+        return { success: false, error: 'Missing uid or bill_id' };
+    }
+    try {
+        await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('likedBills')
+            .add({
+                billId: bill_id,
+                timestamp: firestore.FieldValue.serverTimestamp(),
+            });
+        return { success: true };
+    } catch (error) {
+        console.error('Error saving right swipe:', error);
+        return { success: false, error };
+    }
+};
+
+
+const addBookmarkAction = async (uid, bill_id) => {
+    if (!uid || !bill_id) {
+        console.log('Missing uid or bill_id');
+        return { success: false, error: 'Missing uid or bill_id' };
+    }
+    try {
+        await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('bookmarkedBills')
+            .add({
+                billId: bill_id,
+                timestamp: firestore.FieldValue.serverTimestamp(),
+            });
+        return { success: true };
+    } catch (error) {
+        console.error('Error saving right swipe:', error);
+        return { success: false, error };
+    }
+};
+
+const getBookmarkedBills = async (uid) => {
+    if (!uid) return { success: false, error: 'Missing uid' };
+
+    try {
+        const snapshot = await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('bookmarkedBills')
+            .orderBy('timestamp', 'desc')   // optional, newest first
+            .get();
+
+        // Map each document to an object with its ID and data
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching bookmarked bills:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+
+const getLikedBills = async (uid) => {
+    if (!uid) return { success: false, error: 'Missing uid' };
+
+    try {
+        const snapshot = await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('likedBills')
+            .orderBy('timestamp', 'desc')   // optional, newest first
+            .get();
+
+        // Map each document to an object with its ID and data
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching bookmarked bills:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+
 export const apiServices = {
     createUserDoc,
     updateUserDoc,
@@ -301,10 +476,13 @@ export const apiServices = {
     saveLeftSwipe,
     incrementSwipeCount,
     saveDownSwipe,
-    getDataByDocumentById
+    getDataByDocumentById,
+    checkDocumentIdIsPresent,
+    addLikedAction,
+    addBookmarkAction,
+    getBookmarkedBills,
+    getLikedBills
 };
-
-
 
 
 

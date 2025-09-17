@@ -227,7 +227,7 @@ const BillDetails = ({
             <BillDescription description={bill?.description} />
           )}
           {isActiveChart && <BillCharts bill={bill} />}
-          {isActiveSponser && <BillSponser sponsors={bill.sponsors} />}
+          {isActiveSponser && <BillSponser sponsors={bill?.sponsors} />}
         </View>
 
       </View>

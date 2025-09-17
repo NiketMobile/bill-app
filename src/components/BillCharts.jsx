@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { CurvedPieChart } from "./charts/CurvedPieChart";
 // import PieCharts from "./PieCharts";
@@ -32,12 +32,28 @@ const BillCharts = ({ bill }) => {
   console.log('billData--->', JSON.stringify(billData?.billId, null, 2))
 
 
+  const checkBillIdIsPresent = async (collection_name, docs_Id) => {
+    const result = await apiServices.checkDocumentIdIsPresent("SwipeSummary", "1885910");
+    console.log('Document exists:sss--->', result);
+
+    if (Number(result) !== 0) {
+      console.log('Document exists:--->', result);
+      dispatch(getByDocumentByIdAction({ collectionName: "SwipeSummary", docId: bill?.bill_id.toString() }));
+      // call your API or continue processing
+    } else {
+      console.log('Document not found, skipping API call.');
+    }
+  }
+
   useEffect(() => {
     dispatch(getCollectionAction({ collectionName: "MaritalStatus" }));
-
     fetchAll();
 
     if (bill?.bill_id) {
+
+      // console.log('bill?.bill_id--->', JSON.stringify(bill?.bill_id, null, 2))
+      // checkBillIdIsPresent("SwipeSummary", bill?.bill_id)
+
       // dispatch(getByDocumentByIdAction({ collectionName: "SwipeSummary", docId: "1885910" }));
       dispatch(getByDocumentByIdAction({ collectionName: "SwipeSummary", docId: bill?.bill_id?.toString() }));
     }
@@ -68,7 +84,7 @@ const BillCharts = ({ bill }) => {
   };
 
   const totals = getVoteTotals(billData);
-  console.log('totals', JSON.stringify(totals, null, 2))
+  // console.log('totals', JSON.stringify(totals, null, 2))
 
 
 
@@ -118,7 +134,7 @@ const BillCharts = ({ bill }) => {
     };
   });
 
-  console.log('genderRangeData', JSON.stringify(genderRangeData, null, 2))
+  // console.log('genderRangeData', JSON.stringify(genderRangeData, null, 2))
 
 
   const religionOptions = allData?.find(item => item.collection == "Religion")?.data || [];
@@ -221,7 +237,7 @@ const BillCharts = ({ bill }) => {
 
   const veteranSummary = getVoteSummary(billData, "veteran_counts");
   const disabilitySummary = getVoteSummary(billData, "disability_counts");
-  console.log('disabilitySummary', JSON.stringify(disabilitySummary, null, 2))
+  // console.log('disabilitySummary', JSON.stringify(disabilitySummary, null, 2))
 
 
 
@@ -299,6 +315,7 @@ const BillCharts = ({ bill }) => {
   const dislikedPct = ((totals?.disliked / grandTotal) * 100)?.toFixed(1);
   const neutralPct = ((totals?.neutral / grandTotal) * 100)?.toFixed(1);
 
+  const totalVotes = Number(billData?.liked) + Number(billData?.disliked) + Number(billData?.neutral)
 
 
 
@@ -307,7 +324,9 @@ const BillCharts = ({ bill }) => {
       marginTop: scale(24)
     }}>
       {
-        (loading || isLoading) && <Loader />
+        (loading || isLoading) && (
+          <ActivityIndicator color={colors.themeColor} size={"large"} />
+        )
       }
 
       {
@@ -327,7 +346,7 @@ const BillCharts = ({ bill }) => {
               >
                 <View style={styles.states}>
                   <View style={styles.statesTextContainer}>
-                    <Text style={styles.statesMainText}>{formatCount(totals?.grandTotal)}</Text>
+                    <Text style={styles.statesMainText}>{formatCount(totalVotes || "")}</Text>
                     <Text style={styles.statesSubText}>Voted</Text>
                   </View>
                   <View style={styles.statesIconContainer}>
@@ -359,7 +378,7 @@ const BillCharts = ({ bill }) => {
             {/* <Text style={styles.title}>Insights</Text> */}
 
             {
-              (!loading && !loader && genderRangeData?.length > 0) && (
+              (!loading && !loader && genderRangeData?.length > 0 && (billData?.id == bill?.bill_id)) && (
                 <View style={styles.chartContainer}>
                   <View style={styles.chartBorder} >
                     <View style={styles.chartItem}>
@@ -378,7 +397,7 @@ const BillCharts = ({ bill }) => {
             }
 
             {
-              (!loading && !loader && incomeRangeData?.length > 0) && (
+              (!loading && !loader && incomeRangeData?.length > 0 && (billData?.id == bill?.bill_id)) && (
                 <View style={styles.chartBorder} >
                   <View style={styles.polarChartContainer}>
                     <View style={styles.legendContainer}>
@@ -406,7 +425,7 @@ const BillCharts = ({ bill }) => {
             }
 
             {
-              (!loading && !loader && religionRangeData?.length > 0) && (
+              (!loading && !loader && religionRangeData?.length > 0 && (billData?.id == bill?.bill_id)) && (
                 <View style={styles.chartBorder} >
                   <View style={styles.polarChartContainer}>
                     <HorizontalBarChart title="Religion" data={religionRangeData} />
@@ -417,7 +436,7 @@ const BillCharts = ({ bill }) => {
             }
 
             {
-              (!loading && !loader && raceRangeData?.length > 0) && (
+              (!loading && !loader && raceRangeData?.length > 0 && (billData?.id == bill?.bill_id)) && (
                 <View style={styles.chartBorder} >
                   <View style={styles.polarChartContainer}>
                     <DonutChart data={raceRangeData} />
@@ -442,7 +461,7 @@ const BillCharts = ({ bill }) => {
             }
 
             {
-              (!loading && !loader && maritalDataDynamic?.length > 0) && (
+              (!loading && !loader && maritalDataDynamic?.length > 0 && (billData?.id == bill?.bill_id)) && (
                 <View style={styles.chartBorder} >
                   <View style={styles.radialChartContainer}>
                     <View style={styles.radialLegendContainer}>

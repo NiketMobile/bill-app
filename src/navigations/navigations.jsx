@@ -29,6 +29,17 @@ import OnboardingL from "../screens/onBoardingScreens/OnboardingL"
 import OnboardingM from "../screens/onBoardingScreens/OnboardingM"
 import OnboardingN from "../screens/onBoardingScreens/OnboardingN"
 import OnboardingO from "../screens/onBoardingScreens/OnboardingO"
+import EditName from "../screens/editScreensStacks/EditName"
+import EditDob from "../screens/editScreensStacks/EditDob"
+import EditAddress from "../screens/editScreensStacks/EditAddress"
+import EditGender from "../screens/editScreensStacks/EditGender"
+import EditOrientation from "../screens/editScreensStacks/EditOrientation"
+import EditVeteran from "../screens/editScreensStacks/EditVeteran"
+import EditIncomeRange from "../screens/editScreensStacks/EditIncomeRange"
+import EditMaritalStatus from "../screens/editScreensStacks/EditMaritalStatus"
+import EditReligion from "../screens/editScreensStacks/EditReligion"
+import EditDisability from "../screens/editScreensStacks/EditDisability"
+import EditPoliticalAffiliation from "../screens/editScreensStacks/EditPoliticalAffiliation"
 import NoInternet from "../components/NoInternet"
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -84,6 +95,7 @@ function StackScreens() {
             <Stack.Screen name="PrivacySettings" component={PrivacySettings} />
             <Stack.Screen name="FilterScreen" component={FilterScreen} />
             <Stack.Screen name="AboutUs" component={AboutUs} />
+            <Stack.Screen name="EditStakcs" component={EditStakcs} />
         </Stack.Navigator>
     )
 }
@@ -116,6 +128,33 @@ function AuthStack() {
         </Stack.Navigator>
     )
 }
+
+
+
+function EditStakcs() {
+    return (
+        <Stack.Navigator
+            initialRouteName="EditName"
+            screenOptions={({ route }) => ({
+                headerShown: false,
+            })} >
+            <Stack.Screen name="EditName" component={EditName} />
+            <Stack.Screen name="EditDob" component={EditDob} />
+            <Stack.Screen name="EditAddress" component={EditAddress} />
+            <Stack.Screen name="EditGender" component={EditGender} />
+            <Stack.Screen name="EditOrientation" component={EditOrientation} />
+            <Stack.Screen name="EditVeteran" component={EditVeteran} />
+            <Stack.Screen name="EditIncomeRange" component={EditIncomeRange} />
+            <Stack.Screen name="EditMaritalStatus" component={EditMaritalStatus} />
+            <Stack.Screen name="EditReligion" component={EditReligion} />
+            <Stack.Screen name="EditDisability" component={EditDisability} />
+            <Stack.Screen name="EditPoliticalAffiliation" component={EditPoliticalAffiliation} />
+        </Stack.Navigator>
+    )
+}
+
+
+
 
 
 export default function RootNavigation() {
