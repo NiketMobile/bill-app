@@ -191,9 +191,9 @@ const Bills = () => {
       <View style={styles.container}>
         <AppHeader
           title="Bills"
-          leftIcon={images.back_2}
+          // leftIcon={images.back_2}
           rightIcon={images.filter}
-          onLeftPress={() => navigation.goBack()}
+          // onLeftPress={() => navigation.goBack()}
           onRightPress={handleFilter}
         />
 

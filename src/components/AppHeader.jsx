@@ -15,11 +15,28 @@ export default function AppHeader({
 }) {
   return (
     <View style={[styles.container, containerStyle]}>
-      <TouchableOpacity style={styles.side} onPress={onLeftPress}>
+
+      {
+        leftIcon ? (
+          <TouchableOpacity style={styles.side} onPress={onLeftPress}>
+            {leftIcon ? (
+              <Image source={leftIcon} style={styles.icon} tintColor={colors.themeColor} />
+            ) : null}
+          </TouchableOpacity>
+        ) : (
+          <View style={{
+            width: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }} />
+        )
+      }
+
+      {/* <TouchableOpacity style={styles.side} onPress={onLeftPress}>
         {leftIcon ? (
           <Image source={leftIcon} style={styles.icon} tintColor={colors.themeColor} />
         ) : null}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View style={styles.center}>
         <Text numberOfLines={1} style={styles.title}>{title}</Text>

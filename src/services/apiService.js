@@ -503,6 +503,29 @@ const getRightSwipedBills = async (uid) => {
     }
 };
 
+const getNeutralSwipedBills = async (uid) => {
+    if (!uid) return { success: false, error: 'Missing uid' };
+
+    try {
+        const snapshot = await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('downSwipes')
+            .orderBy('timestamp', 'desc')   // optional, newest first
+            .get();
+
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching bookmarked bills:', error);
+        return { success: false, error: error.message };
+    }
+};
+
 export const apiServices = {
     createUserDoc,
     updateUserDoc,
@@ -519,7 +542,8 @@ export const apiServices = {
     getBookmarkedBills,
     getLikedBills,
     getLeftSwipedBills,
-    getRightSwipedBills
+    getRightSwipedBills,
+    getNeutralSwipedBills
 };
 
 

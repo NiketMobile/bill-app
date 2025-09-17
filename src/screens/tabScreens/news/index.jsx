@@ -87,9 +87,9 @@ const News = () => {
       <View style={styles.containerView}>
         <AppHeader
           title="News"
-          leftIcon={images.back_2}
+          // leftIcon={images.back_2}
           rightIcon={images.filter}
-          onLeftPress={() => navigation.goBack()}
+          // onLeftPress={() => navigation.goBack()}
           onRightPress={() => console.log('Filter pressed')}
         />
         <FlatList

@@ -1,220 +1,3 @@
-// import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-// import { colors } from '../../../constant/colors'
-// import { scale } from '../../../utils/appScale'
-// import Wrapper from '../../../components/wrapper'
-// import AppHeader from '../../../components/AppHeader'
-// import { images } from '../../../constant/images'
-// import { useNavigation } from '@react-navigation/native'
-
-
-// const bills = [
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Approved",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Succeeded",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Rejected",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Approved",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Rejected",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Rejected",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-//   {
-//     name: "100 Years of Women in Act",
-//     description:
-//       "To amend the Department of Agriculture program for research and extension grants to increase participation by women",
-//     status: "Approved",
-//     image: images.approved,
-//     state: "Pennsylvania",
-//     billId: "H.R.4570",
-//   },
-
-// ];
-
-// const Liked = () => {
-//   const navigation = useNavigation()
-
-
-
-//   return (
-//     <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
-//       <View style={styles.container}>
-//         <AppHeader
-//           title="My Bills"
-//           leftIcon={images.back_2}
-//           rightIcon={images.filter}
-//           onLeftPress={() => navigation.goBack()}
-//           onRightPress={() => console.log('Settings pressed')}
-//         />
-
-
-//         <FlatList
-//           style={styles.flatList}
-//           data={bills}
-//           keyExtractor={(item, index) => `${item.billId}-${index}`}
-//           numColumns={2}
-//           columnWrapperStyle={styles.columnWrapper}
-//           showsVerticalScrollIndicator={false}
-//           renderItem={({ item }) => (
-//             <View style={styles.billContainer}>
-//               <View
-//                 style={[
-//                   styles.billDetails,
-//                   {
-//                     backgroundColor:
-//                       item.status === 'Approved'
-//                         ? '#F5F6FA'
-//                         : item.status === 'Rejected'
-//                           ? '#FAF5F5'
-//                           : '#F6FAF6',
-//                   },
-//                 ]}
-//               >
-//                 <View
-//                   style={[
-//                     styles.approvedContainer,
-//                     {
-//                       backgroundColor:
-//                         item.status === 'Approved'
-//                           ? '#F5F6FA'
-//                           : item.status === 'Rejected'
-//                             ? '#FAF5F5'
-//                             : '#F6FAF6',
-//                     },
-//                   ]}
-//                 >
-//                   <Image source={item.image} style={styles.approvedIcon} />
-//                 </View>
-//               </View>
-
-//               <View style={{ flex: 1, gap: 4 }}>
-//                 <Text style={styles.billName}>{item.name}</Text>
-//                 <View style={styles.row}>
-//                   <Text style={styles.billSubText}>{item.state}</Text>
-//                   <Text style={styles.billSubText}>{item.billId}</Text>
-//                 </View>
-//                 <Text style={styles.billDescription} numberOfLines={3}>
-//                   {item.description}
-//                 </Text>
-//               </View>
-//             </View>
-//           )}
-//         />
-
-
-
-
-//       </View>
-//     </Wrapper>
-//   )
-// }
-
-// export default Liked
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: colors.bg_v1,
-//     paddingHorizontal: scale(15),
-//   },
-//   flatList: {
-//     flex: 1,
-//     paddingTop: scale(20),
-//   },
-//   columnWrapper: {
-//     justifyContent: 'space-between',   // space between the two columns
-//     marginBottom: scale(10),                  // vertical gap between rows
-//   },
-//   billContainer: {
-//     width: "49%",                            // ensures equal width columns
-//     marginHorizontal: 4,
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     padding: 12,
-//   },
-//   billDetails: {
-//     height: 120,
-//     borderRadius: 12,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginBottom: 12,
-//   },
-//   approvedContainer: {
-//     width: 60,
-//     height: 60,
-//     borderRadius: 30,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   approvedIcon: {
-//     width: 28,
-//     height: 28,
-//     resizeMode: 'contain',
-//   },
-//   billName: {
-//     fontSize: 16,
-//     fontWeight: '600',
-//     color: '#050A20',
-//   },
-//   billSubText: {
-//     fontSize: 12,
-//     color: '#141C4699',
-//   },
-//   billDescription: {
-//     fontSize: 13,
-//     color: '#141C46',
-//   },
-//   row: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//   },
-// })
-
-
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -234,59 +17,6 @@ import { fonts } from '../../../constant/fonts';
 import Loader from '../../../components/loader';
 import { apiServices } from '../../../services/apiService';
 import { useSelector } from 'react-redux';
-
-
-const billsData = [
-  {
-    name: '100 Years of Women in Act',
-    description:
-      'To amend the Department of Agriculture program for research and extension grants to increase participation by women',
-    status: 'Approved',
-    image: images.approved,
-    state: 'Pennsylvania',
-    billId: 'H.R.4570',
-    vote: "1"
-  },
-  {
-    name: '100 Years of Women in Act',
-    description:
-      'To amend the Department of Agriculture program for research and extension grants to increase participation by women',
-    status: 'Succeeded',
-    image: images.approved,
-    state: 'Pennsylvania',
-    billId: 'H.R.4570',
-  },
-  {
-    name: '100 Years of Women in Act',
-    description:
-      'To amend the Department of Agriculture program for research and extension grants to increase participation by women',
-    status: 'Rejected',
-    image: images.approved,
-    state: 'Pennsylvania',
-    billId: 'H.R.4570',
-  },
-  {
-    name: '100 Years of Women in Act',
-    description:
-      'To amend the Department of Agriculture program for research and extension grants to increase participation by women',
-    status: 'Rejected',
-    image: images.approved,
-    state: 'Pennsylvania',
-    billId: 'H.R.4570',
-    vote: "2"
-  },
-  {
-    name: '100 Years of Women in Act',
-    description:
-      'To amend the Department of Agriculture program for research and extension grants to increase participation by women',
-    status: 'Rejected',
-    image: images.approved,
-    state: 'Pennsylvania',
-    billId: 'H.R.4570',
-    vote: "1"
-  },
-];
-
 
 
 const Liked = () => {
@@ -381,6 +111,7 @@ const Liked = () => {
 
   const [leftSwipeBills, setleftSwipeBills] = useState([])
   const [rightSwipeBills, setRightSwipeBills] = useState([])
+  const [neutralSwipeBills, setNeutralSwipeBills] = useState([])
 
 
   const getAllSwipedBills = async (uid) => {
@@ -388,9 +119,7 @@ const Liked = () => {
     try {
       const responseLeft = await apiServices.getLeftSwipedBills(uid);
       const responseRight = await apiServices.getRightSwipedBills(uid);
-
-      console.log('responseLeft--->', JSON.stringify(responseLeft?.data?.length, null, 2))
-      console.log('responseRight--->', JSON.stringify(responseRight?.data?.length, null, 2))
+      const responseNeutral = await apiServices.getNeutralSwipedBills(uid)
 
       if (responseLeft?.success) {
         setleftSwipeBills(responseLeft?.data)
@@ -400,13 +129,14 @@ const Liked = () => {
         setRightSwipeBills(responseRight?.data)
         console.log('Bill successfully liked');
       }
+      if (responseNeutral?.success) {
+        setNeutralSwipeBills(responseNeutral?.data)
+        console.log('Bill successfully liked');
+      }
     } catch (err) {
       console.error('addLikedAction threw an error:', err);
     }
   };
-
-
-
 
 
   // ✅ Fetch full bill details for an arbitrary array of bill IDs
@@ -435,72 +165,49 @@ const Liked = () => {
     }
   };
 
-  const getLeftSwipedBillDetails = async (uid) => {
-    try {
-      const responseLeft = await apiServices.getLeftSwipedBills(uid);
-      if (responseLeft?.success) {
-        // extract just the billId numbers
-        const billIds = responseLeft.data.map(b => b.billId);
-        // fetch their full details from LegiScan
-        const fullBills = await fetchBillsByIds(billIds);
-        // setleftSwipeBills(fullBills);
-      }
-    } catch (err) {
-      console.error('getLeftSwipedBillDetails error:', err);
-    }
-  };
-
-  const getRightSwipedBillDetails = async (uid) => {
-    try {
-      const responseLeft = await apiServices.getLeftSwipedBills(uid);
-      if (responseLeft?.success) {
-        // extract just the billId numbers
-        const billIds = responseLeft.data.map(b => b.billId);
-        // fetch their full details from LegiScan
-        const fullBills = await fetchBillsByIds(billIds);
-        // setRightSwipeBills(fullBills);
-      }
-    } catch (err) {
-      console.error('getLeftSwipedBillDetails error:', err);
-    }
-  };
 
   const [swipedBills, setSwipedBills] = useState([]);
 
   const getAllSwipedBillDetails = async (uid) => {
     try {
-      // Fetch Firestore docs for left & right in parallel
-      const [leftRes, rightRes] = await Promise.all([
+      // 1️⃣ Fetch Firestore docs for all three directions at once
+      const [leftRes, rightRes, neutralRes] = await Promise.all([
         apiServices.getLeftSwipedBills(uid),
         apiServices.getRightSwipedBills(uid),
+        apiServices.getNeutralSwipedBills(uid),
       ]);
 
-      const leftIds = leftRes?.success ? leftRes.data.map(b => b.billId) : [];
-      const rightIds = rightRes?.success ? rightRes.data.map(b => b.billId) : [];
+      // 2️⃣ Helper: extract IDs safely
+      const extractIds = (res) => (res?.success ? res.data.map(b => b.billId) : []);
 
-      // Fetch full LegiScan details
-      const [leftDetails, rightDetails] = await Promise.all([
+      const leftIds = extractIds(leftRes);
+      const rightIds = extractIds(rightRes);
+      const neutralIds = extractIds(neutralRes);
+
+      // 3️⃣ Fetch LegiScan details for each group in parallel
+      const [leftDetails, rightDetails, neutralDetails] = await Promise.all([
         fetchBillsByIds(leftIds),
         fetchBillsByIds(rightIds),
+        fetchBillsByIds(neutralIds),
       ]);
 
-      // Merge into one array, tagging each with swipe direction
+      // 4️⃣ Merge and tag
       const combined = [
         ...leftDetails.map(bill => ({ ...bill, swipe: 'left' })),
         ...rightDetails.map(bill => ({ ...bill, swipe: 'right' })),
+        ...neutralDetails.map(bill => ({ ...bill, swipe: 'neutral' })),
       ];
 
       setSwipedBills(combined);
-
     } catch (err) {
       console.error('getAllSwipedBillDetails error:', err);
     }
   };
 
+
+
   useEffect(() => {
     if (userInfo?.uid) {
-      // getLeftSwipedBillDetails(userInfo?.uid)
-      // getRightSwipedBillDetails(userInfo?.uid)
       getAllSwipedBillDetails(userInfo?.uid)
       getAllSwipedBills(userInfo?.uid)
     }
@@ -525,7 +232,7 @@ const Liked = () => {
 
 
   const renderBill = ({ item }) => {
-    // console.log('item', JSON.stringify(item, null, 2))
+
     const bgColor =
       item.status === 'Approved'
         ? colors.bg_v1
@@ -533,36 +240,74 @@ const Liked = () => {
           ? '#FAF5F5'
           : '#F6FAF6';
 
-    const swipeSide_left = leftSwipeBills?.includes(bill => bill.billId == item?.bill_id);
-    const swipeSide_right = rightSwipeBills?.some(bill => bill.billId == item?.bill_id);
 
+    const isLeft = leftSwipeBills?.some(bill => bill.billId == item?.bill_id);
+    const isRight = rightSwipeBills?.some(bill => bill.billId == item?.bill_id);
+    const isNeutral = neutralSwipeBills?.some(bill => bill.billId == item?.bill_id);
+
+    // ✅ pick color & icon
+    let swipeColor = 'transparent';
+    let swipeIcon = null;
+    let swipeTint = undefined;
+    let swipeCenterImage = "";
+    let bg_color = "";
+    let neutral_bg_color = "";
+    let containerBgColor = "";
+
+    // ✅ Choose look based on swipe direction
+    if (isRight) {
+      swipeColor = colors.themeColor;
+      swipeIcon = images.heart2;
+      swipeTint = colors.white;
+      swipeCenterImage = images.approved;
+      containerBgColor = '#F5F6FA';
+    } else if (isLeft) {
+      swipeColor = colors.lite_red;
+      swipeIcon = images.cross;
+      swipeTint = colors.red;
+      swipeCenterImage = images.disliked;
+      containerBgColor = '#FAF5F5';
+    } else if (isNeutral) {
+      swipeColor = colors.themeColor;
+      swipeIcon = images.heart2;
+      swipeTint = colors.white;
+      swipeCenterImage = images.nutral;
+      containerBgColor = '#f6faf6';
+    }
 
 
     return (
       <View style={styles.billContainer}>
 
-        <View style={[styles.billDetails, { backgroundColor: bgColor }]}>
-          <View style={[styles.approvedContainer, { backgroundColor: colors.bg_v1 }]}>
-            <Image source={item.image} style={styles.approvedIcon} />
+        <View style={[styles.billDetails, { backgroundColor: containerBgColor }]}>
+
+          <View style={[styles.approvedContainer, { backgroundColor: containerBgColor }]}>
+            <Image source={swipeCenterImage} style={styles.approvedIcon} />
           </View>
+
           <View style={{
             position: 'absolute', right: -10, bottom: -10,
-            // backgroundColor: swipeColor || 'transparent',
-            backgroundColor: swipeSide_right ? colors.themeColor : colors.lite_red,
+            backgroundColor: swipeColor || 'transparent',
+            // backgroundColor: swipeSide_right ? colors.themeColor : colors.lite_red,
             padding: 5,
             borderRadius: 50,
             borderWidth: 0.7,
-            borderColor: colors.theme_v1
+            borderColor: colors.theme_v1,
           }}>
-            <Image source={swipeSide_right ? images.heart2 : images.cross} style={styles.actionIcon}
-              tintColor={swipeSide_right ? colors.white : colors.red}
-            />
+
+            {swipeIcon && (
+              <Image
+                source={swipeIcon}
+                style={styles.actionIcon}
+                tintColor={swipeTint}
+              />
+            )}
           </View>
 
         </View>
 
         <View style={{ flex: 1, gap: 4 }}>
-          <Text style={styles.billName}>{item.name}</Text>
+          <Text style={styles.billName} numberOfLines={3}>{item.title}</Text>
           <View style={styles.row}>
             <Text style={styles.billSubText}>{item.state}</Text>
             <Text style={styles.billSubText}>{item.billId}</Text>
@@ -631,6 +376,14 @@ const styles = StyleSheet.create({
     borderRadius: scale(12),
     padding: scale(12),
     marginBottom: scale(12),
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.00,
+    elevation: 1,
   },
   billDetails: {
     height: scale(100),
