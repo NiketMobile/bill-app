@@ -154,9 +154,7 @@ const EditIncomeRange = () => {
     return (
         <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
             <View style={styles.container}>
-                <TouchableOpacity onPress={goBack}>
-                    <Image source={images.back_icon} style={styles.backIcon} />
-                </TouchableOpacity>
+              
                 <KeyboardAwareScrollView
                     style={{ flexGrow: 1 }}
                     contentContainerStyle={styles.scrollContainer}

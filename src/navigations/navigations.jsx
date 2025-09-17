@@ -44,6 +44,7 @@ import NoInternet from "../components/NoInternet"
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import NetInfo from '@react-native-community/netinfo';
+import { scale } from '../utils/appScale';
 
 
 

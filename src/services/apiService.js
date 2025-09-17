@@ -337,43 +337,6 @@ const checkDocumentIdIsPresent = async (collectionName, docId) => {
     }
 };
 
-
-const addToLiked = async (uid, bill_id) => {
-    if (!uid || !bill_id) {
-        return { success: false, error: 'Missing uid or bill_id' };
-    }
-
-    try {
-        const likedRef = firestore()
-            .collection('Users')
-            .doc(uid)
-            .collection('likedBills');
-
-        // 🔎 Check if a doc with this billId already exists
-        const existingSnap = await likedRef
-            .where('billId', '==', bill_id)
-            .limit(1)
-            .get();
-
-        if (!existingSnap.empty) {
-            // ✅ Already liked, don’t add again
-            return { success: true, alreadyExists: true };
-        }
-
-        // ➕ Add new liked bill
-        await likedRef.add({
-            billId: bill_id,
-            timestamp: firestore.FieldValue.serverTimestamp(),
-        });
-
-        return { success: true, alreadyExists: false };
-    } catch (error) {
-        console.error('saveLeftSwipe error:', error);
-        return { success: false, error: error.message };
-    }
-};
-
-
 const addLikedAction = async (uid, bill_id) => {
     if (!uid || !bill_id) {
         console.log('Missing uid or bill_id');
@@ -467,6 +430,79 @@ const getLikedBills = async (uid) => {
 };
 
 
+const getAllSwipedBills = async (uid) => {
+    if (!uid) return { success: false, error: 'Missing uid' };
+
+    try {
+        const snapshot = await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('likedBills')
+            .orderBy('timestamp', 'desc')
+            .get();
+
+        console.log('snapshot', JSON.stringify(snapshot, null, 2))
+
+        // // Map each document to an object with its ID and data
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching bookmarked bills:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+
+const getLeftSwipedBills = async (uid) => {
+    if (!uid) return { success: false, error: 'Missing uid' };
+
+    try {
+        const snapshot = await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('leftSwipes')
+            .orderBy('timestamp', 'desc')   // optional, newest first
+            .get();
+
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching bookmarked bills:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+const getRightSwipedBills = async (uid) => {
+    if (!uid) return { success: false, error: 'Missing uid' };
+
+    try {
+        const snapshot = await firestore()
+            .collection('Users')
+            .doc(uid)
+            .collection('rightSwipes')
+            .orderBy('timestamp', 'desc')   // optional, newest first
+            .get();
+
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error fetching bookmarked bills:', error);
+        return { success: false, error: error.message };
+    }
+};
+
 export const apiServices = {
     createUserDoc,
     updateUserDoc,
@@ -481,7 +517,9 @@ export const apiServices = {
     addLikedAction,
     addBookmarkAction,
     getBookmarkedBills,
-    getLikedBills
+    getLikedBills,
+    getLeftSwipedBills,
+    getRightSwipedBills
 };
 
 

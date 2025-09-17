@@ -1,35 +1,5 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-// import { colors } from '../../../constant/colors'
-// import Wrapper from '../../../components/wrapper'
-// import { scale } from '../../../utils/appScale'
-
-
-
-
-// const SearchScreen = () => {
-//     return (
-//         <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
-//             <View style={styles.container}>
-
-//                 <Text>SearchScreen</Text>
-//             </View>
-//         </Wrapper>
-//     )
-// }
-
-// export default SearchScreen
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         backgroundColor: colors.bg_v1,
-//         paddingHorizontal:scale(15)
-//     },
-// })
-
-
 import {
+    ActivityIndicator,
     FlatList,
     Image,
     Keyboard,
@@ -42,7 +12,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LinearGradient from "react-native-linear-gradient";
 import { colors } from '../../../constant/colors'
@@ -51,7 +21,7 @@ import { fontScale, scale } from '../../../utils/appScale'
 import { images } from "../../../constant/images";
 import { fonts } from "../../../constant/fonts";
 import { useNavigation } from "@react-navigation/native";
-
+import { API_KEY } from "@env"
 
 
 const bills = [
@@ -123,72 +93,126 @@ const bills = [
 const Search = () => {
     const navigation = useNavigation()
 
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const debounceRef = useRef(null);   // holds the timer id
+
+    useEffect(() => {
+
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        if (!query.trim()) {
+            setResults([]);
+            return;
+        }
+        debounceRef.current = setTimeout(() => {
+            fetchBills(query);
+        }, 500);
+
+        return () => clearTimeout(debounceRef.current);
+    }, [query]);
+
+    const fetchBills = async (text) => {
+        try {
+            setLoading(true);
+            const url = `https://api.legiscan.com/?key=${API_KEY}&op=getSearch&state=AL&query=${encodeURIComponent(
+                text?.toLowerCase()
+            )}`;
+
+            const res = await fetch(url);
+            const json = await res.json();
+            const rawResults = json?.searchresult;
+            console.log('rawResults', JSON.stringify(rawResults, null, 2))
+            const bills = rawResults
+                ? Object.values(rawResults).map((item) => ({
+                    id: item.bill_id,
+                    bill_id: item.bill_id,
+                    bill_number: item.bill_number,
+                    title: item.title,
+                    state: item.state,
+                }))
+                : [];
+            setResults(bills);
+
+        } catch (err) {
+            console.error('Fetch error', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    // console.log('results', JSON.stringify(results, null, 2))
+
 
 
     return (
         <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
-            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <View style={styles.container}>
-                    <View style={styles.searchContainer}>
-                        <TouchableOpacity onPress={() => {
-                            navigation.goBack()
-                        }}
-                            style={styles.backContainer}
-                        >
-                            <Image source={images.back_2} style={styles.searchIcon} />
-                        </TouchableOpacity>
+            {/* <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
+            <View style={styles.container}>
+                <View style={styles.searchContainer}>
+                    <TouchableOpacity onPress={() => {
+                        navigation.goBack()
+                    }}
+                        style={styles.backContainer}
+                    >
+                        <Image source={images.back_2} style={styles.searchIcon} />
+                    </TouchableOpacity>
+                    <View
+                        style={styles.searchGradient}
+                    >
                         <View
-                            style={styles.searchGradient}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 10,
+                                backgroundColor: "#fff",
+                                borderRadius: 25,
+                                paddingHorizontal: 12,
+                            }}
                         >
-                            <View
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    gap: 10,
-                                    backgroundColor: "#fff",
-                                    borderRadius: 25,
-                                    paddingHorizontal: 12,
-                                }}
-                            >
-                                <TextInput placeholder="Search" style={styles.searchInput} placeholderTextColor={colors.theme_v1} />
-                                <Image source={images.search} style={styles.searchIcon} />
-                            </View>
+                            <TextInput placeholder="Search" value={query} onChangeText={setQuery} style={styles.searchInput} placeholderTextColor={colors.theme_v1} />
+                            <Image source={images.search} style={styles.searchIcon} />
                         </View>
-
                     </View>
-                    <View style={styles.billContainer}>
-                        <FlatList
-                            data={bills}
-                            renderItem={({ item, index }) => (
-                                <View style={styles.tickContainer} key={index}>
-                                    <View
-                                        style={[
-                                            styles.tickIconContainer,
-                                            {
-                                                backgroundColor:
-                                                    item.status === "Approved"
-                                                        ? "#F5F6FA"
-                                                        : item.status === "Rejected"
-                                                            ? "#FAF5F5"
-                                                            : "#F6FAF6",
-                                            },
-                                        ]}
-                                    >
-                                        <Image source={item?.image} style={[styles.tickIcon]} />
-                                    </View>
-                                    <View style={styles.billDetails}>
-                                        <Text style={styles.billName}>{item.name}</Text>
-                                        <Text style={styles.billDescription}>{item.description}</Text>
-                                    </View>
+                </View>
+
+                {loading && <ActivityIndicator size="small" style={{ margin: 8 }} />}
+
+                <View style={styles.billContainer}>
+                    <FlatList
+                        keyboardShouldPersistTaps="handled"
+                        data={results}
+                        renderItem={({ item, index }) => (
+                            <View style={styles.tickContainer} key={index}>
+                                <View
+                                    style={[
+                                        styles.tickIconContainer,
+                                        {
+                                            backgroundColor:
+                                                item.status === "Approved"
+                                                    ? "#F5F6FA"
+                                                    : item.status === "Rejected"
+                                                        ? "#FAF5F5"
+                                                        : "#F6FAF6",
+                                        },
+                                    ]}
+                                >
+                                    <Image source={item?.image} style={[styles.tickIcon]} />
                                 </View>
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                            showsVerticalScrollIndicator={false}
-                            ItemSeparatorComponent={() => (
-                                <View style={{ height: 1.5, backgroundColor: "#A7ACC54D" }} />
-                            )}
-                        />
-                        {/* <TouchableOpacity onPress={() => router.push("/bill/searchedBills")}>
+                                <View style={styles.billDetails}>
+                                    <Text style={styles.billName} numberOfLines={3}>{item?.title}</Text>
+                                    <Text style={styles.billDescription}>{item?.state}</Text>
+                                </View>
+                            </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
+                        ItemSeparatorComponent={() => (
+                            <View style={{ height: 1.5, backgroundColor: "#A7ACC54D" }} />
+                        )}
+                    />
+                    {/* <TouchableOpacity onPress={() => router.push("/bill/searchedBills")}>
                     <LinearGradient
                         colors={["#EAEEF4", "#EEB8B9"]}
                         start={{ x: 0, y: 0 }}
@@ -205,10 +229,10 @@ const Search = () => {
                         </LinearGradient>
                     </LinearGradient>
                 </TouchableOpacity> */}
-                    </View>
                 </View>
+            </View>
 
-            </TouchableWithoutFeedback>
+            {/* </TouchableWithoutFeedback> */}
 
         </Wrapper>
     );
@@ -257,7 +281,7 @@ const styles = StyleSheet.create({
         paddingLeft: 5
     },
     billContainer: {
-        // flex: 1,
+        flex: 1,
         marginTop: 20,
         backgroundColor: "#fff",
         borderRadius: 12,
@@ -296,6 +320,7 @@ const styles = StyleSheet.create({
     },
     billDetails: {
         gap: 3,
+        width: "80%"
     },
     gradientBorder: {
         borderRadius: 6,

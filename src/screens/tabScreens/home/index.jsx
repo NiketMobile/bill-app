@@ -22,45 +22,7 @@ import showToast from '../../../components/showMessage';
 
 
 
-const API_KEY = '134cb3a1ea3eef93c5c1b71312b2da6a';
-const STATE = 'AL';
 
-const fetchBills = async (page = 1, pageSize = 10, isState = "AL") => {
-  try {
-    const searchUrl = `https://api.legiscan.com/?key=${API_KEY}&op=getSearchRaw&state=${STATE}`;
-    const searchResponse = await fetch(searchUrl);
-    const searchData = await searchResponse.json();
-    console.log('searchData', JSON.stringify(searchData, null, 2))
-
-    if (searchData.status !== 'OK') throw new Error('Failed to fetch bills');
-
-    const allBillIds = searchData.searchresult.results.map(
-      item => item.bill_id,
-    );
-
-    const startIdx = (page - 1) * pageSize;
-    const endIdx = startIdx + pageSize;
-    const pageBillIds = allBillIds.slice(startIdx, endIdx);
-
-    const billDetails = await Promise.all(
-      pageBillIds.map(async billId => {
-        const billUrl = `https://api.legiscan.com/?key=${API_KEY}&op=getBill&id=${billId}`;
-        const response = await fetch(billUrl);
-        const data = await response.json();
-        return data.bill;
-      }),
-    );
-
-    return billDetails.filter(bill => {
-      // console.log('bill', JSON.stringify(bill, null, 2))
-      return bill
-    });
-
-  } catch (error) {
-    console.error('Error fetching bills:', error);
-    return [];
-  }
-};
 
 const HomeScreen = () => {
   const navigation = useNavigation()
@@ -79,6 +41,45 @@ const HomeScreen = () => {
   const [isDataToModal, setisDataToModal] = useState(null)
 
 
+  const API_KEY = '134cb3a1ea3eef93c5c1b71312b2da6a';
+  const STATE = 'AL';
+
+  const fetchBills = async (page = 1, pageSize = 10) => {
+    try {
+      const searchUrl = `https://api.legiscan.com/?key=${API_KEY}&op=getSearchRaw&state=${STATE}`;
+      const searchResponse = await fetch(searchUrl);
+      const searchData = await searchResponse.json();
+      // console.log('searchData', JSON.stringify(searchData, null, 2))
+
+      if (searchData.status !== 'OK') throw new Error('Failed to fetch bills');
+
+      const allBillIds = searchData.searchresult.results.map(
+        item => item.bill_id,
+      );
+
+      const startIdx = (page - 1) * pageSize;
+      const endIdx = startIdx + pageSize;
+      const pageBillIds = allBillIds.slice(startIdx, endIdx);
+
+      const billDetails = await Promise.all(
+        pageBillIds.map(async billId => {
+          const billUrl = `https://api.legiscan.com/?key=${API_KEY}&op=getBill&id=${billId}`;
+          const response = await fetch(billUrl);
+          const data = await response.json();
+          return data.bill;
+        }),
+      );
+
+      return billDetails.filter(bill => {
+        // console.log('bill', JSON.stringify(bill, null, 2))
+        return bill
+      });
+
+    } catch (error) {
+      console.error('Error fetching bills:', error);
+      return [];
+    }
+  };
 
   const handleSheetChange = useCallback((index) => {
     console.log("handleSheetChange", index);
@@ -137,7 +138,9 @@ const HomeScreen = () => {
     }
   }
 
-  console.log('likedBillsList', JSON.stringify(likedBillsList, null, 2))
+
+
+  // console.log('likedBillsList', JSON.stringify(likedBillsList, null, 2))
 
 
   useEffect(() => {
@@ -169,20 +172,38 @@ const HomeScreen = () => {
     }
   };
 
+  // const loadMoreBills = async () => {
+  //   if (loading || !hasMore) return;
+  //   setLoading(true);
+  //   try {
+  //     const newBills = await fetchBills(currentPage);
+  //     console.log('newBills?.length------>', JSON.stringify(newBills?.length, null, 2))
+
+  //     setResults(prev => [...prev, ...newBills]);
+  //     setCurrentPage(prev => prev + 1);
+  //     setHasMore(newBills?.length > 0);
+
+  //   } catch (error) {
+  //     console.error('Failed to fetch bills:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
 
   const loadMoreBills = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
+    const nextPage = currentPage + 1;
+
     try {
-      const isState = "AL"
-      const newBills = await fetchBills(currentPage, isState);
-
-      console.log('newBills?.length------>', JSON.stringify(newBills?.length, null, 2))
-
-      setResults(prev => [...prev, ...newBills]);
-      setCurrentPage(prev => prev + 1);
-      setHasMore(newBills?.length > 0);
-
+      const newBills = await fetchBills(nextPage);
+      if (newBills.length === 0) {
+        setHasMore(false);
+      } else {
+        setResults(prev => [...prev, ...newBills]);
+        setCurrentPage(nextPage);
+      }
     } catch (error) {
       console.error('Failed to fetch bills:', error);
     } finally {
@@ -191,19 +212,40 @@ const HomeScreen = () => {
   };
 
 
+  //   Trigger it earlier in the swipe flow
+  // Right now you check index >= results.length - 3.
+  // That’s fine but don’t forget to start with page 1 and not bump it on the first fetch:
+
+  useEffect(() => {
+    // first page fetch
+    const init = async () => {
+      setLoading(true);
+      try {
+        const firstPageBills = await fetchBills(1);
+        setResults(firstPageBills);
+        setHasMore(firstPageBills.length > 0);
+        setCurrentPage(1);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
+  }, []);
+
+
+
+  useEffect(() => {
+    loadMoreBills();
+  }, [])
+
+
   const handleBookmark = async (billId) => {
-    // const newBookmarks = new Set(bookmarkedBills);
-
-    // newBookmarks.has(billId)
-    //   ? newBookmarks.delete(billId)
-    //   : newBookmarks.add(billId);
-    // setBookmarkedBills(newBookmarks);
     loadDatas()
-
     if (billId) {
       await addToBookmark(billId)
     }
-
   };
 
   const addToLike = async (billId) => {
@@ -359,13 +401,24 @@ const HomeScreen = () => {
   }
 
 
+  // Keep the pre-fetch trigger
+  // No need for a dummy parameter:
+  // const handleSwiped = (index) => {
+  //   setCurrentIndex(index + 1);
+  //   if (hasMore && index >= results.length - 3) {
+  //     loadMoreBills();
+  //   }
+  // };
+
+
+
   // --- Called every swipe ---
   const handleSwiped = (index) => {
     setCurrentIndex(index + 1);
 
     // if user reaches 2 cards before the end, prefetch next page
     if (hasMore && index >= results.length - 3) {
-      loadMoreBills(false);
+      loadMoreBills();
     }
   };
 
@@ -451,6 +504,14 @@ const HomeScreen = () => {
                 )}
               </View>
             )}
+
+            {/* {loading && hasMore && (
+              <View style={styles.loadingMoreContainer}>
+                <ActivityIndicator size="small" color="#050A20" />
+                <Text style={styles.loadingText}>Loading more bills...</Text>
+              </View>
+            )} */}
+
           </View>
         </View>
         <Portal>
@@ -462,11 +523,17 @@ const HomeScreen = () => {
               <BillDetails
                 setIsModalVisible={setIsModalVisible}
                 // bill={results[currentIndex]}
+                // bill={isDataToModal}
+                // isBookmarked={bookmarkedBills.has(results[currentIndex]?.bill_id)}
+                // isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
+                // onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
+                // onLove={() => handleLove(results[currentIndex]?.bill_id)}
+                // bill={results[currentIndex]}
                 bill={isDataToModal}
-                isBookmarked={bookmarkedBills.has(results[currentIndex]?.bill_id)}
-                isLoved={lovedBills.has(results[currentIndex]?.bill_id)}
-                onBookmark={() => handleBookmark(results[currentIndex]?.bill_id)}
-                onLove={() => handleLove(results[currentIndex]?.bill_id)}
+                isBookmarked={bookmarkedBillsList?.some(bill => bill.billId === isDataToModal?.bill_id)}
+                isLoved={likedBillsList?.some(bill => bill.billId === isDataToModal?.bill_id)}
+                onBookmark={() => handleBookmark(isDataToModal?.bill_id)}
+                onLove={() => handleLove(isDataToModal?.bill_id)}
               />
             </View>
           </BillDetailsBottomSheet>

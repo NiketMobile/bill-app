@@ -5,13 +5,16 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { images } from "../../../constant/images";
 import Wrapper from "../../../components/wrapper";
 import { colors } from "../../../constant/colors";
 import AppHeader from "../../../components/AppHeader";
 import { fontScale, scale } from "../../../utils/appScale";
 import { fonts } from "../../../constant/fonts";
+import { useSelector } from "react-redux";
+import Loader from "../../../components/loader";
+import { useNavigation } from "@react-navigation/native";
 
 
 const bills = [
@@ -91,6 +94,98 @@ const bills = [
 
 const Bills = () => {
 
+  const [isLoading, setIsLoading] = useState(true)
+
+
+  const API_KEY = '134cb3a1ea3eef93c5c1b71312b2da6a';
+  const STATE = 'AL';
+  const PAGE_SIZE = 10;
+
+  let allBillIdsCache = []; // Cache all IDs globally
+
+  const fetchAllBillIds = async () => {
+    try {
+      const url = `https://api.legiscan.com/?key=${API_KEY}&op=getSearchRaw&state=${STATE}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.status !== 'OK') throw new Error('Failed to fetch bill IDs');
+      setIsLoading(false)
+      const ids = json.searchresult.results.map(item => item.bill_id);
+      allBillIdsCache = ids;
+      return ids;
+    } catch (error) {
+      console.error('fetchAllBillIds error:', error);
+      return [];
+    }
+  };
+
+  const fetchBillsPage = async (page = 1) => {
+    if (allBillIdsCache.length === 0) {
+      await fetchAllBillIds(); // fill cache first
+    }
+
+    const startIdx = (page - 1) * PAGE_SIZE;
+    const endIdx = startIdx + PAGE_SIZE;
+    const pageIds = allBillIdsCache.slice(startIdx, endIdx);
+
+    const bills = await Promise.all(
+      pageIds.map(async id => {
+        try {
+          const url = `https://api.legiscan.com/?key=${API_KEY}&op=getBill&id=${id}`;
+
+          const res = await fetch(url);
+          const json = await res.json();
+          return json.bill;
+        } catch (err) {
+          console.error('fetchBillsPage error for id', id, err);
+          return null;
+        }
+      })
+    );
+
+    return bills.filter(Boolean);
+  };
+
+  const [bills, setBills] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadNextPage = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+
+    try {
+      const newBills = await fetchBillsPage(page);
+      if (newBills.length === 0) {
+        setHasMore(false);
+      } else {
+        setBills(prev => [...prev, ...newBills]);
+        setPage(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('loadNextPage error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // console.log('bills', JSON.stringify(bills?.length, null, 2))
+
+  useEffect(() => {
+    loadNextPage();
+  }, []);
+
+  const userInfo = useSelector((state) => state?.userInfo?.userData)
+
+
+  const navigation = useNavigation();
+
+  const handleFilter = () => {
+    navigation.navigate("StackScreens", { screen: "FilterScreen" })
+  }
+
+
   return (
     <Wrapper barStyle="dark-content" bgColor={colors.bg_v1}>
       <View style={styles.container}>
@@ -99,33 +194,26 @@ const Bills = () => {
           leftIcon={images.back_2}
           rightIcon={images.filter}
           onLeftPress={() => navigation.goBack()}
-          onRightPress={() => console.log('Settings pressed')}
+          onRightPress={handleFilter}
         />
+
+        {
+          isLoading && <Loader />
+        }
 
         <FlatList
           style={styles.flatList}
           data={bills}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <View
-              style={styles.billContainer}
-            >
+          renderItem={({ item }) => {
+            console.log('item', JSON.stringify(item, null, 2))
+            return (
               <View
-                style={[
-                  styles.billDetails,
-                  {
-                    backgroundColor:
-                      item.status === "Approved"
-                        ? "#F5F6FA"
-                        : item.status === "Rejected"
-                          ? "#FAF5F5"
-                          : "#F6FAF6",
-                  },
-                ]}
+                style={styles.billContainer}
               >
                 <View
                   style={[
-                    styles.approvedContainer,
+                    styles.billDetails,
                     {
                       backgroundColor:
                         item.status === "Approved"
@@ -136,21 +224,35 @@ const Bills = () => {
                     },
                   ]}
                 >
-                  <Image source={item.image} style={[styles.approvedIcon]} />
+                  <View
+                    style={[
+                      styles.approvedContainer,
+                      {
+                        backgroundColor:
+                          item.status === "Approved"
+                            ? "#F5F6FA"
+                            : item.status === "Rejected"
+                              ? "#FAF5F5"
+                              : "#F6FAF6",
+                      },
+                    ]}
+                  >
+                    <Image source={item.image} style={[styles.approvedIcon]} />
+                  </View>
+                </View>
+                <View style={{ flex: 1, gap: 4 }}>
+                  <Text style={styles.billName} numberOfLines={2}>{item.title}</Text>
+                  <View style={styles.row}>
+                    <Text style={styles.billSubText}>{item.state}</Text>
+                    <Text style={styles.billSubText}>{item.bill_number}</Text>
+                  </View>
+                  <Text style={styles.billDescription} numberOfLines={3}>
+                    {item.description}
+                  </Text>
                 </View>
               </View>
-              <View style={{ flex: 1, gap: 4 }}>
-                <Text style={styles.billName}>{item.name}</Text>
-                <View style={styles.row}>
-                  <Text style={styles.billSubText}>{item.state}</Text>
-                  <Text style={styles.billSubText}>{item.billId}</Text>
-                </View>
-                <Text style={styles.billDescription} numberOfLines={3}>
-                  {item.description}
-                </Text>
-              </View>
-            </View>
-          )}
+            )
+          }}
         />
 
       </View>
